@@ -1,0 +1,10 @@
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: test-app
+spec:
+  components:
+    - name: nginx
+      type: webservice
+      properties:
+        image: nginx
