@@ -11,7 +11,7 @@ API version: no version
 package utils
 
 import (
-    "bytes"
+	"bytes"
 	"encoding/json"
 	"reflect"
 	"time"
@@ -349,7 +349,7 @@ type MappedNullable interface {
 
 // A wrapper for strict JSON decoding
 func NewStrictDecoder(data []byte) *json.Decoder {
-    dec := json.NewDecoder(bytes.NewBuffer(data))
-    dec.DisallowUnknownFields()
-    return dec
+	dec := json.NewDecoder(bytes.NewBuffer(data))
+	dec.DisallowUnknownFields()
+	return dec
 }

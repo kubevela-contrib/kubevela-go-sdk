@@ -13,7 +13,7 @@ package export2secret
 import (
 	"encoding/json"
 
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis/utils"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
 
 // checks if the DockerRegistry type satisfies the MappedNullable interface at compile time

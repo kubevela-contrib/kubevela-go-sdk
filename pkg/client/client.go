@@ -19,7 +19,7 @@ package client
 import (
 	"context"
 
-	sdkcommon "github.com/kubevela-contrib/vela-go-sdk/pkg/apis/common"
+	sdkcommon "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -27,7 +27,7 @@ import (
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
 )
 
 var schema *runtime.Scheme

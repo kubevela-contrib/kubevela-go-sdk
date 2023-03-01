@@ -13,7 +13,7 @@ package ref_objects
 import (
 	"encoding/json"
 
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis/utils"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
 
 // checks if the K8sObject type satisfies the MappedNullable interface at compile time

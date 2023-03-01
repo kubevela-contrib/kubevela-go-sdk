@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/chivalryq/vela-go-sdk/pkg/client"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/client"
 	runtimeclient "sigs.k8s.io/controller-runtime/pkg/client"
 
-	// TODO(chivalryq) pre-import all types so they can be all registered
-	"github.com/chivalryq/vela-go-sdk/pkg/apis/component/webservice"
-	_ "github.com/chivalryq/vela-go-sdk/pkg/apis/trait/init-container"
-	_ "github.com/chivalryq/vela-go-sdk/pkg/apis/trait/resource"
+	// TODO(kubevela-contrib) pre-import all types so they can be all registered
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/component/webservice"
+	_ "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/trait/init-container"
+	_ "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/trait/resource"
 )
 
 func main() {

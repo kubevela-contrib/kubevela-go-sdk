@@ -13,7 +13,7 @@ package startup_probe
 import (
 	"encoding/json"
 
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis/utils"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
 
 // checks if the HttpGet type satisfies the MappedNullable interface at compile time

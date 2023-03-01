@@ -18,9 +18,9 @@ import (
 
 	"fmt"
 
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis"
-	sdkcommon "github.com/kubevela-contrib/vela-go-sdk/pkg/apis/common"
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis/utils"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
+	sdkcommon "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
 
 // ContainerImageSpec - struct for ContainerImageSpec

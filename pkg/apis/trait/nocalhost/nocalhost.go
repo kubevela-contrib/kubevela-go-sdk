@@ -16,9 +16,9 @@ import (
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis"
-	sdkcommon "github.com/kubevela-contrib/vela-go-sdk/pkg/apis/common"
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis/utils"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
+	sdkcommon "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
 
 // checks if the NocalhostSpec type satisfies the MappedNullable interface at compile time
