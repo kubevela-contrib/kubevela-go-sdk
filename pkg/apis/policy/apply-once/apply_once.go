@@ -27,7 +27,7 @@ var _ utils.MappedNullable = &ApplyOnceSpec{}
 // ApplyOnceSpec struct for ApplyOnceSpec
 type ApplyOnceSpec struct {
 	// Whether to enable apply-once for the whole application
-	Enable bool `json:"enable"`
+	Enable *bool `json:"enable,omitempty"`
 	// Specify the rules for configuring apply-once policy in resource level
 	Rules []ApplyOncePolicyRule `json:"rules,omitempty"`
 }
@@ -36,9 +36,10 @@ type ApplyOnceSpec struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewApplyOnceSpecWith(enable bool) *ApplyOnceSpec {
+func NewApplyOnceSpecWith() *ApplyOnceSpec {
 	this := ApplyOnceSpec{}
-	this.Enable = enable
+	var enable bool = false
+	this.Enable = &enable
 	return &this
 }
 
@@ -48,7 +49,7 @@ func NewApplyOnceSpecWith(enable bool) *ApplyOnceSpec {
 func NewApplyOnceSpec() *ApplyOnceSpec {
 	this := ApplyOnceSpec{}
 	var enable bool = false
-	this.Enable = enable
+	this.Enable = &enable
 	return &this
 }
 
@@ -62,28 +63,37 @@ func NewApplyOnceSpecList(ps ...*ApplyOnceSpec) []ApplyOnceSpec {
 	return objs
 }
 
-// GetEnable returns the Enable field value
+// GetEnable returns the Enable field value if set, zero value otherwise.
 func (o *ApplyOncePolicy) GetEnable() bool {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Enable) {
 		var ret bool
 		return ret
 	}
-
-	return o.Properties.Enable
+	return *o.Properties.Enable
 }
 
-// GetEnableOk returns a tuple with the Enable field value
+// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplyOncePolicy) GetEnableOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Enable) {
 		return nil, false
 	}
-	return &o.Properties.Enable, true
+	return o.Properties.Enable, true
 }
 
-// SetEnable sets field value
+// HasEnable returns a boolean if a field has been set.
+func (o *ApplyOncePolicy) HasEnable() bool {
+	if o != nil && !utils.IsNil(o.Properties.Enable) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnable gets a reference to the given bool and assigns it to the enable field.
+// Enable:  Whether to enable apply-once for the whole application
 func (o *ApplyOncePolicy) SetEnable(v bool) *ApplyOncePolicy {
-	o.Properties.Enable = v
+	o.Properties.Enable = &v
 	return o
 }
 
@@ -131,7 +141,9 @@ func (o ApplyOnceSpec) MarshalJSON() ([]byte, error) {
 
 func (o ApplyOnceSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["enable"] = o.Enable
+	if !utils.IsNil(o.Enable) {
+		toSerialize["enable"] = o.Enable
+	}
 	if !utils.IsNil(o.Rules) {
 		toSerialize["rules"] = o.Rules
 	}

@@ -26,23 +26,22 @@ var _ utils.MappedNullable = &K8sUpdateStrategySpec{}
 
 // K8sUpdateStrategySpec struct for K8sUpdateStrategySpec
 type K8sUpdateStrategySpec struct {
-	Strategy *Strategy `json:"strategy,omitempty"`
+	Strategy Strategy `json:"strategy"`
 	// Specify the apiVersion of target
-	TargetAPIVersion *string `json:"targetAPIVersion,omitempty"`
+	TargetAPIVersion string `json:"targetAPIVersion"`
 	// Specify the kind of target
-	TargetKind *string `json:"targetKind,omitempty"`
+	TargetKind string `json:"targetKind"`
 }
 
 // NewK8sUpdateStrategySpecWith instantiates a new K8sUpdateStrategySpec object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewK8sUpdateStrategySpecWith() *K8sUpdateStrategySpec {
+func NewK8sUpdateStrategySpecWith(strategy Strategy, targetAPIVersion string, targetKind string) *K8sUpdateStrategySpec {
 	this := K8sUpdateStrategySpec{}
-	var targetAPIVersion string = "apps/v1"
-	this.TargetAPIVersion = &targetAPIVersion
-	var targetKind string = "Deployment"
-	this.TargetKind = &targetKind
+	this.Strategy = strategy
+	this.TargetAPIVersion = targetAPIVersion
+	this.TargetKind = targetKind
 	return &this
 }
 
@@ -52,9 +51,9 @@ func NewK8sUpdateStrategySpecWith() *K8sUpdateStrategySpec {
 func NewK8sUpdateStrategySpec() *K8sUpdateStrategySpec {
 	this := K8sUpdateStrategySpec{}
 	var targetAPIVersion string = "apps/v1"
-	this.TargetAPIVersion = &targetAPIVersion
+	this.TargetAPIVersion = targetAPIVersion
 	var targetKind string = "Deployment"
-	this.TargetKind = &targetKind
+	this.TargetKind = targetKind
 	return &this
 }
 
@@ -68,105 +67,78 @@ func NewK8sUpdateStrategySpecList(ps ...*K8sUpdateStrategySpec) []K8sUpdateStrat
 	return objs
 }
 
-// GetStrategy returns the Strategy field value if set, zero value otherwise.
+// GetStrategy returns the Strategy field value
 func (o *K8sUpdateStrategyTrait) GetStrategy() Strategy {
-	if o == nil || utils.IsNil(o.Properties.Strategy) {
+	if o == nil {
 		var ret Strategy
 		return ret
 	}
-	return *o.Properties.Strategy
+
+	return o.Properties.Strategy
 }
 
-// GetStrategyOk returns a tuple with the Strategy field value if set, nil otherwise
+// GetStrategyOk returns a tuple with the Strategy field value
 // and a boolean to check if the value has been set.
 func (o *K8sUpdateStrategyTrait) GetStrategyOk() (*Strategy, bool) {
-	if o == nil || utils.IsNil(o.Properties.Strategy) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Properties.Strategy, true
+	return &o.Properties.Strategy, true
 }
 
-// HasStrategy returns a boolean if a field has been set.
-func (o *K8sUpdateStrategyTrait) HasStrategy() bool {
-	if o != nil && !utils.IsNil(o.Properties.Strategy) {
-		return true
-	}
-
-	return false
-}
-
-// SetStrategy gets a reference to the given Strategy and assigns it to the strategy field.
-// Strategy:
+// SetStrategy sets field value
 func (o *K8sUpdateStrategyTrait) SetStrategy(v Strategy) *K8sUpdateStrategyTrait {
-	o.Properties.Strategy = &v
+	o.Properties.Strategy = v
 	return o
 }
 
-// GetTargetAPIVersion returns the TargetAPIVersion field value if set, zero value otherwise.
+// GetTargetAPIVersion returns the TargetAPIVersion field value
 func (o *K8sUpdateStrategyTrait) GetTargetAPIVersion() string {
-	if o == nil || utils.IsNil(o.Properties.TargetAPIVersion) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Properties.TargetAPIVersion
+
+	return o.Properties.TargetAPIVersion
 }
 
-// GetTargetAPIVersionOk returns a tuple with the TargetAPIVersion field value if set, nil otherwise
+// GetTargetAPIVersionOk returns a tuple with the TargetAPIVersion field value
 // and a boolean to check if the value has been set.
 func (o *K8sUpdateStrategyTrait) GetTargetAPIVersionOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.TargetAPIVersion) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Properties.TargetAPIVersion, true
+	return &o.Properties.TargetAPIVersion, true
 }
 
-// HasTargetAPIVersion returns a boolean if a field has been set.
-func (o *K8sUpdateStrategyTrait) HasTargetAPIVersion() bool {
-	if o != nil && !utils.IsNil(o.Properties.TargetAPIVersion) {
-		return true
-	}
-
-	return false
-}
-
-// SetTargetAPIVersion gets a reference to the given string and assigns it to the targetAPIVersion field.
-// TargetAPIVersion:  Specify the apiVersion of target
+// SetTargetAPIVersion sets field value
 func (o *K8sUpdateStrategyTrait) SetTargetAPIVersion(v string) *K8sUpdateStrategyTrait {
-	o.Properties.TargetAPIVersion = &v
+	o.Properties.TargetAPIVersion = v
 	return o
 }
 
-// GetTargetKind returns the TargetKind field value if set, zero value otherwise.
+// GetTargetKind returns the TargetKind field value
 func (o *K8sUpdateStrategyTrait) GetTargetKind() string {
-	if o == nil || utils.IsNil(o.Properties.TargetKind) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Properties.TargetKind
+
+	return o.Properties.TargetKind
 }
 
-// GetTargetKindOk returns a tuple with the TargetKind field value if set, nil otherwise
+// GetTargetKindOk returns a tuple with the TargetKind field value
 // and a boolean to check if the value has been set.
 func (o *K8sUpdateStrategyTrait) GetTargetKindOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.TargetKind) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Properties.TargetKind, true
+	return &o.Properties.TargetKind, true
 }
 
-// HasTargetKind returns a boolean if a field has been set.
-func (o *K8sUpdateStrategyTrait) HasTargetKind() bool {
-	if o != nil && !utils.IsNil(o.Properties.TargetKind) {
-		return true
-	}
-
-	return false
-}
-
-// SetTargetKind gets a reference to the given string and assigns it to the targetKind field.
-// TargetKind:  Specify the kind of target
+// SetTargetKind sets field value
 func (o *K8sUpdateStrategyTrait) SetTargetKind(v string) *K8sUpdateStrategyTrait {
-	o.Properties.TargetKind = &v
+	o.Properties.TargetKind = v
 	return o
 }
 
@@ -180,15 +152,9 @@ func (o K8sUpdateStrategySpec) MarshalJSON() ([]byte, error) {
 
 func (o K8sUpdateStrategySpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Strategy) {
-		toSerialize["strategy"] = o.Strategy
-	}
-	if !utils.IsNil(o.TargetAPIVersion) {
-		toSerialize["targetAPIVersion"] = o.TargetAPIVersion
-	}
-	if !utils.IsNil(o.TargetKind) {
-		toSerialize["targetKind"] = o.TargetKind
-	}
+	toSerialize["strategy"] = o.Strategy
+	toSerialize["targetAPIVersion"] = o.TargetAPIVersion
+	toSerialize["targetKind"] = o.TargetKind
 	return toSerialize, nil
 }
 
