@@ -13,7 +13,7 @@ package cron_task
 import (
 	"encoding/json"
 
-	"github.com/kubevela-contrib/vela-go-sdk/pkg/apis/utils"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
 
 // checks if the ValueFrom type satisfies the MappedNullable interface at compile time

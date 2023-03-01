@@ -3,18 +3,18 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/chivalryq/vela-go-sdk/pkg/apis/common"
-	. "github.com/chivalryq/vela-go-sdk/pkg/apis/component/webservice"
-	"github.com/chivalryq/vela-go-sdk/pkg/client"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
+	. "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/component/webservice"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/client"
 )
 
 func main() {
 	application := common.New().
 		Name("test-app").
 		Namespace("default").
-		AddComponents(
+		SetComponents(
 			Webservice("nginx").
-				SetEnv(NewEnvs(
+				SetEnv(NewEnvList(
 					NewEnv().SetName("test").SetValue("test"),
 				)).
 				SetImage("nginx:latest").

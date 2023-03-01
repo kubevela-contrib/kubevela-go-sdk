@@ -2,15 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/chivalryq/vela-go-sdk/pkg/apis/common"
-	"github.com/chivalryq/vela-go-sdk/pkg/apis/component/helm"
-	. "github.com/chivalryq/vela-go-sdk/pkg/apis/component/webservice"
-	apply_once "github.com/chivalryq/vela-go-sdk/pkg/apis/policy/apply-once"
-	initcontainer "github.com/chivalryq/vela-go-sdk/pkg/apis/trait/init-container"
-	"github.com/chivalryq/vela-go-sdk/pkg/apis/trait/resource"
-	bu "github.com/chivalryq/vela-go-sdk/pkg/apis/workflow-step/build-push-image"
-	notify "github.com/chivalryq/vela-go-sdk/pkg/apis/workflow-step/notification"
-	stepgroup "github.com/chivalryq/vela-go-sdk/pkg/apis/workflow-step/step-group"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
+	. "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/component/webservice"
+	apply_once "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/policy/apply-once"
+	initcontainer "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/trait/init-container"
+	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/trait/resource"
+	bu "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/workflow-step/build-push-image"
+	notify "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/workflow-step/notification"
+	stepgroup "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/workflow-step/step-group"
 )
 
 func main() {
@@ -25,7 +24,7 @@ func main() {
 				)).
 				SetImage("nginx:latest").
 				SetCpu("500m").
-				AddTraits(
+				SetTraits(
 					initcontainer.InitContainer().
 						SetName("init").
 						SetImage("busybox").
@@ -34,11 +33,6 @@ func main() {
 						SetInitMountPath("/app/dir"),
 					resource.Resource().SetMemory("256Mi"),
 				),
-			helm.Helm("helm").
-				SetChart("some-chart").
-				SetRepoType("git").
-				SetGit(*helm.NewGit().SetBranch("branch")).
-				SetUrl("https://github.com/xxx/xxx.git"),
 		).
 		SetWorkflowSteps(
 			stepgroup.StepGroup("group").

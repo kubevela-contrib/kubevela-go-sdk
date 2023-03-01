@@ -1,4 +1,4 @@
-module github.com/kubevela-contrib/vela-go-sdk
+module github.com/kubevela-contrib/kubevela-go-sdk
 
 go 1.19
 
