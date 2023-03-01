@@ -30,15 +30,16 @@ type ListConfigSpec struct {
 	// Specify the namespace of the config.
 	Namespace *string `json:"namespace,omitempty"`
 	// Specify the template of the config.
-	Template *string `json:"template,omitempty"`
+	Template string `json:"template"`
 }
 
 // NewListConfigSpecWith instantiates a new ListConfigSpec object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewListConfigSpecWith() *ListConfigSpec {
+func NewListConfigSpecWith(template string) *ListConfigSpec {
 	this := ListConfigSpec{}
+	this.Template = template
 	return &this
 }
 
@@ -94,37 +95,28 @@ func (o *ListConfigWorkflowStep) SetNamespace(v string) *ListConfigWorkflowStep 
 	return o
 }
 
-// GetTemplate returns the Template field value if set, zero value otherwise.
+// GetTemplate returns the Template field value
 func (o *ListConfigWorkflowStep) GetTemplate() string {
-	if o == nil || utils.IsNil(o.Properties.Template) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Properties.Template
+
+	return o.Properties.Template
 }
 
-// GetTemplateOk returns a tuple with the Template field value if set, nil otherwise
+// GetTemplateOk returns a tuple with the Template field value
 // and a boolean to check if the value has been set.
 func (o *ListConfigWorkflowStep) GetTemplateOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Template) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Properties.Template, true
+	return &o.Properties.Template, true
 }
 
-// HasTemplate returns a boolean if a field has been set.
-func (o *ListConfigWorkflowStep) HasTemplate() bool {
-	if o != nil && !utils.IsNil(o.Properties.Template) {
-		return true
-	}
-
-	return false
-}
-
-// SetTemplate gets a reference to the given string and assigns it to the template field.
-// Template:  Specify the template of the config.
+// SetTemplate sets field value
 func (o *ListConfigWorkflowStep) SetTemplate(v string) *ListConfigWorkflowStep {
-	o.Properties.Template = &v
+	o.Properties.Template = v
 	return o
 }
 
@@ -141,9 +133,7 @@ func (o ListConfigSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Namespace) {
 		toSerialize["namespace"] = o.Namespace
 	}
-	if !utils.IsNil(o.Template) {
-		toSerialize["template"] = o.Template
-	}
+	toSerialize["template"] = o.Template
 	return toSerialize, nil
 }
 

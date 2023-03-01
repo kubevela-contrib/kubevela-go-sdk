@@ -31,23 +31,23 @@ type CronTaskSpec struct {
 	// Specify the annotations in the workload
 	Annotations *map[string]string `json:"annotations,omitempty"`
 	// The number of retries before marking this job failed
-	BackoffLimit int32 `json:"backoffLimit"`
+	BackoffLimit *int32 `json:"backoffLimit,omitempty"`
 	// Commands to run in the container
 	Cmd []string `json:"cmd,omitempty"`
 	// Specifies how to treat concurrent executions of a Job
-	ConcurrencyPolicy string `json:"concurrencyPolicy"`
+	ConcurrencyPolicy *string `json:"concurrencyPolicy,omitempty"`
 	// Specify number of tasks to run in parallel +short=c
-	Count int32 `json:"count"`
+	Count *int32 `json:"count,omitempty"`
 	// Number of CPU units for the service, like `0.5` (0.5 CPU core), `1` (1 CPU core)
 	Cpu *string `json:"cpu,omitempty"`
 	// Define arguments by using environment variables
 	Env []Env `json:"env,omitempty"`
 	// The number of failed finished jobs to retain
-	FailedJobsHistoryLimit int32 `json:"failedJobsHistoryLimit"`
+	FailedJobsHistoryLimit *int32 `json:"failedJobsHistoryLimit,omitempty"`
 	// An optional list of hosts and IPs that will be injected into the pod's hosts file
 	HostAliases []HostAliases `json:"hostAliases,omitempty"`
 	// Which image would you like to use for your service +short=i
-	Image string `json:"image"`
+	Image *string `json:"image,omitempty"`
 	// Specify image pull policy for your service
 	ImagePullPolicy *string `json:"imagePullPolicy,omitempty"`
 	// Specify image pull secrets for your service
@@ -59,15 +59,15 @@ type CronTaskSpec struct {
 	Memory         *string      `json:"memory,omitempty"`
 	ReadinessProbe *HealthProbe `json:"readinessProbe,omitempty"`
 	// Define the job restart policy, the value can only be Never or OnFailure. By default, it's Never.
-	Restart string `json:"restart"`
+	Restart *string `json:"restart,omitempty"`
 	// Specify the schedule in Cron format, see https://en.wikipedia.org/wiki/Cron
-	Schedule string `json:"schedule"`
+	Schedule *string `json:"schedule,omitempty"`
 	// Specify deadline in seconds for starting the job if it misses scheduled
 	StartingDeadlineSeconds *int32 `json:"startingDeadlineSeconds,omitempty"`
 	// The number of successful finished jobs to retain
-	SuccessfulJobsHistoryLimit int32 `json:"successfulJobsHistoryLimit"`
+	SuccessfulJobsHistoryLimit *int32 `json:"successfulJobsHistoryLimit,omitempty"`
 	// suspend subsequent executions
-	Suspend bool `json:"suspend"`
+	Suspend *bool `json:"suspend,omitempty"`
 	// Limits the lifetime of a Job that has finished
 	TtlSecondsAfterFinished *int32 `json:"ttlSecondsAfterFinished,omitempty"`
 	// Declare volumes and volumeMounts
@@ -78,17 +78,22 @@ type CronTaskSpec struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCronTaskSpecWith(backoffLimit int32, concurrencyPolicy string, count int32, failedJobsHistoryLimit int32, image string, restart string, schedule string, successfulJobsHistoryLimit int32, suspend bool) *CronTaskSpec {
+func NewCronTaskSpecWith() *CronTaskSpec {
 	this := CronTaskSpec{}
-	this.BackoffLimit = backoffLimit
-	this.ConcurrencyPolicy = concurrencyPolicy
-	this.Count = count
-	this.FailedJobsHistoryLimit = failedJobsHistoryLimit
-	this.Image = image
-	this.Restart = restart
-	this.Schedule = schedule
-	this.SuccessfulJobsHistoryLimit = successfulJobsHistoryLimit
-	this.Suspend = suspend
+	var backoffLimit int32 = 6
+	this.BackoffLimit = &backoffLimit
+	var concurrencyPolicy string = "Allow"
+	this.ConcurrencyPolicy = &concurrencyPolicy
+	var count int32 = 1
+	this.Count = &count
+	var failedJobsHistoryLimit int32 = 1
+	this.FailedJobsHistoryLimit = &failedJobsHistoryLimit
+	var restart string = "Never"
+	this.Restart = &restart
+	var successfulJobsHistoryLimit int32 = 3
+	this.SuccessfulJobsHistoryLimit = &successfulJobsHistoryLimit
+	var suspend bool = false
+	this.Suspend = &suspend
 	return &this
 }
 
@@ -98,19 +103,19 @@ func NewCronTaskSpecWith(backoffLimit int32, concurrencyPolicy string, count int
 func NewCronTaskSpec() *CronTaskSpec {
 	this := CronTaskSpec{}
 	var backoffLimit int32 = 6
-	this.BackoffLimit = backoffLimit
+	this.BackoffLimit = &backoffLimit
 	var concurrencyPolicy string = "Allow"
-	this.ConcurrencyPolicy = concurrencyPolicy
+	this.ConcurrencyPolicy = &concurrencyPolicy
 	var count int32 = 1
-	this.Count = count
+	this.Count = &count
 	var failedJobsHistoryLimit int32 = 1
-	this.FailedJobsHistoryLimit = failedJobsHistoryLimit
+	this.FailedJobsHistoryLimit = &failedJobsHistoryLimit
 	var restart string = "Never"
-	this.Restart = restart
+	this.Restart = &restart
 	var successfulJobsHistoryLimit int32 = 3
-	this.SuccessfulJobsHistoryLimit = successfulJobsHistoryLimit
+	this.SuccessfulJobsHistoryLimit = &successfulJobsHistoryLimit
 	var suspend bool = false
-	this.Suspend = suspend
+	this.Suspend = &suspend
 	return &this
 }
 
@@ -192,28 +197,37 @@ func (o *CronTaskComponent) SetAnnotations(v map[string]string) *CronTaskCompone
 	return o
 }
 
-// GetBackoffLimit returns the BackoffLimit field value
+// GetBackoffLimit returns the BackoffLimit field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetBackoffLimit() int32 {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.BackoffLimit) {
 		var ret int32
 		return ret
 	}
-
-	return o.Properties.BackoffLimit
+	return *o.Properties.BackoffLimit
 }
 
-// GetBackoffLimitOk returns a tuple with the BackoffLimit field value
+// GetBackoffLimitOk returns a tuple with the BackoffLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetBackoffLimitOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.BackoffLimit) {
 		return nil, false
 	}
-	return &o.Properties.BackoffLimit, true
+	return o.Properties.BackoffLimit, true
 }
 
-// SetBackoffLimit sets field value
+// HasBackoffLimit returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasBackoffLimit() bool {
+	if o != nil && !utils.IsNil(o.Properties.BackoffLimit) {
+		return true
+	}
+
+	return false
+}
+
+// SetBackoffLimit gets a reference to the given int32 and assigns it to the backoffLimit field.
+// BackoffLimit:  The number of retries before marking this job failed
 func (o *CronTaskComponent) SetBackoffLimit(v int32) *CronTaskComponent {
-	o.Properties.BackoffLimit = v
+	o.Properties.BackoffLimit = &v
 	return o
 }
 
@@ -251,53 +265,71 @@ func (o *CronTaskComponent) SetCmd(v []string) *CronTaskComponent {
 	return o
 }
 
-// GetConcurrencyPolicy returns the ConcurrencyPolicy field value
+// GetConcurrencyPolicy returns the ConcurrencyPolicy field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetConcurrencyPolicy() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.ConcurrencyPolicy) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.ConcurrencyPolicy
+	return *o.Properties.ConcurrencyPolicy
 }
 
-// GetConcurrencyPolicyOk returns a tuple with the ConcurrencyPolicy field value
+// GetConcurrencyPolicyOk returns a tuple with the ConcurrencyPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetConcurrencyPolicyOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.ConcurrencyPolicy) {
 		return nil, false
 	}
-	return &o.Properties.ConcurrencyPolicy, true
+	return o.Properties.ConcurrencyPolicy, true
 }
 
-// SetConcurrencyPolicy sets field value
+// HasConcurrencyPolicy returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasConcurrencyPolicy() bool {
+	if o != nil && !utils.IsNil(o.Properties.ConcurrencyPolicy) {
+		return true
+	}
+
+	return false
+}
+
+// SetConcurrencyPolicy gets a reference to the given string and assigns it to the concurrencyPolicy field.
+// ConcurrencyPolicy:  Specifies how to treat concurrent executions of a Job
 func (o *CronTaskComponent) SetConcurrencyPolicy(v string) *CronTaskComponent {
-	o.Properties.ConcurrencyPolicy = v
+	o.Properties.ConcurrencyPolicy = &v
 	return o
 }
 
-// GetCount returns the Count field value
+// GetCount returns the Count field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetCount() int32 {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Count) {
 		var ret int32
 		return ret
 	}
-
-	return o.Properties.Count
+	return *o.Properties.Count
 }
 
-// GetCountOk returns a tuple with the Count field value
+// GetCountOk returns a tuple with the Count field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetCountOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Count) {
 		return nil, false
 	}
-	return &o.Properties.Count, true
+	return o.Properties.Count, true
 }
 
-// SetCount sets field value
+// HasCount returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasCount() bool {
+	if o != nil && !utils.IsNil(o.Properties.Count) {
+		return true
+	}
+
+	return false
+}
+
+// SetCount gets a reference to the given int32 and assigns it to the count field.
+// Count:  Specify number of tasks to run in parallel +short=c
 func (o *CronTaskComponent) SetCount(v int32) *CronTaskComponent {
-	o.Properties.Count = v
+	o.Properties.Count = &v
 	return o
 }
 
@@ -369,28 +401,37 @@ func (o *CronTaskComponent) SetEnv(v []Env) *CronTaskComponent {
 	return o
 }
 
-// GetFailedJobsHistoryLimit returns the FailedJobsHistoryLimit field value
+// GetFailedJobsHistoryLimit returns the FailedJobsHistoryLimit field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetFailedJobsHistoryLimit() int32 {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.FailedJobsHistoryLimit) {
 		var ret int32
 		return ret
 	}
-
-	return o.Properties.FailedJobsHistoryLimit
+	return *o.Properties.FailedJobsHistoryLimit
 }
 
-// GetFailedJobsHistoryLimitOk returns a tuple with the FailedJobsHistoryLimit field value
+// GetFailedJobsHistoryLimitOk returns a tuple with the FailedJobsHistoryLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetFailedJobsHistoryLimitOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.FailedJobsHistoryLimit) {
 		return nil, false
 	}
-	return &o.Properties.FailedJobsHistoryLimit, true
+	return o.Properties.FailedJobsHistoryLimit, true
 }
 
-// SetFailedJobsHistoryLimit sets field value
+// HasFailedJobsHistoryLimit returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasFailedJobsHistoryLimit() bool {
+	if o != nil && !utils.IsNil(o.Properties.FailedJobsHistoryLimit) {
+		return true
+	}
+
+	return false
+}
+
+// SetFailedJobsHistoryLimit gets a reference to the given int32 and assigns it to the failedJobsHistoryLimit field.
+// FailedJobsHistoryLimit:  The number of failed finished jobs to retain
 func (o *CronTaskComponent) SetFailedJobsHistoryLimit(v int32) *CronTaskComponent {
-	o.Properties.FailedJobsHistoryLimit = v
+	o.Properties.FailedJobsHistoryLimit = &v
 	return o
 }
 
@@ -428,28 +469,37 @@ func (o *CronTaskComponent) SetHostAliases(v []HostAliases) *CronTaskComponent {
 	return o
 }
 
-// GetImage returns the Image field value
+// GetImage returns the Image field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetImage() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Image) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Image
+	return *o.Properties.Image
 }
 
-// GetImageOk returns a tuple with the Image field value
+// GetImageOk returns a tuple with the Image field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetImageOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Image) {
 		return nil, false
 	}
-	return &o.Properties.Image, true
+	return o.Properties.Image, true
 }
 
-// SetImage sets field value
+// HasImage returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasImage() bool {
+	if o != nil && !utils.IsNil(o.Properties.Image) {
+		return true
+	}
+
+	return false
+}
+
+// SetImage gets a reference to the given string and assigns it to the image field.
+// Image:  Which image would you like to use for your service +short=i
 func (o *CronTaskComponent) SetImage(v string) *CronTaskComponent {
-	o.Properties.Image = v
+	o.Properties.Image = &v
 	return o
 }
 
@@ -657,53 +707,71 @@ func (o *CronTaskComponent) SetReadinessProbe(v HealthProbe) *CronTaskComponent 
 	return o
 }
 
-// GetRestart returns the Restart field value
+// GetRestart returns the Restart field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetRestart() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Restart) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Restart
+	return *o.Properties.Restart
 }
 
-// GetRestartOk returns a tuple with the Restart field value
+// GetRestartOk returns a tuple with the Restart field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetRestartOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Restart) {
 		return nil, false
 	}
-	return &o.Properties.Restart, true
+	return o.Properties.Restart, true
 }
 
-// SetRestart sets field value
+// HasRestart returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasRestart() bool {
+	if o != nil && !utils.IsNil(o.Properties.Restart) {
+		return true
+	}
+
+	return false
+}
+
+// SetRestart gets a reference to the given string and assigns it to the restart field.
+// Restart:  Define the job restart policy, the value can only be Never or OnFailure. By default, it's Never.
 func (o *CronTaskComponent) SetRestart(v string) *CronTaskComponent {
-	o.Properties.Restart = v
+	o.Properties.Restart = &v
 	return o
 }
 
-// GetSchedule returns the Schedule field value
+// GetSchedule returns the Schedule field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetSchedule() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Schedule) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Schedule
+	return *o.Properties.Schedule
 }
 
-// GetScheduleOk returns a tuple with the Schedule field value
+// GetScheduleOk returns a tuple with the Schedule field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetScheduleOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Schedule) {
 		return nil, false
 	}
-	return &o.Properties.Schedule, true
+	return o.Properties.Schedule, true
 }
 
-// SetSchedule sets field value
+// HasSchedule returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasSchedule() bool {
+	if o != nil && !utils.IsNil(o.Properties.Schedule) {
+		return true
+	}
+
+	return false
+}
+
+// SetSchedule gets a reference to the given string and assigns it to the schedule field.
+// Schedule:  Specify the schedule in Cron format, see https://en.wikipedia.org/wiki/Cron
 func (o *CronTaskComponent) SetSchedule(v string) *CronTaskComponent {
-	o.Properties.Schedule = v
+	o.Properties.Schedule = &v
 	return o
 }
 
@@ -741,53 +809,71 @@ func (o *CronTaskComponent) SetStartingDeadlineSeconds(v int32) *CronTaskCompone
 	return o
 }
 
-// GetSuccessfulJobsHistoryLimit returns the SuccessfulJobsHistoryLimit field value
+// GetSuccessfulJobsHistoryLimit returns the SuccessfulJobsHistoryLimit field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetSuccessfulJobsHistoryLimit() int32 {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.SuccessfulJobsHistoryLimit) {
 		var ret int32
 		return ret
 	}
-
-	return o.Properties.SuccessfulJobsHistoryLimit
+	return *o.Properties.SuccessfulJobsHistoryLimit
 }
 
-// GetSuccessfulJobsHistoryLimitOk returns a tuple with the SuccessfulJobsHistoryLimit field value
+// GetSuccessfulJobsHistoryLimitOk returns a tuple with the SuccessfulJobsHistoryLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetSuccessfulJobsHistoryLimitOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.SuccessfulJobsHistoryLimit) {
 		return nil, false
 	}
-	return &o.Properties.SuccessfulJobsHistoryLimit, true
+	return o.Properties.SuccessfulJobsHistoryLimit, true
 }
 
-// SetSuccessfulJobsHistoryLimit sets field value
+// HasSuccessfulJobsHistoryLimit returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasSuccessfulJobsHistoryLimit() bool {
+	if o != nil && !utils.IsNil(o.Properties.SuccessfulJobsHistoryLimit) {
+		return true
+	}
+
+	return false
+}
+
+// SetSuccessfulJobsHistoryLimit gets a reference to the given int32 and assigns it to the successfulJobsHistoryLimit field.
+// SuccessfulJobsHistoryLimit:  The number of successful finished jobs to retain
 func (o *CronTaskComponent) SetSuccessfulJobsHistoryLimit(v int32) *CronTaskComponent {
-	o.Properties.SuccessfulJobsHistoryLimit = v
+	o.Properties.SuccessfulJobsHistoryLimit = &v
 	return o
 }
 
-// GetSuspend returns the Suspend field value
+// GetSuspend returns the Suspend field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetSuspend() bool {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Suspend) {
 		var ret bool
 		return ret
 	}
-
-	return o.Properties.Suspend
+	return *o.Properties.Suspend
 }
 
-// GetSuspendOk returns a tuple with the Suspend field value
+// GetSuspendOk returns a tuple with the Suspend field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetSuspendOk() (*bool, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Suspend) {
 		return nil, false
 	}
-	return &o.Properties.Suspend, true
+	return o.Properties.Suspend, true
 }
 
-// SetSuspend sets field value
+// HasSuspend returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasSuspend() bool {
+	if o != nil && !utils.IsNil(o.Properties.Suspend) {
+		return true
+	}
+
+	return false
+}
+
+// SetSuspend gets a reference to the given bool and assigns it to the suspend field.
+// Suspend:  suspend subsequent executions
 func (o *CronTaskComponent) SetSuspend(v bool) *CronTaskComponent {
-	o.Properties.Suspend = v
+	o.Properties.Suspend = &v
 	return o
 }
 
@@ -875,23 +961,33 @@ func (o CronTaskSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Annotations) {
 		toSerialize["annotations"] = o.Annotations
 	}
-	toSerialize["backoffLimit"] = o.BackoffLimit
+	if !utils.IsNil(o.BackoffLimit) {
+		toSerialize["backoffLimit"] = o.BackoffLimit
+	}
 	if !utils.IsNil(o.Cmd) {
 		toSerialize["cmd"] = o.Cmd
 	}
-	toSerialize["concurrencyPolicy"] = o.ConcurrencyPolicy
-	toSerialize["count"] = o.Count
+	if !utils.IsNil(o.ConcurrencyPolicy) {
+		toSerialize["concurrencyPolicy"] = o.ConcurrencyPolicy
+	}
+	if !utils.IsNil(o.Count) {
+		toSerialize["count"] = o.Count
+	}
 	if !utils.IsNil(o.Cpu) {
 		toSerialize["cpu"] = o.Cpu
 	}
 	if !utils.IsNil(o.Env) {
 		toSerialize["env"] = o.Env
 	}
-	toSerialize["failedJobsHistoryLimit"] = o.FailedJobsHistoryLimit
+	if !utils.IsNil(o.FailedJobsHistoryLimit) {
+		toSerialize["failedJobsHistoryLimit"] = o.FailedJobsHistoryLimit
+	}
 	if !utils.IsNil(o.HostAliases) {
 		toSerialize["hostAliases"] = o.HostAliases
 	}
-	toSerialize["image"] = o.Image
+	if !utils.IsNil(o.Image) {
+		toSerialize["image"] = o.Image
+	}
 	if !utils.IsNil(o.ImagePullPolicy) {
 		toSerialize["imagePullPolicy"] = o.ImagePullPolicy
 	}
@@ -910,13 +1006,21 @@ func (o CronTaskSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.ReadinessProbe) {
 		toSerialize["readinessProbe"] = o.ReadinessProbe
 	}
-	toSerialize["restart"] = o.Restart
-	toSerialize["schedule"] = o.Schedule
+	if !utils.IsNil(o.Restart) {
+		toSerialize["restart"] = o.Restart
+	}
+	if !utils.IsNil(o.Schedule) {
+		toSerialize["schedule"] = o.Schedule
+	}
 	if !utils.IsNil(o.StartingDeadlineSeconds) {
 		toSerialize["startingDeadlineSeconds"] = o.StartingDeadlineSeconds
 	}
-	toSerialize["successfulJobsHistoryLimit"] = o.SuccessfulJobsHistoryLimit
-	toSerialize["suspend"] = o.Suspend
+	if !utils.IsNil(o.SuccessfulJobsHistoryLimit) {
+		toSerialize["successfulJobsHistoryLimit"] = o.SuccessfulJobsHistoryLimit
+	}
+	if !utils.IsNil(o.Suspend) {
+		toSerialize["suspend"] = o.Suspend
+	}
 	if !utils.IsNil(o.TtlSecondsAfterFinished) {
 		toSerialize["ttlSecondsAfterFinished"] = o.TtlSecondsAfterFinished
 	}

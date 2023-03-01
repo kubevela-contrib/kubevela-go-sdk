@@ -27,22 +27,21 @@ var _ utils.MappedNullable = &ExposeSpec{}
 // ExposeSpec struct for ExposeSpec
 type ExposeSpec struct {
 	// Specify the annotaions of the exposed service
-	Annotations map[string]string `json:"annotations"`
+	Annotations *map[string]string `json:"annotations,omitempty"`
 	// Specify the exposion ports
-	Port []int32 `json:"port"`
+	Port []int32 `json:"port,omitempty"`
 	// Specify what kind of Service you want. options: \"ClusterIP\",\"NodePort\",\"LoadBalancer\",\"ExternalName\"
-	Type string `json:"type"`
+	Type *string `json:"type,omitempty"`
 }
 
 // NewExposeSpecWith instantiates a new ExposeSpec object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewExposeSpecWith(annotations map[string]string, port []int32, type_ string) *ExposeSpec {
+func NewExposeSpecWith() *ExposeSpec {
 	this := ExposeSpec{}
-	this.Annotations = annotations
-	this.Port = port
-	this.Type = type_
+	var type_ string = "ClusterIP"
+	this.Type = &type_
 	return &this
 }
 
@@ -52,7 +51,7 @@ func NewExposeSpecWith(annotations map[string]string, port []int32, type_ string
 func NewExposeSpec() *ExposeSpec {
 	this := ExposeSpec{}
 	var type_ string = "ClusterIP"
-	this.Type = type_
+	this.Type = &type_
 	return &this
 }
 
@@ -66,78 +65,105 @@ func NewExposeSpecList(ps ...*ExposeSpec) []ExposeSpec {
 	return objs
 }
 
-// GetAnnotations returns the Annotations field value
+// GetAnnotations returns the Annotations field value if set, zero value otherwise.
 func (o *ExposeTrait) GetAnnotations() map[string]string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Annotations) {
 		var ret map[string]string
 		return ret
 	}
-
-	return o.Properties.Annotations
+	return *o.Properties.Annotations
 }
 
-// GetAnnotationsOk returns a tuple with the Annotations field value
+// GetAnnotationsOk returns a tuple with the Annotations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ExposeTrait) GetAnnotationsOk() (*map[string]string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Annotations) {
 		return nil, false
 	}
-	return &o.Properties.Annotations, true
+	return o.Properties.Annotations, true
 }
 
-// SetAnnotations sets field value
+// HasAnnotations returns a boolean if a field has been set.
+func (o *ExposeTrait) HasAnnotations() bool {
+	if o != nil && !utils.IsNil(o.Properties.Annotations) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnnotations gets a reference to the given map[string]string and assigns it to the annotations field.
+// Annotations:  Specify the annotaions of the exposed service
 func (o *ExposeTrait) SetAnnotations(v map[string]string) *ExposeTrait {
-	o.Properties.Annotations = v
+	o.Properties.Annotations = &v
 	return o
 }
 
-// GetPort returns the Port field value
+// GetPort returns the Port field value if set, zero value otherwise.
 func (o *ExposeTrait) GetPort() []int32 {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Port) {
 		var ret []int32
 		return ret
 	}
-
 	return o.Properties.Port
 }
 
-// GetPortOk returns a tuple with the Port field value
+// GetPortOk returns a tuple with the Port field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ExposeTrait) GetPortOk() ([]int32, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Port) {
 		return nil, false
 	}
 	return o.Properties.Port, true
 }
 
-// SetPort sets field value
+// HasPort returns a boolean if a field has been set.
+func (o *ExposeTrait) HasPort() bool {
+	if o != nil && !utils.IsNil(o.Properties.Port) {
+		return true
+	}
+
+	return false
+}
+
+// SetPort gets a reference to the given []int32 and assigns it to the port field.
+// Port:  Specify the exposion ports
 func (o *ExposeTrait) SetPort(v []int32) *ExposeTrait {
 	o.Properties.Port = v
 	return o
 }
 
-// GetType returns the Type field value
+// GetType returns the Type field value if set, zero value otherwise.
 func (o *ExposeTrait) GetType() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Type) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Type
+	return *o.Properties.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ExposeTrait) GetTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Type) {
 		return nil, false
 	}
-	return &o.Properties.Type, true
+	return o.Properties.Type, true
 }
 
-// SetType sets field value
+// HasType returns a boolean if a field has been set.
+func (o *ExposeTrait) HasType() bool {
+	if o != nil && !utils.IsNil(o.Properties.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the type_ field.
+// Type:  Specify what kind of Service you want. options: \"ClusterIP\",\"NodePort\",\"LoadBalancer\",\"ExternalName\"
 func (o *ExposeTrait) SetType(v string) *ExposeTrait {
-	o.Properties.Type = v
+	o.Properties.Type = &v
 	return o
 }
 
@@ -151,9 +177,15 @@ func (o ExposeSpec) MarshalJSON() ([]byte, error) {
 
 func (o ExposeSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["annotations"] = o.Annotations
-	toSerialize["port"] = o.Port
-	toSerialize["type"] = o.Type
+	if !utils.IsNil(o.Annotations) {
+		toSerialize["annotations"] = o.Annotations
+	}
+	if !utils.IsNil(o.Port) {
+		toSerialize["port"] = o.Port
+	}
+	if !utils.IsNil(o.Type) {
+		toSerialize["type"] = o.Type
+	}
 	return toSerialize, nil
 }
 

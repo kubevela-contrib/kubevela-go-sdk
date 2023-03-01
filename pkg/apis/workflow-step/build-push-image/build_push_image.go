@@ -29,31 +29,32 @@ var _ utils.MappedNullable = &BuildPushImageSpec{}
 type BuildPushImageSpec struct {
 	// Specify the build args
 	BuildArgs   []string     `json:"buildArgs,omitempty"`
-	Context     Context      `json:"context"`
+	Context     *Context     `json:"context,omitempty"`
 	Credentials *Credentials `json:"credentials,omitempty"`
 	// Specify the dockerfile
-	Dockerfile string `json:"dockerfile"`
+	Dockerfile *string `json:"dockerfile,omitempty"`
 	// Specify the image
-	Image string `json:"image"`
+	Image *string `json:"image,omitempty"`
 	// Specify the kaniko executor image, default to oamdev/kaniko-executor:v1.9.1
-	KanikoExecutor string `json:"kanikoExecutor"`
+	KanikoExecutor *string `json:"kanikoExecutor,omitempty"`
 	// Specify the platform to build
 	Platform *string `json:"platform,omitempty"`
 	// Specify the verbosity level
-	Verbosity string `json:"verbosity"`
+	Verbosity *string `json:"verbosity,omitempty"`
 }
 
 // NewBuildPushImageSpecWith instantiates a new BuildPushImageSpec object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBuildPushImageSpecWith(context Context, dockerfile string, image string, kanikoExecutor string, verbosity string) *BuildPushImageSpec {
+func NewBuildPushImageSpecWith() *BuildPushImageSpec {
 	this := BuildPushImageSpec{}
-	this.Context = context
-	this.Dockerfile = dockerfile
-	this.Image = image
-	this.KanikoExecutor = kanikoExecutor
-	this.Verbosity = verbosity
+	var dockerfile string = "./Dockerfile"
+	this.Dockerfile = &dockerfile
+	var kanikoExecutor string = "oamdev/kaniko-executor:v1.9.1"
+	this.KanikoExecutor = &kanikoExecutor
+	var verbosity string = "info"
+	this.Verbosity = &verbosity
 	return &this
 }
 
@@ -63,11 +64,11 @@ func NewBuildPushImageSpecWith(context Context, dockerfile string, image string,
 func NewBuildPushImageSpec() *BuildPushImageSpec {
 	this := BuildPushImageSpec{}
 	var dockerfile string = "./Dockerfile"
-	this.Dockerfile = dockerfile
+	this.Dockerfile = &dockerfile
 	var kanikoExecutor string = "oamdev/kaniko-executor:v1.9.1"
-	this.KanikoExecutor = kanikoExecutor
+	this.KanikoExecutor = &kanikoExecutor
 	var verbosity string = "info"
-	this.Verbosity = verbosity
+	this.Verbosity = &verbosity
 	return &this
 }
 
@@ -115,28 +116,37 @@ func (o *BuildPushImageWorkflowStep) SetBuildArgs(v []string) *BuildPushImageWor
 	return o
 }
 
-// GetContext returns the Context field value
+// GetContext returns the Context field value if set, zero value otherwise.
 func (o *BuildPushImageWorkflowStep) GetContext() Context {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Context) {
 		var ret Context
 		return ret
 	}
-
-	return o.Properties.Context
+	return *o.Properties.Context
 }
 
-// GetContextOk returns a tuple with the Context field value
+// GetContextOk returns a tuple with the Context field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BuildPushImageWorkflowStep) GetContextOk() (*Context, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Context) {
 		return nil, false
 	}
-	return &o.Properties.Context, true
+	return o.Properties.Context, true
 }
 
-// SetContext sets field value
+// HasContext returns a boolean if a field has been set.
+func (o *BuildPushImageWorkflowStep) HasContext() bool {
+	if o != nil && !utils.IsNil(o.Properties.Context) {
+		return true
+	}
+
+	return false
+}
+
+// SetContext gets a reference to the given Context and assigns it to the context field.
+// Context:
 func (o *BuildPushImageWorkflowStep) SetContext(v Context) *BuildPushImageWorkflowStep {
-	o.Properties.Context = v
+	o.Properties.Context = &v
 	return o
 }
 
@@ -174,78 +184,105 @@ func (o *BuildPushImageWorkflowStep) SetCredentials(v Credentials) *BuildPushIma
 	return o
 }
 
-// GetDockerfile returns the Dockerfile field value
+// GetDockerfile returns the Dockerfile field value if set, zero value otherwise.
 func (o *BuildPushImageWorkflowStep) GetDockerfile() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Dockerfile) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Dockerfile
+	return *o.Properties.Dockerfile
 }
 
-// GetDockerfileOk returns a tuple with the Dockerfile field value
+// GetDockerfileOk returns a tuple with the Dockerfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BuildPushImageWorkflowStep) GetDockerfileOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Dockerfile) {
 		return nil, false
 	}
-	return &o.Properties.Dockerfile, true
+	return o.Properties.Dockerfile, true
 }
 
-// SetDockerfile sets field value
+// HasDockerfile returns a boolean if a field has been set.
+func (o *BuildPushImageWorkflowStep) HasDockerfile() bool {
+	if o != nil && !utils.IsNil(o.Properties.Dockerfile) {
+		return true
+	}
+
+	return false
+}
+
+// SetDockerfile gets a reference to the given string and assigns it to the dockerfile field.
+// Dockerfile:  Specify the dockerfile
 func (o *BuildPushImageWorkflowStep) SetDockerfile(v string) *BuildPushImageWorkflowStep {
-	o.Properties.Dockerfile = v
+	o.Properties.Dockerfile = &v
 	return o
 }
 
-// GetImage returns the Image field value
+// GetImage returns the Image field value if set, zero value otherwise.
 func (o *BuildPushImageWorkflowStep) GetImage() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Image) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Image
+	return *o.Properties.Image
 }
 
-// GetImageOk returns a tuple with the Image field value
+// GetImageOk returns a tuple with the Image field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BuildPushImageWorkflowStep) GetImageOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Image) {
 		return nil, false
 	}
-	return &o.Properties.Image, true
+	return o.Properties.Image, true
 }
 
-// SetImage sets field value
+// HasImage returns a boolean if a field has been set.
+func (o *BuildPushImageWorkflowStep) HasImage() bool {
+	if o != nil && !utils.IsNil(o.Properties.Image) {
+		return true
+	}
+
+	return false
+}
+
+// SetImage gets a reference to the given string and assigns it to the image field.
+// Image:  Specify the image
 func (o *BuildPushImageWorkflowStep) SetImage(v string) *BuildPushImageWorkflowStep {
-	o.Properties.Image = v
+	o.Properties.Image = &v
 	return o
 }
 
-// GetKanikoExecutor returns the KanikoExecutor field value
+// GetKanikoExecutor returns the KanikoExecutor field value if set, zero value otherwise.
 func (o *BuildPushImageWorkflowStep) GetKanikoExecutor() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.KanikoExecutor) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.KanikoExecutor
+	return *o.Properties.KanikoExecutor
 }
 
-// GetKanikoExecutorOk returns a tuple with the KanikoExecutor field value
+// GetKanikoExecutorOk returns a tuple with the KanikoExecutor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BuildPushImageWorkflowStep) GetKanikoExecutorOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.KanikoExecutor) {
 		return nil, false
 	}
-	return &o.Properties.KanikoExecutor, true
+	return o.Properties.KanikoExecutor, true
 }
 
-// SetKanikoExecutor sets field value
+// HasKanikoExecutor returns a boolean if a field has been set.
+func (o *BuildPushImageWorkflowStep) HasKanikoExecutor() bool {
+	if o != nil && !utils.IsNil(o.Properties.KanikoExecutor) {
+		return true
+	}
+
+	return false
+}
+
+// SetKanikoExecutor gets a reference to the given string and assigns it to the kanikoExecutor field.
+// KanikoExecutor:  Specify the kaniko executor image, default to oamdev/kaniko-executor:v1.9.1
 func (o *BuildPushImageWorkflowStep) SetKanikoExecutor(v string) *BuildPushImageWorkflowStep {
-	o.Properties.KanikoExecutor = v
+	o.Properties.KanikoExecutor = &v
 	return o
 }
 
@@ -283,28 +320,37 @@ func (o *BuildPushImageWorkflowStep) SetPlatform(v string) *BuildPushImageWorkfl
 	return o
 }
 
-// GetVerbosity returns the Verbosity field value
+// GetVerbosity returns the Verbosity field value if set, zero value otherwise.
 func (o *BuildPushImageWorkflowStep) GetVerbosity() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Verbosity) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Verbosity
+	return *o.Properties.Verbosity
 }
 
-// GetVerbosityOk returns a tuple with the Verbosity field value
+// GetVerbosityOk returns a tuple with the Verbosity field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BuildPushImageWorkflowStep) GetVerbosityOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Verbosity) {
 		return nil, false
 	}
-	return &o.Properties.Verbosity, true
+	return o.Properties.Verbosity, true
 }
 
-// SetVerbosity sets field value
+// HasVerbosity returns a boolean if a field has been set.
+func (o *BuildPushImageWorkflowStep) HasVerbosity() bool {
+	if o != nil && !utils.IsNil(o.Properties.Verbosity) {
+		return true
+	}
+
+	return false
+}
+
+// SetVerbosity gets a reference to the given string and assigns it to the verbosity field.
+// Verbosity:  Specify the verbosity level
 func (o *BuildPushImageWorkflowStep) SetVerbosity(v string) *BuildPushImageWorkflowStep {
-	o.Properties.Verbosity = v
+	o.Properties.Verbosity = &v
 	return o
 }
 
@@ -321,17 +367,27 @@ func (o BuildPushImageSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.BuildArgs) {
 		toSerialize["buildArgs"] = o.BuildArgs
 	}
-	toSerialize["context"] = o.Context
+	if !utils.IsNil(o.Context) {
+		toSerialize["context"] = o.Context
+	}
 	if !utils.IsNil(o.Credentials) {
 		toSerialize["credentials"] = o.Credentials
 	}
-	toSerialize["dockerfile"] = o.Dockerfile
-	toSerialize["image"] = o.Image
-	toSerialize["kanikoExecutor"] = o.KanikoExecutor
+	if !utils.IsNil(o.Dockerfile) {
+		toSerialize["dockerfile"] = o.Dockerfile
+	}
+	if !utils.IsNil(o.Image) {
+		toSerialize["image"] = o.Image
+	}
+	if !utils.IsNil(o.KanikoExecutor) {
+		toSerialize["kanikoExecutor"] = o.KanikoExecutor
+	}
 	if !utils.IsNil(o.Platform) {
 		toSerialize["platform"] = o.Platform
 	}
-	toSerialize["verbosity"] = o.Verbosity
+	if !utils.IsNil(o.Verbosity) {
+		toSerialize["verbosity"] = o.Verbosity
+	}
 	return toSerialize, nil
 }
 
