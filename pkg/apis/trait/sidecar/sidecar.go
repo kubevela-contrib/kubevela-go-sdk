@@ -33,10 +33,10 @@ type SidecarSpec struct {
 	// Specify the env in the sidecar
 	Env []Env `json:"env,omitempty"`
 	// Specify the image of sidecar container
-	Image         string       `json:"image"`
+	Image         *string      `json:"image,omitempty"`
 	LivenessProbe *HealthProbe `json:"livenessProbe,omitempty"`
 	// Specify the name of sidecar container
-	Name           string       `json:"name"`
+	Name           *string      `json:"name,omitempty"`
 	ReadinessProbe *HealthProbe `json:"readinessProbe,omitempty"`
 	// Specify the shared volume path
 	Volumes []Volumes `json:"volumes,omitempty"`
@@ -46,10 +46,8 @@ type SidecarSpec struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSidecarSpecWith(image string, name string) *SidecarSpec {
+func NewSidecarSpecWith() *SidecarSpec {
 	this := SidecarSpec{}
-	this.Image = image
-	this.Name = name
 	return &this
 }
 
@@ -173,28 +171,37 @@ func (o *SidecarTrait) SetEnv(v []Env) *SidecarTrait {
 	return o
 }
 
-// GetImage returns the Image field value
+// GetImage returns the Image field value if set, zero value otherwise.
 func (o *SidecarTrait) GetImage() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Image) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Image
+	return *o.Properties.Image
 }
 
-// GetImageOk returns a tuple with the Image field value
+// GetImageOk returns a tuple with the Image field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SidecarTrait) GetImageOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Image) {
 		return nil, false
 	}
-	return &o.Properties.Image, true
+	return o.Properties.Image, true
 }
 
-// SetImage sets field value
+// HasImage returns a boolean if a field has been set.
+func (o *SidecarTrait) HasImage() bool {
+	if o != nil && !utils.IsNil(o.Properties.Image) {
+		return true
+	}
+
+	return false
+}
+
+// SetImage gets a reference to the given string and assigns it to the image field.
+// Image:  Specify the image of sidecar container
 func (o *SidecarTrait) SetImage(v string) *SidecarTrait {
-	o.Properties.Image = v
+	o.Properties.Image = &v
 	return o
 }
 
@@ -232,28 +239,37 @@ func (o *SidecarTrait) SetLivenessProbe(v HealthProbe) *SidecarTrait {
 	return o
 }
 
-// GetName returns the Name field value
+// GetName returns the Name field value if set, zero value otherwise.
 func (o *SidecarTrait) GetName() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Name) {
 		var ret string
 		return ret
 	}
-
-	return o.Properties.Name
+	return *o.Properties.Name
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SidecarTrait) GetNameOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Name) {
 		return nil, false
 	}
-	return &o.Properties.Name, true
+	return o.Properties.Name, true
 }
 
-// SetName sets field value
+// HasName returns a boolean if a field has been set.
+func (o *SidecarTrait) HasName() bool {
+	if o != nil && !utils.IsNil(o.Properties.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the name field.
+// Name:  Specify the name of sidecar container
 func (o *SidecarTrait) SetName(v string) *SidecarTrait {
-	o.Properties.Name = v
+	o.Properties.Name = &v
 	return o
 }
 
@@ -344,11 +360,15 @@ func (o SidecarSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Env) {
 		toSerialize["env"] = o.Env
 	}
-	toSerialize["image"] = o.Image
+	if !utils.IsNil(o.Image) {
+		toSerialize["image"] = o.Image
+	}
 	if !utils.IsNil(o.LivenessProbe) {
 		toSerialize["livenessProbe"] = o.LivenessProbe
 	}
-	toSerialize["name"] = o.Name
+	if !utils.IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
 	if !utils.IsNil(o.ReadinessProbe) {
 		toSerialize["readinessProbe"] = o.ReadinessProbe
 	}

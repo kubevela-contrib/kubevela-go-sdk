@@ -27,7 +27,7 @@ var _ utils.MappedNullable = &OverrideSpec{}
 // OverrideSpec struct for OverrideSpec
 type OverrideSpec struct {
 	// Specify the overridden component configuration.
-	Components []PatchParams `json:"components"`
+	Components []PatchParams `json:"components,omitempty"`
 	// Specify a list of component names to use, if empty, all components will be selected.
 	Selector []string `json:"selector,omitempty"`
 }
@@ -36,9 +36,8 @@ type OverrideSpec struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOverrideSpecWith(components []PatchParams) *OverrideSpec {
+func NewOverrideSpecWith() *OverrideSpec {
 	this := OverrideSpec{}
-	this.Components = components
 	return &this
 }
 
@@ -60,26 +59,35 @@ func NewOverrideSpecList(ps ...*OverrideSpec) []OverrideSpec {
 	return objs
 }
 
-// GetComponents returns the Components field value
+// GetComponents returns the Components field value if set, zero value otherwise.
 func (o *OverridePolicy) GetComponents() []PatchParams {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Components) {
 		var ret []PatchParams
 		return ret
 	}
-
 	return o.Properties.Components
 }
 
-// GetComponentsOk returns a tuple with the Components field value
+// GetComponentsOk returns a tuple with the Components field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OverridePolicy) GetComponentsOk() ([]PatchParams, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Components) {
 		return nil, false
 	}
 	return o.Properties.Components, true
 }
 
-// SetComponents sets field value
+// HasComponents returns a boolean if a field has been set.
+func (o *OverridePolicy) HasComponents() bool {
+	if o != nil && !utils.IsNil(o.Properties.Components) {
+		return true
+	}
+
+	return false
+}
+
+// SetComponents gets a reference to the given []PatchParams and assigns it to the components field.
+// Components:  Specify the overridden component configuration.
 func (o *OverridePolicy) SetComponents(v []PatchParams) *OverridePolicy {
 	o.Properties.Components = v
 	return o
@@ -129,7 +137,9 @@ func (o OverrideSpec) MarshalJSON() ([]byte, error) {
 
 func (o OverrideSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["components"] = o.Components
+	if !utils.IsNil(o.Components) {
+		toSerialize["components"] = o.Components
+	}
 	if !utils.IsNil(o.Selector) {
 		toSerialize["selector"] = o.Selector
 	}

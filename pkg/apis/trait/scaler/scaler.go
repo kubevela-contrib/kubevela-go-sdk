@@ -27,16 +27,17 @@ var _ utils.MappedNullable = &ScalerSpec{}
 // ScalerSpec struct for ScalerSpec
 type ScalerSpec struct {
 	// Specify the number of workload
-	Replicas int32 `json:"replicas"`
+	Replicas *int32 `json:"replicas,omitempty"`
 }
 
 // NewScalerSpecWith instantiates a new ScalerSpec object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewScalerSpecWith(replicas int32) *ScalerSpec {
+func NewScalerSpecWith() *ScalerSpec {
 	this := ScalerSpec{}
-	this.Replicas = replicas
+	var replicas int32 = 1
+	this.Replicas = &replicas
 	return &this
 }
 
@@ -46,7 +47,7 @@ func NewScalerSpecWith(replicas int32) *ScalerSpec {
 func NewScalerSpec() *ScalerSpec {
 	this := ScalerSpec{}
 	var replicas int32 = 1
-	this.Replicas = replicas
+	this.Replicas = &replicas
 	return &this
 }
 
@@ -60,28 +61,37 @@ func NewScalerSpecList(ps ...*ScalerSpec) []ScalerSpec {
 	return objs
 }
 
-// GetReplicas returns the Replicas field value
+// GetReplicas returns the Replicas field value if set, zero value otherwise.
 func (o *ScalerTrait) GetReplicas() int32 {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Replicas) {
 		var ret int32
 		return ret
 	}
-
-	return o.Properties.Replicas
+	return *o.Properties.Replicas
 }
 
-// GetReplicasOk returns a tuple with the Replicas field value
+// GetReplicasOk returns a tuple with the Replicas field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ScalerTrait) GetReplicasOk() (*int32, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Replicas) {
 		return nil, false
 	}
-	return &o.Properties.Replicas, true
+	return o.Properties.Replicas, true
 }
 
-// SetReplicas sets field value
+// HasReplicas returns a boolean if a field has been set.
+func (o *ScalerTrait) HasReplicas() bool {
+	if o != nil && !utils.IsNil(o.Properties.Replicas) {
+		return true
+	}
+
+	return false
+}
+
+// SetReplicas gets a reference to the given int32 and assigns it to the replicas field.
+// Replicas:  Specify the number of workload
 func (o *ScalerTrait) SetReplicas(v int32) *ScalerTrait {
-	o.Properties.Replicas = v
+	o.Properties.Replicas = &v
 	return o
 }
 
@@ -95,7 +105,9 @@ func (o ScalerSpec) MarshalJSON() ([]byte, error) {
 
 func (o ScalerSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["replicas"] = o.Replicas
+	if !utils.IsNil(o.Replicas) {
+		toSerialize["replicas"] = o.Replicas
+	}
 	return toSerialize, nil
 }
 
