@@ -12,11 +12,10 @@ package command
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
-
-	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
 	sdkcommon "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
@@ -41,6 +40,19 @@ func PatchParamsAsCommandSpec(v *PatchParams) CommandSpec {
 	return CommandSpec{
 		PatchParams: v,
 	}
+}
+
+// Validate validates this CommandSpec
+func (o *CommandTrait) Validate() error {
+	if o.Properties.CommandSpecOneOf != nil {
+		return nil
+	}
+
+	if o.Properties.PatchParams != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in CommandSpec")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -121,7 +133,7 @@ type NullableCommandSpec struct {
 	isSet bool
 }
 
-func (v NullableCommandSpec) Get() *CommandSpec {
+func (v *NullableCommandSpec) Get() *CommandSpec {
 	return v.value
 }
 
@@ -130,7 +142,7 @@ func (v *NullableCommandSpec) Set(val *CommandSpec) {
 	v.isSet = true
 }
 
-func (v NullableCommandSpec) IsSet() bool {
+func (v *NullableCommandSpec) IsSet() bool {
 	return v.isSet
 }
 

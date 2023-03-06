@@ -12,6 +12,7 @@ package nocalhost
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &Command{}
 
 // Command struct for Command
 type Command struct {
-	Debug []string `json:"debug,omitempty"`
-	Run   []string `json:"run,omitempty"`
+	Debug []string `json:"debug"`
+	Run   []string `json:"run"`
 }
 
 // NewCommandWith instantiates a new Command object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCommandWith() *Command {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewCommandWith(debug []string, run []string) *Command {
+	this := Command{}
+	this.Debug = debug
+	this.Run = run
+	return &this
+}
+
+// NewCommandWithDefault instantiates a new Command object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewCommandWithDefault() *Command {
 	this := Command{}
 	return &this
 }
 
-// NewCommand instantiates a new Command object
+// NewCommand is short for NewCommandWithDefault which instantiates a new Command object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewCommand() *Command {
+	return NewCommandWithDefault()
+}
+
+// NewCommandEmpty instantiates a new Command object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewCommandEmpty() *Command {
 	this := Command{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewCommandList(ps ...*Command) []Command {
 	return objs
 }
 
-// GetDebug returns the Debug field value if set, zero value otherwise.
+// Validate validates this Command
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Command) Validate() error {
+	if o.Debug == nil {
+		return errors.New("Debug in Command must be set")
+	}
+	if o.Run == nil {
+		return errors.New("Run in Command must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetDebug returns the Debug field value
 func (o *Command) GetDebug() []string {
-	if o == nil || utils.IsNil(o.Debug) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Debug
 }
 
-// GetDebugOk returns a tuple with the Debug field value if set, nil otherwise
+// GetDebugOk returns a tuple with the Debug field value
 // and a boolean to check if the value has been set.
 func (o *Command) GetDebugOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Debug) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Debug, true
 }
 
-// HasDebug returns a boolean if a field has been set.
-func (o *Command) HasDebug() bool {
-	if o != nil && !utils.IsNil(o.Debug) {
-		return true
-	}
-
-	return false
-}
-
-// SetDebug gets a reference to the given []string and assigns it to the debug field.
-// Debug:
+// SetDebug sets field value
 func (o *Command) SetDebug(v []string) *Command {
 	o.Debug = v
 	return o
 }
 
-// GetRun returns the Run field value if set, zero value otherwise.
+// GetRun returns the Run field value
 func (o *Command) GetRun() []string {
-	if o == nil || utils.IsNil(o.Run) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Run
 }
 
-// GetRunOk returns a tuple with the Run field value if set, nil otherwise
+// GetRunOk returns a tuple with the Run field value
 // and a boolean to check if the value has been set.
 func (o *Command) GetRunOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Run) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Run, true
 }
 
-// HasRun returns a boolean if a field has been set.
-func (o *Command) HasRun() bool {
-	if o != nil && !utils.IsNil(o.Run) {
-		return true
-	}
-
-	return false
-}
-
-// SetRun gets a reference to the given []string and assigns it to the run field.
-// Run:
+// SetRun sets field value
 func (o *Command) SetRun(v []string) *Command {
 	o.Run = v
 	return o
@@ -130,12 +143,8 @@ func (o Command) MarshalJSON() ([]byte, error) {
 
 func (o Command) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Debug) {
-		toSerialize["debug"] = o.Debug
-	}
-	if !utils.IsNil(o.Run) {
-		toSerialize["run"] = o.Run
-	}
+	toSerialize["debug"] = o.Debug
+	toSerialize["run"] = o.Run
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableCommand struct {
 	isSet bool
 }
 
-func (v NullableCommand) Get() *Command {
+func (v *NullableCommand) Get() *Command {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableCommand) Set(val *Command) {
 	v.isSet = true
 }
 
-func (v NullableCommand) IsSet() bool {
+func (v *NullableCommand) IsSet() bool {
 	return v.isSet
 }
 

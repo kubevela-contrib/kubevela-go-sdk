@@ -12,6 +12,7 @@ package share_cloud_resource
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,31 +29,46 @@ var _ utils.MappedNullable = &ShareCloudResourceSpec{}
 // ShareCloudResourceSpec struct for ShareCloudResourceSpec
 type ShareCloudResourceSpec struct {
 	// Declare the name of the env in policy
-	Env *string `json:"env,omitempty"`
+	Env *string `json:"env"`
 	// Declare the location to bind
-	Placements []Placements `json:"placements,omitempty"`
+	Placements []Placements `json:"placements"`
 	// Declare the name of the env-binding policy, if empty, the first env-binding policy will be used
-	Policy *string `json:"policy,omitempty"`
+	Policy *string `json:"policy"`
 }
 
 // NewShareCloudResourceSpecWith instantiates a new ShareCloudResourceSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewShareCloudResourceSpecWith() *ShareCloudResourceSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewShareCloudResourceSpecWith(env string, placements []Placements, policy string) *ShareCloudResourceSpec {
+	this := ShareCloudResourceSpec{}
+	this.Env = &env
+	this.Placements = placements
+	this.Policy = &policy
+	return &this
+}
+
+// NewShareCloudResourceSpecWithDefault instantiates a new ShareCloudResourceSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewShareCloudResourceSpecWithDefault() *ShareCloudResourceSpec {
 	this := ShareCloudResourceSpec{}
 	var policy string = ""
 	this.Policy = &policy
 	return &this
 }
 
-// NewShareCloudResourceSpec instantiates a new ShareCloudResourceSpec object
+// NewShareCloudResourceSpec is short for NewShareCloudResourceSpecWithDefault which instantiates a new ShareCloudResourceSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewShareCloudResourceSpec() *ShareCloudResourceSpec {
+	return NewShareCloudResourceSpecWithDefault()
+}
+
+// NewShareCloudResourceSpecEmpty instantiates a new ShareCloudResourceSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewShareCloudResourceSpecEmpty() *ShareCloudResourceSpec {
 	this := ShareCloudResourceSpec{}
-	var policy string = ""
-	this.Policy = &policy
 	return &this
 }
 
@@ -66,103 +82,93 @@ func NewShareCloudResourceSpecList(ps ...*ShareCloudResourceSpec) []ShareCloudRe
 	return objs
 }
 
-// GetEnv returns the Env field value if set, zero value otherwise.
+// Validate validates this ShareCloudResourceSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ShareCloudResourceWorkflowStep) Validate() error {
+	if o.Properties.Env == nil {
+		return errors.New("Env in ShareCloudResourceSpec must be set")
+	}
+	if o.Properties.Placements == nil {
+		return errors.New("Placements in ShareCloudResourceSpec must be set")
+	}
+	if o.Properties.Policy == nil {
+		return errors.New("Policy in ShareCloudResourceSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetEnv returns the Env field value
 func (o *ShareCloudResourceWorkflowStep) GetEnv() string {
-	if o == nil || utils.IsNil(o.Properties.Env) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Env
 }
 
-// GetEnvOk returns a tuple with the Env field value if set, nil otherwise
+// GetEnvOk returns a tuple with the Env field value
 // and a boolean to check if the value has been set.
 func (o *ShareCloudResourceWorkflowStep) GetEnvOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Env) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Env, true
 }
 
-// HasEnv returns a boolean if a field has been set.
-func (o *ShareCloudResourceWorkflowStep) HasEnv() bool {
-	if o != nil && !utils.IsNil(o.Properties.Env) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnv gets a reference to the given string and assigns it to the env field.
-// Env:  Declare the name of the env in policy
+// SetEnv sets field value
 func (o *ShareCloudResourceWorkflowStep) SetEnv(v string) *ShareCloudResourceWorkflowStep {
 	o.Properties.Env = &v
 	return o
 }
 
-// GetPlacements returns the Placements field value if set, zero value otherwise.
+// GetPlacements returns the Placements field value
 func (o *ShareCloudResourceWorkflowStep) GetPlacements() []Placements {
-	if o == nil || utils.IsNil(o.Properties.Placements) {
+	if o == nil {
 		var ret []Placements
 		return ret
 	}
+
 	return o.Properties.Placements
 }
 
-// GetPlacementsOk returns a tuple with the Placements field value if set, nil otherwise
+// GetPlacementsOk returns a tuple with the Placements field value
 // and a boolean to check if the value has been set.
 func (o *ShareCloudResourceWorkflowStep) GetPlacementsOk() ([]Placements, bool) {
-	if o == nil || utils.IsNil(o.Properties.Placements) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Placements, true
 }
 
-// HasPlacements returns a boolean if a field has been set.
-func (o *ShareCloudResourceWorkflowStep) HasPlacements() bool {
-	if o != nil && !utils.IsNil(o.Properties.Placements) {
-		return true
-	}
-
-	return false
-}
-
-// SetPlacements gets a reference to the given []Placements and assigns it to the placements field.
-// Placements:  Declare the location to bind
+// SetPlacements sets field value
 func (o *ShareCloudResourceWorkflowStep) SetPlacements(v []Placements) *ShareCloudResourceWorkflowStep {
 	o.Properties.Placements = v
 	return o
 }
 
-// GetPolicy returns the Policy field value if set, zero value otherwise.
+// GetPolicy returns the Policy field value
 func (o *ShareCloudResourceWorkflowStep) GetPolicy() string {
-	if o == nil || utils.IsNil(o.Properties.Policy) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Policy
 }
 
-// GetPolicyOk returns a tuple with the Policy field value if set, nil otherwise
+// GetPolicyOk returns a tuple with the Policy field value
 // and a boolean to check if the value has been set.
 func (o *ShareCloudResourceWorkflowStep) GetPolicyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Policy) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Policy, true
 }
 
-// HasPolicy returns a boolean if a field has been set.
-func (o *ShareCloudResourceWorkflowStep) HasPolicy() bool {
-	if o != nil && !utils.IsNil(o.Properties.Policy) {
-		return true
-	}
-
-	return false
-}
-
-// SetPolicy gets a reference to the given string and assigns it to the policy field.
-// Policy:  Declare the name of the env-binding policy, if empty, the first env-binding policy will be used
+// SetPolicy sets field value
 func (o *ShareCloudResourceWorkflowStep) SetPolicy(v string) *ShareCloudResourceWorkflowStep {
 	o.Properties.Policy = &v
 	return o
@@ -178,15 +184,9 @@ func (o ShareCloudResourceSpec) MarshalJSON() ([]byte, error) {
 
 func (o ShareCloudResourceSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Env) {
-		toSerialize["env"] = o.Env
-	}
-	if !utils.IsNil(o.Placements) {
-		toSerialize["placements"] = o.Placements
-	}
-	if !utils.IsNil(o.Policy) {
-		toSerialize["policy"] = o.Policy
-	}
+	toSerialize["env"] = o.Env
+	toSerialize["placements"] = o.Placements
+	toSerialize["policy"] = o.Policy
 	return toSerialize, nil
 }
 
@@ -195,7 +195,7 @@ type NullableShareCloudResourceSpec struct {
 	isSet bool
 }
 
-func (v NullableShareCloudResourceSpec) Get() *ShareCloudResourceSpec {
+func (v *NullableShareCloudResourceSpec) Get() *ShareCloudResourceSpec {
 	return v.value
 }
 
@@ -204,7 +204,7 @@ func (v *NullableShareCloudResourceSpec) Set(val *ShareCloudResourceSpec) {
 	v.isSet = true
 }
 
-func (v NullableShareCloudResourceSpec) IsSet() bool {
+func (v *NullableShareCloudResourceSpec) IsSet() bool {
 	return v.isSet
 }
 

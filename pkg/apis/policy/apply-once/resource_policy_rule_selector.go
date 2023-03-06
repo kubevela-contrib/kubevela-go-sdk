@@ -36,18 +36,32 @@ type ResourcePolicyRuleSelector struct {
 }
 
 // NewResourcePolicyRuleSelectorWith instantiates a new ResourcePolicyRuleSelector object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewResourcePolicyRuleSelectorWith() *ResourcePolicyRuleSelector {
 	this := ResourcePolicyRuleSelector{}
 	return &this
 }
 
-// NewResourcePolicyRuleSelector instantiates a new ResourcePolicyRuleSelector object
+// NewResourcePolicyRuleSelectorWithDefault instantiates a new ResourcePolicyRuleSelector object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewResourcePolicyRuleSelectorWithDefault() *ResourcePolicyRuleSelector {
+	this := ResourcePolicyRuleSelector{}
+	return &this
+}
+
+// NewResourcePolicyRuleSelector is short for NewResourcePolicyRuleSelectorWithDefault which instantiates a new ResourcePolicyRuleSelector object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewResourcePolicyRuleSelector() *ResourcePolicyRuleSelector {
+	return NewResourcePolicyRuleSelectorWithDefault()
+}
+
+// NewResourcePolicyRuleSelectorEmpty instantiates a new ResourcePolicyRuleSelector object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewResourcePolicyRuleSelectorEmpty() *ResourcePolicyRuleSelector {
 	this := ResourcePolicyRuleSelector{}
 	return &this
 }
@@ -60,6 +74,14 @@ func NewResourcePolicyRuleSelectorList(ps ...*ResourcePolicyRuleSelector) []Reso
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this ResourcePolicyRuleSelector
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ResourcePolicyRuleSelector) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetComponentNames returns the ComponentNames field value if set, zero value otherwise.
@@ -302,7 +324,7 @@ type NullableResourcePolicyRuleSelector struct {
 	isSet bool
 }
 
-func (v NullableResourcePolicyRuleSelector) Get() *ResourcePolicyRuleSelector {
+func (v *NullableResourcePolicyRuleSelector) Get() *ResourcePolicyRuleSelector {
 	return v.value
 }
 
@@ -311,7 +333,7 @@ func (v *NullableResourcePolicyRuleSelector) Set(val *ResourcePolicyRuleSelector
 	v.isSet = true
 }
 
-func (v NullableResourcePolicyRuleSelector) IsSet() bool {
+func (v *NullableResourcePolicyRuleSelector) IsSet() bool {
 	return v.isSet
 }
 

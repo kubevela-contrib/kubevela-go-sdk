@@ -12,6 +12,7 @@ package json_patch
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -26,22 +27,37 @@ var _ utils.MappedNullable = &JsonPatchSpec{}
 
 // JsonPatchSpec struct for JsonPatchSpec
 type JsonPatchSpec struct {
-	Operations []map[string]interface{} `json:"operations,omitempty"`
+	Operations []map[string]interface{} `json:"operations"`
 }
 
 // NewJsonPatchSpecWith instantiates a new JsonPatchSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewJsonPatchSpecWith() *JsonPatchSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewJsonPatchSpecWith(operations []map[string]interface{}) *JsonPatchSpec {
+	this := JsonPatchSpec{}
+	this.Operations = operations
+	return &this
+}
+
+// NewJsonPatchSpecWithDefault instantiates a new JsonPatchSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewJsonPatchSpecWithDefault() *JsonPatchSpec {
 	this := JsonPatchSpec{}
 	return &this
 }
 
-// NewJsonPatchSpec instantiates a new JsonPatchSpec object
+// NewJsonPatchSpec is short for NewJsonPatchSpecWithDefault which instantiates a new JsonPatchSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewJsonPatchSpec() *JsonPatchSpec {
+	return NewJsonPatchSpecWithDefault()
+}
+
+// NewJsonPatchSpecEmpty instantiates a new JsonPatchSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewJsonPatchSpecEmpty() *JsonPatchSpec {
 	this := JsonPatchSpec{}
 	return &this
 }
@@ -56,35 +72,37 @@ func NewJsonPatchSpecList(ps ...*JsonPatchSpec) []JsonPatchSpec {
 	return objs
 }
 
-// GetOperations returns the Operations field value if set, zero value otherwise.
+// Validate validates this JsonPatchSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *JSONPatchTrait) Validate() error {
+	if o.Properties.Operations == nil {
+		return errors.New("Operations in JsonPatchSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetOperations returns the Operations field value
 func (o *JSONPatchTrait) GetOperations() []map[string]interface{} {
-	if o == nil || utils.IsNil(o.Properties.Operations) {
+	if o == nil {
 		var ret []map[string]interface{}
 		return ret
 	}
+
 	return o.Properties.Operations
 }
 
-// GetOperationsOk returns a tuple with the Operations field value if set, nil otherwise
+// GetOperationsOk returns a tuple with the Operations field value
 // and a boolean to check if the value has been set.
 func (o *JSONPatchTrait) GetOperationsOk() ([]map[string]interface{}, bool) {
-	if o == nil || utils.IsNil(o.Properties.Operations) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Operations, true
 }
 
-// HasOperations returns a boolean if a field has been set.
-func (o *JSONPatchTrait) HasOperations() bool {
-	if o != nil && !utils.IsNil(o.Properties.Operations) {
-		return true
-	}
-
-	return false
-}
-
-// SetOperations gets a reference to the given []map[string]interface{} and assigns it to the operations field.
-// Operations:
+// SetOperations sets field value
 func (o *JSONPatchTrait) SetOperations(v []map[string]interface{}) *JSONPatchTrait {
 	o.Properties.Operations = v
 	return o
@@ -100,9 +118,7 @@ func (o JsonPatchSpec) MarshalJSON() ([]byte, error) {
 
 func (o JsonPatchSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Operations) {
-		toSerialize["operations"] = o.Operations
-	}
+	toSerialize["operations"] = o.Operations
 	return toSerialize, nil
 }
 
@@ -111,7 +127,7 @@ type NullableJsonPatchSpec struct {
 	isSet bool
 }
 
-func (v NullableJsonPatchSpec) Get() *JsonPatchSpec {
+func (v *NullableJsonPatchSpec) Get() *JsonPatchSpec {
 	return v.value
 }
 
@@ -120,7 +136,7 @@ func (v *NullableJsonPatchSpec) Set(val *JsonPatchSpec) {
 	v.isSet = true
 }
 
-func (v NullableJsonPatchSpec) IsSet() bool {
+func (v *NullableJsonPatchSpec) IsSet() bool {
 	return v.isSet
 }
 

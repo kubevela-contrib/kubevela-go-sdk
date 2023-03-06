@@ -26,7 +26,7 @@ type K8sObject struct {
 	// The group name for the Kubernetes objects
 	Group *string `json:"group,omitempty"`
 	// If specified, fetch the Kubernetes objects according to the label selector, exclusive to name
-	LabelSelector *map[string]string `json:"labelSelector,omitempty"`
+	LabelSelector map[string]string `json:"labelSelector,omitempty"`
 	// If specified, fetch the Kubernetes objects with the name, exclusive to labelSelector
 	Name *string `json:"name,omitempty"`
 	// If specified, fetch the Kubernetes objects from the namespace. Otherwise, fetch from the application's namespace.
@@ -36,18 +36,32 @@ type K8sObject struct {
 }
 
 // NewK8sObjectWith instantiates a new K8sObject object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewK8sObjectWith() *K8sObject {
 	this := K8sObject{}
 	return &this
 }
 
-// NewK8sObject instantiates a new K8sObject object
+// NewK8sObjectWithDefault instantiates a new K8sObject object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewK8sObjectWithDefault() *K8sObject {
+	this := K8sObject{}
+	return &this
+}
+
+// NewK8sObject is short for NewK8sObjectWithDefault which instantiates a new K8sObject object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewK8sObject() *K8sObject {
+	return NewK8sObjectWithDefault()
+}
+
+// NewK8sObjectEmpty instantiates a new K8sObject object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewK8sObjectEmpty() *K8sObject {
 	this := K8sObject{}
 	return &this
 }
@@ -60,6 +74,14 @@ func NewK8sObjectList(ps ...*K8sObject) []K8sObject {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this K8sObject
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *K8sObject) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetCluster returns the Cluster field value if set, zero value otherwise.
@@ -136,12 +158,12 @@ func (o *K8sObject) GetLabelSelector() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.LabelSelector
+	return o.LabelSelector
 }
 
 // GetLabelSelectorOk returns a tuple with the LabelSelector field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *K8sObject) GetLabelSelectorOk() (*map[string]string, bool) {
+func (o *K8sObject) GetLabelSelectorOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.LabelSelector) {
 		return nil, false
 	}
@@ -160,7 +182,7 @@ func (o *K8sObject) HasLabelSelector() bool {
 // SetLabelSelector gets a reference to the given map[string]string and assigns it to the labelSelector field.
 // LabelSelector:  If specified, fetch the Kubernetes objects according to the label selector, exclusive to name
 func (o *K8sObject) SetLabelSelector(v map[string]string) *K8sObject {
-	o.LabelSelector = &v
+	o.LabelSelector = v
 	return o
 }
 
@@ -302,7 +324,7 @@ type NullableK8sObject struct {
 	isSet bool
 }
 
-func (v NullableK8sObject) Get() *K8sObject {
+func (v *NullableK8sObject) Get() *K8sObject {
 	return v.value
 }
 
@@ -311,7 +333,7 @@ func (v *NullableK8sObject) Set(val *K8sObject) {
 	v.isSet = true
 }
 
-func (v NullableK8sObject) IsSet() bool {
+func (v *NullableK8sObject) IsSet() bool {
 	return v.isSet
 }
 

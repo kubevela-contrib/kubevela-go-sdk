@@ -12,6 +12,7 @@ package depends_on_app
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,24 +29,40 @@ var _ utils.MappedNullable = &DependsOnAppSpec{}
 // DependsOnAppSpec struct for DependsOnAppSpec
 type DependsOnAppSpec struct {
 	// Specify the name of the dependent Application
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 	// Specify the namespace of the dependent Application
-	Namespace *string `json:"namespace,omitempty"`
+	Namespace *string `json:"namespace"`
 }
 
 // NewDependsOnAppSpecWith instantiates a new DependsOnAppSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewDependsOnAppSpecWith() *DependsOnAppSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewDependsOnAppSpecWith(name string, namespace string) *DependsOnAppSpec {
+	this := DependsOnAppSpec{}
+	this.Name = &name
+	this.Namespace = &namespace
+	return &this
+}
+
+// NewDependsOnAppSpecWithDefault instantiates a new DependsOnAppSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewDependsOnAppSpecWithDefault() *DependsOnAppSpec {
 	this := DependsOnAppSpec{}
 	return &this
 }
 
-// NewDependsOnAppSpec instantiates a new DependsOnAppSpec object
+// NewDependsOnAppSpec is short for NewDependsOnAppSpecWithDefault which instantiates a new DependsOnAppSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewDependsOnAppSpec() *DependsOnAppSpec {
+	return NewDependsOnAppSpecWithDefault()
+}
+
+// NewDependsOnAppSpecEmpty instantiates a new DependsOnAppSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewDependsOnAppSpecEmpty() *DependsOnAppSpec {
 	this := DependsOnAppSpec{}
 	return &this
 }
@@ -60,69 +77,65 @@ func NewDependsOnAppSpecList(ps ...*DependsOnAppSpec) []DependsOnAppSpec {
 	return objs
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// Validate validates this DependsOnAppSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *DependsOnAppWorkflowStep) Validate() error {
+	if o.Properties.Name == nil {
+		return errors.New("Name in DependsOnAppSpec must be set")
+	}
+	if o.Properties.Namespace == nil {
+		return errors.New("Namespace in DependsOnAppSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetName returns the Name field value
 func (o *DependsOnAppWorkflowStep) GetName() string {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *DependsOnAppWorkflowStep) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *DependsOnAppWorkflowStep) HasName() bool {
-	if o != nil && !utils.IsNil(o.Properties.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Specify the name of the dependent Application
+// SetName sets field value
 func (o *DependsOnAppWorkflowStep) SetName(v string) *DependsOnAppWorkflowStep {
 	o.Properties.Name = &v
 	return o
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *DependsOnAppWorkflowStep) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *DependsOnAppWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *DependsOnAppWorkflowStep) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Properties.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:  Specify the namespace of the dependent Application
+// SetNamespace sets field value
 func (o *DependsOnAppWorkflowStep) SetNamespace(v string) *DependsOnAppWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -138,12 +151,8 @@ func (o DependsOnAppSpec) MarshalJSON() ([]byte, error) {
 
 func (o DependsOnAppSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
-	}
+	toSerialize["name"] = o.Name
+	toSerialize["namespace"] = o.Namespace
 	return toSerialize, nil
 }
 
@@ -152,7 +161,7 @@ type NullableDependsOnAppSpec struct {
 	isSet bool
 }
 
-func (v NullableDependsOnAppSpec) Get() *DependsOnAppSpec {
+func (v *NullableDependsOnAppSpec) Get() *DependsOnAppSpec {
 	return v.value
 }
 
@@ -161,7 +170,7 @@ func (v *NullableDependsOnAppSpec) Set(val *DependsOnAppSpec) {
 	v.isSet = true
 }
 
-func (v NullableDependsOnAppSpec) IsSet() bool {
+func (v *NullableDependsOnAppSpec) IsSet() bool {
 	return v.isSet
 }
 

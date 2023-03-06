@@ -34,18 +34,32 @@ type NotificationSpec struct {
 }
 
 // NewNotificationSpecWith instantiates a new NotificationSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewNotificationSpecWith() *NotificationSpec {
 	this := NotificationSpec{}
 	return &this
 }
 
-// NewNotificationSpec instantiates a new NotificationSpec object
+// NewNotificationSpecWithDefault instantiates a new NotificationSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewNotificationSpecWithDefault() *NotificationSpec {
+	this := NotificationSpec{}
+	return &this
+}
+
+// NewNotificationSpec is short for NewNotificationSpecWithDefault which instantiates a new NotificationSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewNotificationSpec() *NotificationSpec {
+	return NewNotificationSpecWithDefault()
+}
+
+// NewNotificationSpecEmpty instantiates a new NotificationSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewNotificationSpecEmpty() *NotificationSpec {
 	this := NotificationSpec{}
 	return &this
 }
@@ -58,6 +72,34 @@ func NewNotificationSpecList(ps ...*NotificationSpec) []NotificationSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this NotificationSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *NotificationWorkflowStep) Validate() error {
+	// validate all nested properties
+	if o.Properties.Dingding != nil {
+		if err := o.Properties.Dingding.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.Email != nil {
+		if err := o.Properties.Email.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.Lark != nil {
+		if err := o.Properties.Lark.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.Slack != nil {
+		if err := o.Properties.Slack.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetDingding returns the Dingding field value if set, zero value otherwise.
@@ -226,7 +268,7 @@ type NullableNotificationSpec struct {
 	isSet bool
 }
 
-func (v NullableNotificationSpec) Get() *NotificationSpec {
+func (v *NullableNotificationSpec) Get() *NotificationSpec {
 	return v.value
 }
 
@@ -235,7 +277,7 @@ func (v *NullableNotificationSpec) Set(val *NotificationSpec) {
 	v.isSet = true
 }
 
-func (v NullableNotificationSpec) IsSet() bool {
+func (v *NullableNotificationSpec) IsSet() bool {
 	return v.isSet
 }
 

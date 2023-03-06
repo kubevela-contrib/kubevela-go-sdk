@@ -26,18 +26,32 @@ type At struct {
 }
 
 // NewAtWith instantiates a new At object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewAtWith() *At {
 	this := At{}
 	return &this
 }
 
-// NewAt instantiates a new At object
+// NewAtWithDefault instantiates a new At object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewAtWithDefault() *At {
+	this := At{}
+	return &this
+}
+
+// NewAt is short for NewAtWithDefault which instantiates a new At object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewAt() *At {
+	return NewAtWithDefault()
+}
+
+// NewAtEmpty instantiates a new At object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewAtEmpty() *At {
 	this := At{}
 	return &this
 }
@@ -50,6 +64,14 @@ func NewAtList(ps ...*At) []At {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this At
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *At) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetAtMobiles returns the AtMobiles field value if set, zero value otherwise.
@@ -144,7 +166,7 @@ type NullableAt struct {
 	isSet bool
 }
 
-func (v NullableAt) Get() *At {
+func (v *NullableAt) Get() *At {
 	return v.value
 }
 
@@ -153,7 +175,7 @@ func (v *NullableAt) Set(val *At) {
 	v.isSet = true
 }
 
-func (v NullableAt) IsSet() bool {
+func (v *NullableAt) IsSet() bool {
 	return v.isSet
 }
 

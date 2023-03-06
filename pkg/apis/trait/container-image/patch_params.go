@@ -12,6 +12,7 @@ package container_image
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,18 +23,29 @@ var _ utils.MappedNullable = &PatchParams{}
 // PatchParams struct for PatchParams
 type PatchParams struct {
 	// Specify the name of the target container, if not set, use the component name
-	ContainerName *string `json:"containerName,omitempty"`
+	ContainerName *string `json:"containerName"`
 	// Specify the image of the container
-	Image *string `json:"image,omitempty"`
+	Image *string `json:"image"`
 	// Specify the image pull policy of the container
-	ImagePullPolicy *string `json:"imagePullPolicy,omitempty"`
+	ImagePullPolicy *string `json:"imagePullPolicy"`
 }
 
 // NewPatchParamsWith instantiates a new PatchParams object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPatchParamsWith() *PatchParams {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPatchParamsWith(containerName string, image string, imagePullPolicy string) *PatchParams {
+	this := PatchParams{}
+	this.ContainerName = &containerName
+	this.Image = &image
+	this.ImagePullPolicy = &imagePullPolicy
+	return &this
+}
+
+// NewPatchParamsWithDefault instantiates a new PatchParams object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPatchParamsWithDefault() *PatchParams {
 	this := PatchParams{}
 	var containerName string = ""
 	this.ContainerName = &containerName
@@ -42,15 +54,17 @@ func NewPatchParamsWith() *PatchParams {
 	return &this
 }
 
-// NewPatchParams instantiates a new PatchParams object
+// NewPatchParams is short for NewPatchParamsWithDefault which instantiates a new PatchParams object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPatchParams() *PatchParams {
+	return NewPatchParamsWithDefault()
+}
+
+// NewPatchParamsEmpty instantiates a new PatchParams object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPatchParamsEmpty() *PatchParams {
 	this := PatchParams{}
-	var containerName string = ""
-	this.ContainerName = &containerName
-	var imagePullPolicy string = ""
-	this.ImagePullPolicy = &imagePullPolicy
 	return &this
 }
 
@@ -64,103 +78,93 @@ func NewPatchParamsList(ps ...*PatchParams) []PatchParams {
 	return objs
 }
 
-// GetContainerName returns the ContainerName field value if set, zero value otherwise.
+// Validate validates this PatchParams
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PatchParams) Validate() error {
+	if o.ContainerName == nil {
+		return errors.New("ContainerName in PatchParams must be set")
+	}
+	if o.Image == nil {
+		return errors.New("Image in PatchParams must be set")
+	}
+	if o.ImagePullPolicy == nil {
+		return errors.New("ImagePullPolicy in PatchParams must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetContainerName returns the ContainerName field value
 func (o *PatchParams) GetContainerName() string {
-	if o == nil || utils.IsNil(o.ContainerName) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.ContainerName
 }
 
-// GetContainerNameOk returns a tuple with the ContainerName field value if set, nil otherwise
+// GetContainerNameOk returns a tuple with the ContainerName field value
 // and a boolean to check if the value has been set.
 func (o *PatchParams) GetContainerNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.ContainerName) {
+	if o == nil {
 		return nil, false
 	}
 	return o.ContainerName, true
 }
 
-// HasContainerName returns a boolean if a field has been set.
-func (o *PatchParams) HasContainerName() bool {
-	if o != nil && !utils.IsNil(o.ContainerName) {
-		return true
-	}
-
-	return false
-}
-
-// SetContainerName gets a reference to the given string and assigns it to the containerName field.
-// ContainerName:  Specify the name of the target container, if not set, use the component name
+// SetContainerName sets field value
 func (o *PatchParams) SetContainerName(v string) *PatchParams {
 	o.ContainerName = &v
 	return o
 }
 
-// GetImage returns the Image field value if set, zero value otherwise.
+// GetImage returns the Image field value
 func (o *PatchParams) GetImage() string {
-	if o == nil || utils.IsNil(o.Image) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Image
 }
 
-// GetImageOk returns a tuple with the Image field value if set, nil otherwise
+// GetImageOk returns a tuple with the Image field value
 // and a boolean to check if the value has been set.
 func (o *PatchParams) GetImageOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Image) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Image, true
 }
 
-// HasImage returns a boolean if a field has been set.
-func (o *PatchParams) HasImage() bool {
-	if o != nil && !utils.IsNil(o.Image) {
-		return true
-	}
-
-	return false
-}
-
-// SetImage gets a reference to the given string and assigns it to the image field.
-// Image:  Specify the image of the container
+// SetImage sets field value
 func (o *PatchParams) SetImage(v string) *PatchParams {
 	o.Image = &v
 	return o
 }
 
-// GetImagePullPolicy returns the ImagePullPolicy field value if set, zero value otherwise.
+// GetImagePullPolicy returns the ImagePullPolicy field value
 func (o *PatchParams) GetImagePullPolicy() string {
-	if o == nil || utils.IsNil(o.ImagePullPolicy) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.ImagePullPolicy
 }
 
-// GetImagePullPolicyOk returns a tuple with the ImagePullPolicy field value if set, nil otherwise
+// GetImagePullPolicyOk returns a tuple with the ImagePullPolicy field value
 // and a boolean to check if the value has been set.
 func (o *PatchParams) GetImagePullPolicyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.ImagePullPolicy) {
+	if o == nil {
 		return nil, false
 	}
 	return o.ImagePullPolicy, true
 }
 
-// HasImagePullPolicy returns a boolean if a field has been set.
-func (o *PatchParams) HasImagePullPolicy() bool {
-	if o != nil && !utils.IsNil(o.ImagePullPolicy) {
-		return true
-	}
-
-	return false
-}
-
-// SetImagePullPolicy gets a reference to the given string and assigns it to the imagePullPolicy field.
-// ImagePullPolicy:  Specify the image pull policy of the container
+// SetImagePullPolicy sets field value
 func (o *PatchParams) SetImagePullPolicy(v string) *PatchParams {
 	o.ImagePullPolicy = &v
 	return o
@@ -176,15 +180,9 @@ func (o PatchParams) MarshalJSON() ([]byte, error) {
 
 func (o PatchParams) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.ContainerName) {
-		toSerialize["containerName"] = o.ContainerName
-	}
-	if !utils.IsNil(o.Image) {
-		toSerialize["image"] = o.Image
-	}
-	if !utils.IsNil(o.ImagePullPolicy) {
-		toSerialize["imagePullPolicy"] = o.ImagePullPolicy
-	}
+	toSerialize["containerName"] = o.ContainerName
+	toSerialize["image"] = o.Image
+	toSerialize["imagePullPolicy"] = o.ImagePullPolicy
 	return toSerialize, nil
 }
 
@@ -193,7 +191,7 @@ type NullablePatchParams struct {
 	isSet bool
 }
 
-func (v NullablePatchParams) Get() *PatchParams {
+func (v *NullablePatchParams) Get() *PatchParams {
 	return v.value
 }
 
@@ -202,7 +200,7 @@ func (v *NullablePatchParams) Set(val *PatchParams) {
 	v.isSet = true
 }
 
-func (v NullablePatchParams) IsSet() bool {
+func (v *NullablePatchParams) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package shared_resource
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,22 +23,37 @@ var _ utils.MappedNullable = &SharedResourcePolicyRule{}
 // SharedResourcePolicyRule struct for SharedResourcePolicyRule
 type SharedResourcePolicyRule struct {
 	// Specify how to select the targets of the rule
-	Selector []ResourcePolicyRuleSelector `json:"selector,omitempty"`
+	Selector []ResourcePolicyRuleSelector `json:"selector"`
 }
 
 // NewSharedResourcePolicyRuleWith instantiates a new SharedResourcePolicyRule object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewSharedResourcePolicyRuleWith() *SharedResourcePolicyRule {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewSharedResourcePolicyRuleWith(selector []ResourcePolicyRuleSelector) *SharedResourcePolicyRule {
+	this := SharedResourcePolicyRule{}
+	this.Selector = selector
+	return &this
+}
+
+// NewSharedResourcePolicyRuleWithDefault instantiates a new SharedResourcePolicyRule object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSharedResourcePolicyRuleWithDefault() *SharedResourcePolicyRule {
 	this := SharedResourcePolicyRule{}
 	return &this
 }
 
-// NewSharedResourcePolicyRule instantiates a new SharedResourcePolicyRule object
+// NewSharedResourcePolicyRule is short for NewSharedResourcePolicyRuleWithDefault which instantiates a new SharedResourcePolicyRule object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSharedResourcePolicyRule() *SharedResourcePolicyRule {
+	return NewSharedResourcePolicyRuleWithDefault()
+}
+
+// NewSharedResourcePolicyRuleEmpty instantiates a new SharedResourcePolicyRule object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSharedResourcePolicyRuleEmpty() *SharedResourcePolicyRule {
 	this := SharedResourcePolicyRule{}
 	return &this
 }
@@ -52,35 +68,37 @@ func NewSharedResourcePolicyRuleList(ps ...*SharedResourcePolicyRule) []SharedRe
 	return objs
 }
 
-// GetSelector returns the Selector field value if set, zero value otherwise.
+// Validate validates this SharedResourcePolicyRule
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *SharedResourcePolicyRule) Validate() error {
+	if o.Selector == nil {
+		return errors.New("Selector in SharedResourcePolicyRule must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetSelector returns the Selector field value
 func (o *SharedResourcePolicyRule) GetSelector() []ResourcePolicyRuleSelector {
-	if o == nil || utils.IsNil(o.Selector) {
+	if o == nil {
 		var ret []ResourcePolicyRuleSelector
 		return ret
 	}
+
 	return o.Selector
 }
 
-// GetSelectorOk returns a tuple with the Selector field value if set, nil otherwise
+// GetSelectorOk returns a tuple with the Selector field value
 // and a boolean to check if the value has been set.
 func (o *SharedResourcePolicyRule) GetSelectorOk() ([]ResourcePolicyRuleSelector, bool) {
-	if o == nil || utils.IsNil(o.Selector) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Selector, true
 }
 
-// HasSelector returns a boolean if a field has been set.
-func (o *SharedResourcePolicyRule) HasSelector() bool {
-	if o != nil && !utils.IsNil(o.Selector) {
-		return true
-	}
-
-	return false
-}
-
-// SetSelector gets a reference to the given []ResourcePolicyRuleSelector and assigns it to the selector field.
-// Selector:  Specify how to select the targets of the rule
+// SetSelector sets field value
 func (o *SharedResourcePolicyRule) SetSelector(v []ResourcePolicyRuleSelector) *SharedResourcePolicyRule {
 	o.Selector = v
 	return o
@@ -96,9 +114,7 @@ func (o SharedResourcePolicyRule) MarshalJSON() ([]byte, error) {
 
 func (o SharedResourcePolicyRule) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Selector) {
-		toSerialize["selector"] = o.Selector
-	}
+	toSerialize["selector"] = o.Selector
 	return toSerialize, nil
 }
 
@@ -107,7 +123,7 @@ type NullableSharedResourcePolicyRule struct {
 	isSet bool
 }
 
-func (v NullableSharedResourcePolicyRule) Get() *SharedResourcePolicyRule {
+func (v *NullableSharedResourcePolicyRule) Get() *SharedResourcePolicyRule {
 	return v.value
 }
 
@@ -116,7 +132,7 @@ func (v *NullableSharedResourcePolicyRule) Set(val *SharedResourcePolicyRule) {
 	v.isSet = true
 }
 
-func (v NullableSharedResourcePolicyRule) IsSet() bool {
+func (v *NullableSharedResourcePolicyRule) IsSet() bool {
 	return v.isSet
 }
 

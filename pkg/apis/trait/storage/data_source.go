@@ -12,6 +12,7 @@ package storage
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,24 +22,41 @@ var _ utils.MappedNullable = &DataSource{}
 
 // DataSource struct for DataSource
 type DataSource struct {
-	ApiGroup *string `json:"apiGroup,omitempty"`
-	Kind     *string `json:"kind,omitempty"`
-	Name     *string `json:"name,omitempty"`
+	ApiGroup *string `json:"apiGroup"`
+	Kind     *string `json:"kind"`
+	Name     *string `json:"name"`
 }
 
 // NewDataSourceWith instantiates a new DataSource object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewDataSourceWith() *DataSource {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewDataSourceWith(apiGroup string, kind string, name string) *DataSource {
+	this := DataSource{}
+	this.ApiGroup = &apiGroup
+	this.Kind = &kind
+	this.Name = &name
+	return &this
+}
+
+// NewDataSourceWithDefault instantiates a new DataSource object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewDataSourceWithDefault() *DataSource {
 	this := DataSource{}
 	return &this
 }
 
-// NewDataSource instantiates a new DataSource object
+// NewDataSource is short for NewDataSourceWithDefault which instantiates a new DataSource object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewDataSource() *DataSource {
+	return NewDataSourceWithDefault()
+}
+
+// NewDataSourceEmpty instantiates a new DataSource object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewDataSourceEmpty() *DataSource {
 	this := DataSource{}
 	return &this
 }
@@ -53,103 +71,93 @@ func NewDataSourceList(ps ...*DataSource) []DataSource {
 	return objs
 }
 
-// GetApiGroup returns the ApiGroup field value if set, zero value otherwise.
+// Validate validates this DataSource
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *DataSource) Validate() error {
+	if o.ApiGroup == nil {
+		return errors.New("ApiGroup in DataSource must be set")
+	}
+	if o.Kind == nil {
+		return errors.New("Kind in DataSource must be set")
+	}
+	if o.Name == nil {
+		return errors.New("Name in DataSource must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetApiGroup returns the ApiGroup field value
 func (o *DataSource) GetApiGroup() string {
-	if o == nil || utils.IsNil(o.ApiGroup) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.ApiGroup
 }
 
-// GetApiGroupOk returns a tuple with the ApiGroup field value if set, nil otherwise
+// GetApiGroupOk returns a tuple with the ApiGroup field value
 // and a boolean to check if the value has been set.
 func (o *DataSource) GetApiGroupOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.ApiGroup) {
+	if o == nil {
 		return nil, false
 	}
 	return o.ApiGroup, true
 }
 
-// HasApiGroup returns a boolean if a field has been set.
-func (o *DataSource) HasApiGroup() bool {
-	if o != nil && !utils.IsNil(o.ApiGroup) {
-		return true
-	}
-
-	return false
-}
-
-// SetApiGroup gets a reference to the given string and assigns it to the apiGroup field.
-// ApiGroup:
+// SetApiGroup sets field value
 func (o *DataSource) SetApiGroup(v string) *DataSource {
 	o.ApiGroup = &v
 	return o
 }
 
-// GetKind returns the Kind field value if set, zero value otherwise.
+// GetKind returns the Kind field value
 func (o *DataSource) GetKind() string {
-	if o == nil || utils.IsNil(o.Kind) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Kind
 }
 
-// GetKindOk returns a tuple with the Kind field value if set, nil otherwise
+// GetKindOk returns a tuple with the Kind field value
 // and a boolean to check if the value has been set.
 func (o *DataSource) GetKindOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Kind) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Kind, true
 }
 
-// HasKind returns a boolean if a field has been set.
-func (o *DataSource) HasKind() bool {
-	if o != nil && !utils.IsNil(o.Kind) {
-		return true
-	}
-
-	return false
-}
-
-// SetKind gets a reference to the given string and assigns it to the kind field.
-// Kind:
+// SetKind sets field value
 func (o *DataSource) SetKind(v string) *DataSource {
 	o.Kind = &v
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *DataSource) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *DataSource) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *DataSource) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
+// SetName sets field value
 func (o *DataSource) SetName(v string) *DataSource {
 	o.Name = &v
 	return o
@@ -165,15 +173,9 @@ func (o DataSource) MarshalJSON() ([]byte, error) {
 
 func (o DataSource) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.ApiGroup) {
-		toSerialize["apiGroup"] = o.ApiGroup
-	}
-	if !utils.IsNil(o.Kind) {
-		toSerialize["kind"] = o.Kind
-	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
+	toSerialize["apiGroup"] = o.ApiGroup
+	toSerialize["kind"] = o.Kind
+	toSerialize["name"] = o.Name
 	return toSerialize, nil
 }
 
@@ -182,7 +184,7 @@ type NullableDataSource struct {
 	isSet bool
 }
 
-func (v NullableDataSource) Get() *DataSource {
+func (v *NullableDataSource) Get() *DataSource {
 	return v.value
 }
 
@@ -191,7 +193,7 @@ func (v *NullableDataSource) Set(val *DataSource) {
 	v.isSet = true
 }
 
-func (v NullableDataSource) IsSet() bool {
+func (v *NullableDataSource) IsSet() bool {
 	return v.isSet
 }
 

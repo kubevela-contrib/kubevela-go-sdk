@@ -12,6 +12,7 @@ package deploy
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,20 +29,32 @@ var _ utils.MappedNullable = &DeploySpec{}
 // DeploySpec struct for DeploySpec
 type DeploySpec struct {
 	// If set to false, the workflow will suspend automatically before this step, default to be true.
-	Auto *bool `json:"auto,omitempty"`
+	Auto *bool `json:"auto"`
 	// If set false, this step will apply the components with the terraform workload.
-	IgnoreTerraformComponent *bool `json:"ignoreTerraformComponent,omitempty"`
+	IgnoreTerraformComponent *bool `json:"ignoreTerraformComponent"`
 	// Maximum number of concurrent delivered components.
-	Parallelism *int32 `json:"parallelism,omitempty"`
+	Parallelism *int32 `json:"parallelism"`
 	// Declare the policies that used for this deployment. If not specified, the components will be deployed to the hub cluster.
-	Policies []string `json:"policies,omitempty"`
+	Policies []string `json:"policies"`
 }
 
 // NewDeploySpecWith instantiates a new DeploySpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewDeploySpecWith() *DeploySpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewDeploySpecWith(auto bool, ignoreTerraformComponent bool, parallelism int32, policies []string) *DeploySpec {
+	this := DeploySpec{}
+	this.Auto = &auto
+	this.IgnoreTerraformComponent = &ignoreTerraformComponent
+	this.Parallelism = &parallelism
+	this.Policies = policies
+	return &this
+}
+
+// NewDeploySpecWithDefault instantiates a new DeploySpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewDeploySpecWithDefault() *DeploySpec {
 	this := DeploySpec{}
 	var auto bool = true
 	this.Auto = &auto
@@ -52,17 +65,17 @@ func NewDeploySpecWith() *DeploySpec {
 	return &this
 }
 
-// NewDeploySpec instantiates a new DeploySpec object
+// NewDeploySpec is short for NewDeploySpecWithDefault which instantiates a new DeploySpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewDeploySpec() *DeploySpec {
+	return NewDeploySpecWithDefault()
+}
+
+// NewDeploySpecEmpty instantiates a new DeploySpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewDeploySpecEmpty() *DeploySpec {
 	this := DeploySpec{}
-	var auto bool = true
-	this.Auto = &auto
-	var ignoreTerraformComponent bool = true
-	this.IgnoreTerraformComponent = &ignoreTerraformComponent
-	var parallelism int32 = 5
-	this.Parallelism = &parallelism
 	return &this
 }
 
@@ -76,137 +89,121 @@ func NewDeploySpecList(ps ...*DeploySpec) []DeploySpec {
 	return objs
 }
 
-// GetAuto returns the Auto field value if set, zero value otherwise.
+// Validate validates this DeploySpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *DeployWorkflowStep) Validate() error {
+	if o.Properties.Auto == nil {
+		return errors.New("Auto in DeploySpec must be set")
+	}
+	if o.Properties.IgnoreTerraformComponent == nil {
+		return errors.New("IgnoreTerraformComponent in DeploySpec must be set")
+	}
+	if o.Properties.Parallelism == nil {
+		return errors.New("Parallelism in DeploySpec must be set")
+	}
+	if o.Properties.Policies == nil {
+		return errors.New("Policies in DeploySpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetAuto returns the Auto field value
 func (o *DeployWorkflowStep) GetAuto() bool {
-	if o == nil || utils.IsNil(o.Properties.Auto) {
+	if o == nil {
 		var ret bool
 		return ret
 	}
+
 	return *o.Properties.Auto
 }
 
-// GetAutoOk returns a tuple with the Auto field value if set, nil otherwise
+// GetAutoOk returns a tuple with the Auto field value
 // and a boolean to check if the value has been set.
 func (o *DeployWorkflowStep) GetAutoOk() (*bool, bool) {
-	if o == nil || utils.IsNil(o.Properties.Auto) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Auto, true
 }
 
-// HasAuto returns a boolean if a field has been set.
-func (o *DeployWorkflowStep) HasAuto() bool {
-	if o != nil && !utils.IsNil(o.Properties.Auto) {
-		return true
-	}
-
-	return false
-}
-
-// SetAuto gets a reference to the given bool and assigns it to the auto field.
-// Auto:  If set to false, the workflow will suspend automatically before this step, default to be true.
+// SetAuto sets field value
 func (o *DeployWorkflowStep) SetAuto(v bool) *DeployWorkflowStep {
 	o.Properties.Auto = &v
 	return o
 }
 
-// GetIgnoreTerraformComponent returns the IgnoreTerraformComponent field value if set, zero value otherwise.
+// GetIgnoreTerraformComponent returns the IgnoreTerraformComponent field value
 func (o *DeployWorkflowStep) GetIgnoreTerraformComponent() bool {
-	if o == nil || utils.IsNil(o.Properties.IgnoreTerraformComponent) {
+	if o == nil {
 		var ret bool
 		return ret
 	}
+
 	return *o.Properties.IgnoreTerraformComponent
 }
 
-// GetIgnoreTerraformComponentOk returns a tuple with the IgnoreTerraformComponent field value if set, nil otherwise
+// GetIgnoreTerraformComponentOk returns a tuple with the IgnoreTerraformComponent field value
 // and a boolean to check if the value has been set.
 func (o *DeployWorkflowStep) GetIgnoreTerraformComponentOk() (*bool, bool) {
-	if o == nil || utils.IsNil(o.Properties.IgnoreTerraformComponent) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.IgnoreTerraformComponent, true
 }
 
-// HasIgnoreTerraformComponent returns a boolean if a field has been set.
-func (o *DeployWorkflowStep) HasIgnoreTerraformComponent() bool {
-	if o != nil && !utils.IsNil(o.Properties.IgnoreTerraformComponent) {
-		return true
-	}
-
-	return false
-}
-
-// SetIgnoreTerraformComponent gets a reference to the given bool and assigns it to the ignoreTerraformComponent field.
-// IgnoreTerraformComponent:  If set false, this step will apply the components with the terraform workload.
+// SetIgnoreTerraformComponent sets field value
 func (o *DeployWorkflowStep) SetIgnoreTerraformComponent(v bool) *DeployWorkflowStep {
 	o.Properties.IgnoreTerraformComponent = &v
 	return o
 }
 
-// GetParallelism returns the Parallelism field value if set, zero value otherwise.
+// GetParallelism returns the Parallelism field value
 func (o *DeployWorkflowStep) GetParallelism() int32 {
-	if o == nil || utils.IsNil(o.Properties.Parallelism) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Properties.Parallelism
 }
 
-// GetParallelismOk returns a tuple with the Parallelism field value if set, nil otherwise
+// GetParallelismOk returns a tuple with the Parallelism field value
 // and a boolean to check if the value has been set.
 func (o *DeployWorkflowStep) GetParallelismOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Properties.Parallelism) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Parallelism, true
 }
 
-// HasParallelism returns a boolean if a field has been set.
-func (o *DeployWorkflowStep) HasParallelism() bool {
-	if o != nil && !utils.IsNil(o.Properties.Parallelism) {
-		return true
-	}
-
-	return false
-}
-
-// SetParallelism gets a reference to the given int32 and assigns it to the parallelism field.
-// Parallelism:  Maximum number of concurrent delivered components.
+// SetParallelism sets field value
 func (o *DeployWorkflowStep) SetParallelism(v int32) *DeployWorkflowStep {
 	o.Properties.Parallelism = &v
 	return o
 }
 
-// GetPolicies returns the Policies field value if set, zero value otherwise.
+// GetPolicies returns the Policies field value
 func (o *DeployWorkflowStep) GetPolicies() []string {
-	if o == nil || utils.IsNil(o.Properties.Policies) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Properties.Policies
 }
 
-// GetPoliciesOk returns a tuple with the Policies field value if set, nil otherwise
+// GetPoliciesOk returns a tuple with the Policies field value
 // and a boolean to check if the value has been set.
 func (o *DeployWorkflowStep) GetPoliciesOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Policies) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Policies, true
 }
 
-// HasPolicies returns a boolean if a field has been set.
-func (o *DeployWorkflowStep) HasPolicies() bool {
-	if o != nil && !utils.IsNil(o.Properties.Policies) {
-		return true
-	}
-
-	return false
-}
-
-// SetPolicies gets a reference to the given []string and assigns it to the policies field.
-// Policies:  Declare the policies that used for this deployment. If not specified, the components will be deployed to the hub cluster.
+// SetPolicies sets field value
 func (o *DeployWorkflowStep) SetPolicies(v []string) *DeployWorkflowStep {
 	o.Properties.Policies = v
 	return o
@@ -222,18 +219,10 @@ func (o DeploySpec) MarshalJSON() ([]byte, error) {
 
 func (o DeploySpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Auto) {
-		toSerialize["auto"] = o.Auto
-	}
-	if !utils.IsNil(o.IgnoreTerraformComponent) {
-		toSerialize["ignoreTerraformComponent"] = o.IgnoreTerraformComponent
-	}
-	if !utils.IsNil(o.Parallelism) {
-		toSerialize["parallelism"] = o.Parallelism
-	}
-	if !utils.IsNil(o.Policies) {
-		toSerialize["policies"] = o.Policies
-	}
+	toSerialize["auto"] = o.Auto
+	toSerialize["ignoreTerraformComponent"] = o.IgnoreTerraformComponent
+	toSerialize["parallelism"] = o.Parallelism
+	toSerialize["policies"] = o.Policies
 	return toSerialize, nil
 }
 
@@ -242,7 +231,7 @@ type NullableDeploySpec struct {
 	isSet bool
 }
 
-func (v NullableDeploySpec) Get() *DeploySpec {
+func (v *NullableDeploySpec) Get() *DeploySpec {
 	return v.value
 }
 
@@ -251,7 +240,7 @@ func (v *NullableDeploySpec) Set(val *DeploySpec) {
 	v.isSet = true
 }
 
-func (v NullableDeploySpec) IsSet() bool {
+func (v *NullableDeploySpec) IsSet() bool {
 	return v.isSet
 }
 

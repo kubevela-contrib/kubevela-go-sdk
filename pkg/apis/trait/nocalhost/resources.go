@@ -12,6 +12,7 @@ package nocalhost
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &Resources{}
 
 // Resources struct for Resources
 type Resources struct {
-	Limits   *Limits   `json:"limits,omitempty"`
-	Requests *Requests `json:"requests,omitempty"`
+	Limits   *Limits   `json:"limits"`
+	Requests *Requests `json:"requests"`
 }
 
 // NewResourcesWith instantiates a new Resources object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewResourcesWith() *Resources {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewResourcesWith(limits Limits, requests Requests) *Resources {
+	this := Resources{}
+	this.Limits = &limits
+	this.Requests = &requests
+	return &this
+}
+
+// NewResourcesWithDefault instantiates a new Resources object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewResourcesWithDefault() *Resources {
 	this := Resources{}
 	return &this
 }
 
-// NewResources instantiates a new Resources object
+// NewResources is short for NewResourcesWithDefault which instantiates a new Resources object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewResources() *Resources {
+	return NewResourcesWithDefault()
+}
+
+// NewResourcesEmpty instantiates a new Resources object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewResourcesEmpty() *Resources {
 	this := Resources{}
 	return &this
 }
@@ -52,69 +69,75 @@ func NewResourcesList(ps ...*Resources) []Resources {
 	return objs
 }
 
-// GetLimits returns the Limits field value if set, zero value otherwise.
+// Validate validates this Resources
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Resources) Validate() error {
+	if o.Limits == nil {
+		return errors.New("Limits in Resources must be set")
+	}
+	if o.Requests == nil {
+		return errors.New("Requests in Resources must be set")
+	}
+	// validate all nested properties
+	if o.Limits != nil {
+		if err := o.Limits.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Requests != nil {
+		if err := o.Requests.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetLimits returns the Limits field value
 func (o *Resources) GetLimits() Limits {
-	if o == nil || utils.IsNil(o.Limits) {
+	if o == nil {
 		var ret Limits
 		return ret
 	}
+
 	return *o.Limits
 }
 
-// GetLimitsOk returns a tuple with the Limits field value if set, nil otherwise
+// GetLimitsOk returns a tuple with the Limits field value
 // and a boolean to check if the value has been set.
 func (o *Resources) GetLimitsOk() (*Limits, bool) {
-	if o == nil || utils.IsNil(o.Limits) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Limits, true
 }
 
-// HasLimits returns a boolean if a field has been set.
-func (o *Resources) HasLimits() bool {
-	if o != nil && !utils.IsNil(o.Limits) {
-		return true
-	}
-
-	return false
-}
-
-// SetLimits gets a reference to the given Limits and assigns it to the limits field.
-// Limits:
+// SetLimits sets field value
 func (o *Resources) SetLimits(v Limits) *Resources {
 	o.Limits = &v
 	return o
 }
 
-// GetRequests returns the Requests field value if set, zero value otherwise.
+// GetRequests returns the Requests field value
 func (o *Resources) GetRequests() Requests {
-	if o == nil || utils.IsNil(o.Requests) {
+	if o == nil {
 		var ret Requests
 		return ret
 	}
+
 	return *o.Requests
 }
 
-// GetRequestsOk returns a tuple with the Requests field value if set, nil otherwise
+// GetRequestsOk returns a tuple with the Requests field value
 // and a boolean to check if the value has been set.
 func (o *Resources) GetRequestsOk() (*Requests, bool) {
-	if o == nil || utils.IsNil(o.Requests) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Requests, true
 }
 
-// HasRequests returns a boolean if a field has been set.
-func (o *Resources) HasRequests() bool {
-	if o != nil && !utils.IsNil(o.Requests) {
-		return true
-	}
-
-	return false
-}
-
-// SetRequests gets a reference to the given Requests and assigns it to the requests field.
-// Requests:
+// SetRequests sets field value
 func (o *Resources) SetRequests(v Requests) *Resources {
 	o.Requests = &v
 	return o
@@ -130,12 +153,8 @@ func (o Resources) MarshalJSON() ([]byte, error) {
 
 func (o Resources) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Limits) {
-		toSerialize["limits"] = o.Limits
-	}
-	if !utils.IsNil(o.Requests) {
-		toSerialize["requests"] = o.Requests
-	}
+	toSerialize["limits"] = o.Limits
+	toSerialize["requests"] = o.Requests
 	return toSerialize, nil
 }
 
@@ -144,7 +163,7 @@ type NullableResources struct {
 	isSet bool
 }
 
-func (v NullableResources) Get() *Resources {
+func (v *NullableResources) Get() *Resources {
 	return v.value
 }
 
@@ -153,7 +172,7 @@ func (v *NullableResources) Set(val *Resources) {
 	v.isSet = true
 }
 
-func (v NullableResources) IsSet() bool {
+func (v *NullableResources) IsSet() bool {
 	return v.isSet
 }
 

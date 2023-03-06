@@ -12,6 +12,7 @@ package read_config
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,24 +29,39 @@ var _ utils.MappedNullable = &ReadConfigSpec{}
 // ReadConfigSpec struct for ReadConfigSpec
 type ReadConfigSpec struct {
 	// Specify the name of the config.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 	// Specify the namespace of the config.
 	Namespace *string `json:"namespace,omitempty"`
 }
 
 // NewReadConfigSpecWith instantiates a new ReadConfigSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewReadConfigSpecWith() *ReadConfigSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewReadConfigSpecWith(name string) *ReadConfigSpec {
+	this := ReadConfigSpec{}
+	this.Name = &name
+	return &this
+}
+
+// NewReadConfigSpecWithDefault instantiates a new ReadConfigSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewReadConfigSpecWithDefault() *ReadConfigSpec {
 	this := ReadConfigSpec{}
 	return &this
 }
 
-// NewReadConfigSpec instantiates a new ReadConfigSpec object
+// NewReadConfigSpec is short for NewReadConfigSpecWithDefault which instantiates a new ReadConfigSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewReadConfigSpec() *ReadConfigSpec {
+	return NewReadConfigSpecWithDefault()
+}
+
+// NewReadConfigSpecEmpty instantiates a new ReadConfigSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewReadConfigSpecEmpty() *ReadConfigSpec {
 	this := ReadConfigSpec{}
 	return &this
 }
@@ -60,35 +76,37 @@ func NewReadConfigSpecList(ps ...*ReadConfigSpec) []ReadConfigSpec {
 	return objs
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// Validate validates this ReadConfigSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ReadConfigWorkflowStep) Validate() error {
+	if o.Properties.Name == nil {
+		return errors.New("Name in ReadConfigSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetName returns the Name field value
 func (o *ReadConfigWorkflowStep) GetName() string {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *ReadConfigWorkflowStep) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *ReadConfigWorkflowStep) HasName() bool {
-	if o != nil && !utils.IsNil(o.Properties.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Specify the name of the config.
+// SetName sets field value
 func (o *ReadConfigWorkflowStep) SetName(v string) *ReadConfigWorkflowStep {
 	o.Properties.Name = &v
 	return o
@@ -138,9 +156,7 @@ func (o ReadConfigSpec) MarshalJSON() ([]byte, error) {
 
 func (o ReadConfigSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
+	toSerialize["name"] = o.Name
 	if !utils.IsNil(o.Namespace) {
 		toSerialize["namespace"] = o.Namespace
 	}
@@ -152,7 +168,7 @@ type NullableReadConfigSpec struct {
 	isSet bool
 }
 
-func (v NullableReadConfigSpec) Get() *ReadConfigSpec {
+func (v *NullableReadConfigSpec) Get() *ReadConfigSpec {
 	return v.value
 }
 
@@ -161,7 +177,7 @@ func (v *NullableReadConfigSpec) Set(val *ReadConfigSpec) {
 	v.isSet = true
 }
 
-func (v NullableReadConfigSpec) IsSet() bool {
+func (v *NullableReadConfigSpec) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,11 +12,10 @@ package startup_probe
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
-
-	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
 	sdkcommon "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
@@ -41,6 +40,19 @@ func StartupProbeSpecOneOfAsStartupProbeSpec(v *StartupProbeSpecOneOf) StartupPr
 	return StartupProbeSpec{
 		StartupProbeSpecOneOf: v,
 	}
+}
+
+// Validate validates this StartupProbeSpec
+func (o *StartupProbeTrait) Validate() error {
+	if o.Properties.StartupProbeParams != nil {
+		return nil
+	}
+
+	if o.Properties.StartupProbeSpecOneOf != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in StartupProbeSpec")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -121,7 +133,7 @@ type NullableStartupProbeSpec struct {
 	isSet bool
 }
 
-func (v NullableStartupProbeSpec) Get() *StartupProbeSpec {
+func (v *NullableStartupProbeSpec) Get() *StartupProbeSpec {
 	return v.value
 }
 
@@ -130,7 +142,7 @@ func (v *NullableStartupProbeSpec) Set(val *StartupProbeSpec) {
 	v.isSet = true
 }
 
-func (v NullableStartupProbeSpec) IsSet() bool {
+func (v *NullableStartupProbeSpec) IsSet() bool {
 	return v.isSet
 }
 

@@ -31,18 +31,32 @@ type TakeOverSpec struct {
 }
 
 // NewTakeOverSpecWith instantiates a new TakeOverSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewTakeOverSpecWith() *TakeOverSpec {
 	this := TakeOverSpec{}
 	return &this
 }
 
-// NewTakeOverSpec instantiates a new TakeOverSpec object
+// NewTakeOverSpecWithDefault instantiates a new TakeOverSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewTakeOverSpecWithDefault() *TakeOverSpec {
+	this := TakeOverSpec{}
+	return &this
+}
+
+// NewTakeOverSpec is short for NewTakeOverSpecWithDefault which instantiates a new TakeOverSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewTakeOverSpec() *TakeOverSpec {
+	return NewTakeOverSpecWithDefault()
+}
+
+// NewTakeOverSpecEmpty instantiates a new TakeOverSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewTakeOverSpecEmpty() *TakeOverSpec {
 	this := TakeOverSpec{}
 	return &this
 }
@@ -55,6 +69,14 @@ func NewTakeOverSpecList(ps ...*TakeOverSpec) []TakeOverSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this TakeOverSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *TakeOverPolicy) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetRules returns the Rules field value if set, zero value otherwise.
@@ -112,7 +134,7 @@ type NullableTakeOverSpec struct {
 	isSet bool
 }
 
-func (v NullableTakeOverSpec) Get() *TakeOverSpec {
+func (v *NullableTakeOverSpec) Get() *TakeOverSpec {
 	return v.value
 }
 
@@ -121,7 +143,7 @@ func (v *NullableTakeOverSpec) Set(val *TakeOverSpec) {
 	v.isSet = true
 }
 
-func (v NullableTakeOverSpec) IsSet() bool {
+func (v *NullableTakeOverSpec) IsSet() bool {
 	return v.isSet
 }
 

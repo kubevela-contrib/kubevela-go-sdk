@@ -12,7 +12,6 @@ package notification
 
 import (
 	"encoding/json"
-
 	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
@@ -36,6 +35,19 @@ func UrlOneOf1AsPassword(v *UrlOneOf1) Password {
 	return Password{
 		UrlOneOf1: v,
 	}
+}
+
+// Validate validates this Password
+func (o *Password) Validate() error {
+	if o.PasswordOneOf != nil {
+		return nil
+	}
+
+	if o.UrlOneOf1 != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in Password")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -116,7 +128,7 @@ type NullablePassword struct {
 	isSet bool
 }
 
-func (v NullablePassword) Get() *Password {
+func (v *NullablePassword) Get() *Password {
 	return v.value
 }
 
@@ -125,7 +137,7 @@ func (v *NullablePassword) Set(val *Password) {
 	v.isSet = true
 }
 
-func (v NullablePassword) IsSet() bool {
+func (v *NullablePassword) IsSet() bool {
 	return v.isSet
 }
 

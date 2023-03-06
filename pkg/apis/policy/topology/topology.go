@@ -29,9 +29,9 @@ type TopologySpec struct {
 	// Ignore empty cluster error
 	AllowEmpty *bool `json:"allowEmpty,omitempty"`
 	// Specify the label selector for clusters
-	ClusterLabelSelector *map[string]string `json:"clusterLabelSelector,omitempty"`
+	ClusterLabelSelector map[string]string `json:"clusterLabelSelector,omitempty"`
 	// Deprecated: Use clusterLabelSelector instead.
-	ClusterSelector *map[string]string `json:"clusterSelector,omitempty"`
+	ClusterSelector map[string]string `json:"clusterSelector,omitempty"`
 	// Specify the names of the clusters to select.
 	Clusters []string `json:"clusters,omitempty"`
 	// Specify the target namespace to deploy in the selected clusters, default inherit the original namespace.
@@ -39,18 +39,32 @@ type TopologySpec struct {
 }
 
 // NewTopologySpecWith instantiates a new TopologySpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewTopologySpecWith() *TopologySpec {
 	this := TopologySpec{}
 	return &this
 }
 
-// NewTopologySpec instantiates a new TopologySpec object
+// NewTopologySpecWithDefault instantiates a new TopologySpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewTopologySpecWithDefault() *TopologySpec {
+	this := TopologySpec{}
+	return &this
+}
+
+// NewTopologySpec is short for NewTopologySpecWithDefault which instantiates a new TopologySpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewTopologySpec() *TopologySpec {
+	return NewTopologySpecWithDefault()
+}
+
+// NewTopologySpecEmpty instantiates a new TopologySpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewTopologySpecEmpty() *TopologySpec {
 	this := TopologySpec{}
 	return &this
 }
@@ -63,6 +77,14 @@ func NewTopologySpecList(ps ...*TopologySpec) []TopologySpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this TopologySpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *TopologyPolicy) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetAllowEmpty returns the AllowEmpty field value if set, zero value otherwise.
@@ -105,12 +127,12 @@ func (o *TopologyPolicy) GetClusterLabelSelector() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.Properties.ClusterLabelSelector
+	return o.Properties.ClusterLabelSelector
 }
 
 // GetClusterLabelSelectorOk returns a tuple with the ClusterLabelSelector field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TopologyPolicy) GetClusterLabelSelectorOk() (*map[string]string, bool) {
+func (o *TopologyPolicy) GetClusterLabelSelectorOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.Properties.ClusterLabelSelector) {
 		return nil, false
 	}
@@ -129,7 +151,7 @@ func (o *TopologyPolicy) HasClusterLabelSelector() bool {
 // SetClusterLabelSelector gets a reference to the given map[string]string and assigns it to the clusterLabelSelector field.
 // ClusterLabelSelector:  Specify the label selector for clusters
 func (o *TopologyPolicy) SetClusterLabelSelector(v map[string]string) *TopologyPolicy {
-	o.Properties.ClusterLabelSelector = &v
+	o.Properties.ClusterLabelSelector = v
 	return o
 }
 
@@ -139,12 +161,12 @@ func (o *TopologyPolicy) GetClusterSelector() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.Properties.ClusterSelector
+	return o.Properties.ClusterSelector
 }
 
 // GetClusterSelectorOk returns a tuple with the ClusterSelector field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TopologyPolicy) GetClusterSelectorOk() (*map[string]string, bool) {
+func (o *TopologyPolicy) GetClusterSelectorOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.Properties.ClusterSelector) {
 		return nil, false
 	}
@@ -163,7 +185,7 @@ func (o *TopologyPolicy) HasClusterSelector() bool {
 // SetClusterSelector gets a reference to the given map[string]string and assigns it to the clusterSelector field.
 // ClusterSelector:  Deprecated: Use clusterLabelSelector instead.
 func (o *TopologyPolicy) SetClusterSelector(v map[string]string) *TopologyPolicy {
-	o.Properties.ClusterSelector = &v
+	o.Properties.ClusterSelector = v
 	return o
 }
 
@@ -268,7 +290,7 @@ type NullableTopologySpec struct {
 	isSet bool
 }
 
-func (v NullableTopologySpec) Get() *TopologySpec {
+func (v *NullableTopologySpec) Get() *TopologySpec {
 	return v.value
 }
 
@@ -277,7 +299,7 @@ func (v *NullableTopologySpec) Set(val *TopologySpec) {
 	v.isSet = true
 }
 
-func (v NullableTopologySpec) IsSet() bool {
+func (v *NullableTopologySpec) IsSet() bool {
 	return v.isSet
 }
 

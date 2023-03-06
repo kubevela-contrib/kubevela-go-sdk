@@ -12,6 +12,7 @@ package lifecycle
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,22 +23,37 @@ var _ utils.MappedNullable = &TcpSocket{}
 // TcpSocket struct for TcpSocket
 type TcpSocket struct {
 	Host *string `json:"host,omitempty"`
-	Port *int32  `json:"port,omitempty"`
+	Port *int32  `json:"port"`
 }
 
 // NewTcpSocketWith instantiates a new TcpSocket object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewTcpSocketWith() *TcpSocket {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewTcpSocketWith(port int32) *TcpSocket {
+	this := TcpSocket{}
+	this.Port = &port
+	return &this
+}
+
+// NewTcpSocketWithDefault instantiates a new TcpSocket object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewTcpSocketWithDefault() *TcpSocket {
 	this := TcpSocket{}
 	return &this
 }
 
-// NewTcpSocket instantiates a new TcpSocket object
+// NewTcpSocket is short for NewTcpSocketWithDefault which instantiates a new TcpSocket object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewTcpSocket() *TcpSocket {
+	return NewTcpSocketWithDefault()
+}
+
+// NewTcpSocketEmpty instantiates a new TcpSocket object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewTcpSocketEmpty() *TcpSocket {
 	this := TcpSocket{}
 	return &this
 }
@@ -50,6 +66,17 @@ func NewTcpSocketList(ps ...*TcpSocket) []TcpSocket {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this TcpSocket
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *TcpSocket) Validate() error {
+	if o.Port == nil {
+		return errors.New("Port in TcpSocket must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetHost returns the Host field value if set, zero value otherwise.
@@ -86,35 +113,26 @@ func (o *TcpSocket) SetHost(v string) *TcpSocket {
 	return o
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
+// GetPort returns the Port field value
 func (o *TcpSocket) GetPort() int32 {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Port
 }
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
 func (o *TcpSocket) GetPortOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Port, true
 }
 
-// HasPort returns a boolean if a field has been set.
-func (o *TcpSocket) HasPort() bool {
-	if o != nil && !utils.IsNil(o.Port) {
-		return true
-	}
-
-	return false
-}
-
-// SetPort gets a reference to the given int32 and assigns it to the port field.
-// Port:
+// SetPort sets field value
 func (o *TcpSocket) SetPort(v int32) *TcpSocket {
 	o.Port = &v
 	return o
@@ -133,9 +151,7 @@ func (o TcpSocket) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Host) {
 		toSerialize["host"] = o.Host
 	}
-	if !utils.IsNil(o.Port) {
-		toSerialize["port"] = o.Port
-	}
+	toSerialize["port"] = o.Port
 	return toSerialize, nil
 }
 
@@ -144,7 +160,7 @@ type NullableTcpSocket struct {
 	isSet bool
 }
 
-func (v NullableTcpSocket) Get() *TcpSocket {
+func (v *NullableTcpSocket) Get() *TcpSocket {
 	return v.value
 }
 
@@ -153,7 +169,7 @@ func (v *NullableTcpSocket) Set(val *TcpSocket) {
 	v.isSet = true
 }
 
-func (v NullableTcpSocket) IsSet() bool {
+func (v *NullableTcpSocket) IsSet() bool {
 	return v.isSet
 }
 

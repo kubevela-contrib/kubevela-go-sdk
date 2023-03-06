@@ -39,18 +39,32 @@ type StorageSpec struct {
 }
 
 // NewStorageSpecWith instantiates a new StorageSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewStorageSpecWith() *StorageSpec {
 	this := StorageSpec{}
 	return &this
 }
 
-// NewStorageSpec instantiates a new StorageSpec object
+// NewStorageSpecWithDefault instantiates a new StorageSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewStorageSpecWithDefault() *StorageSpec {
+	this := StorageSpec{}
+	return &this
+}
+
+// NewStorageSpec is short for NewStorageSpecWithDefault which instantiates a new StorageSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewStorageSpec() *StorageSpec {
+	return NewStorageSpecWithDefault()
+}
+
+// NewStorageSpecEmpty instantiates a new StorageSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewStorageSpecEmpty() *StorageSpec {
 	this := StorageSpec{}
 	return &this
 }
@@ -63,6 +77,14 @@ func NewStorageSpecList(ps ...*StorageSpec) []StorageSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this StorageSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *StorageTrait) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetConfigMap returns the ConfigMap field value if set, zero value otherwise.
@@ -268,7 +290,7 @@ type NullableStorageSpec struct {
 	isSet bool
 }
 
-func (v NullableStorageSpec) Get() *StorageSpec {
+func (v *NullableStorageSpec) Get() *StorageSpec {
 	return v.value
 }
 
@@ -277,7 +299,7 @@ func (v *NullableStorageSpec) Set(val *StorageSpec) {
 	v.isSet = true
 }
 
-func (v NullableStorageSpec) IsSet() bool {
+func (v *NullableStorageSpec) IsSet() bool {
 	return v.isSet
 }
 

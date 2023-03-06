@@ -12,6 +12,7 @@ package nocalhost
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &PersistentVolumeDirs{}
 
 // PersistentVolumeDirs struct for PersistentVolumeDirs
 type PersistentVolumeDirs struct {
-	Capacity *string `json:"capacity,omitempty"`
-	Path     *string `json:"path,omitempty"`
+	Capacity *string `json:"capacity"`
+	Path     *string `json:"path"`
 }
 
 // NewPersistentVolumeDirsWith instantiates a new PersistentVolumeDirs object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPersistentVolumeDirsWith() *PersistentVolumeDirs {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPersistentVolumeDirsWith(capacity string, path string) *PersistentVolumeDirs {
+	this := PersistentVolumeDirs{}
+	this.Capacity = &capacity
+	this.Path = &path
+	return &this
+}
+
+// NewPersistentVolumeDirsWithDefault instantiates a new PersistentVolumeDirs object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPersistentVolumeDirsWithDefault() *PersistentVolumeDirs {
 	this := PersistentVolumeDirs{}
 	return &this
 }
 
-// NewPersistentVolumeDirs instantiates a new PersistentVolumeDirs object
+// NewPersistentVolumeDirs is short for NewPersistentVolumeDirsWithDefault which instantiates a new PersistentVolumeDirs object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPersistentVolumeDirs() *PersistentVolumeDirs {
+	return NewPersistentVolumeDirsWithDefault()
+}
+
+// NewPersistentVolumeDirsEmpty instantiates a new PersistentVolumeDirs object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPersistentVolumeDirsEmpty() *PersistentVolumeDirs {
 	this := PersistentVolumeDirs{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewPersistentVolumeDirsList(ps ...*PersistentVolumeDirs) []PersistentVolume
 	return objs
 }
 
-// GetCapacity returns the Capacity field value if set, zero value otherwise.
+// Validate validates this PersistentVolumeDirs
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PersistentVolumeDirs) Validate() error {
+	if o.Capacity == nil {
+		return errors.New("Capacity in PersistentVolumeDirs must be set")
+	}
+	if o.Path == nil {
+		return errors.New("Path in PersistentVolumeDirs must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetCapacity returns the Capacity field value
 func (o *PersistentVolumeDirs) GetCapacity() string {
-	if o == nil || utils.IsNil(o.Capacity) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Capacity
 }
 
-// GetCapacityOk returns a tuple with the Capacity field value if set, nil otherwise
+// GetCapacityOk returns a tuple with the Capacity field value
 // and a boolean to check if the value has been set.
 func (o *PersistentVolumeDirs) GetCapacityOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Capacity) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Capacity, true
 }
 
-// HasCapacity returns a boolean if a field has been set.
-func (o *PersistentVolumeDirs) HasCapacity() bool {
-	if o != nil && !utils.IsNil(o.Capacity) {
-		return true
-	}
-
-	return false
-}
-
-// SetCapacity gets a reference to the given string and assigns it to the capacity field.
-// Capacity:
+// SetCapacity sets field value
 func (o *PersistentVolumeDirs) SetCapacity(v string) *PersistentVolumeDirs {
 	o.Capacity = &v
 	return o
 }
 
-// GetPath returns the Path field value if set, zero value otherwise.
+// GetPath returns the Path field value
 func (o *PersistentVolumeDirs) GetPath() string {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Path
 }
 
-// GetPathOk returns a tuple with the Path field value if set, nil otherwise
+// GetPathOk returns a tuple with the Path field value
 // and a boolean to check if the value has been set.
 func (o *PersistentVolumeDirs) GetPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Path, true
 }
 
-// HasPath returns a boolean if a field has been set.
-func (o *PersistentVolumeDirs) HasPath() bool {
-	if o != nil && !utils.IsNil(o.Path) {
-		return true
-	}
-
-	return false
-}
-
-// SetPath gets a reference to the given string and assigns it to the path field.
-// Path:
+// SetPath sets field value
 func (o *PersistentVolumeDirs) SetPath(v string) *PersistentVolumeDirs {
 	o.Path = &v
 	return o
@@ -130,12 +143,8 @@ func (o PersistentVolumeDirs) MarshalJSON() ([]byte, error) {
 
 func (o PersistentVolumeDirs) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Capacity) {
-		toSerialize["capacity"] = o.Capacity
-	}
-	if !utils.IsNil(o.Path) {
-		toSerialize["path"] = o.Path
-	}
+	toSerialize["capacity"] = o.Capacity
+	toSerialize["path"] = o.Path
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullablePersistentVolumeDirs struct {
 	isSet bool
 }
 
-func (v NullablePersistentVolumeDirs) Get() *PersistentVolumeDirs {
+func (v *NullablePersistentVolumeDirs) Get() *PersistentVolumeDirs {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullablePersistentVolumeDirs) Set(val *PersistentVolumeDirs) {
 	v.isSet = true
 }
 
-func (v NullablePersistentVolumeDirs) IsSet() bool {
+func (v *NullablePersistentVolumeDirs) IsSet() bool {
 	return v.isSet
 }
 

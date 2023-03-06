@@ -12,6 +12,7 @@ package hostalias
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -27,22 +28,37 @@ var _ utils.MappedNullable = &HostaliasSpec{}
 // HostaliasSpec struct for HostaliasSpec
 type HostaliasSpec struct {
 	// Specify the hostAliases to add
-	HostAliases []HostAliases `json:"hostAliases,omitempty"`
+	HostAliases []HostAliases `json:"hostAliases"`
 }
 
 // NewHostaliasSpecWith instantiates a new HostaliasSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewHostaliasSpecWith() *HostaliasSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewHostaliasSpecWith(hostAliases []HostAliases) *HostaliasSpec {
+	this := HostaliasSpec{}
+	this.HostAliases = hostAliases
+	return &this
+}
+
+// NewHostaliasSpecWithDefault instantiates a new HostaliasSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewHostaliasSpecWithDefault() *HostaliasSpec {
 	this := HostaliasSpec{}
 	return &this
 }
 
-// NewHostaliasSpec instantiates a new HostaliasSpec object
+// NewHostaliasSpec is short for NewHostaliasSpecWithDefault which instantiates a new HostaliasSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewHostaliasSpec() *HostaliasSpec {
+	return NewHostaliasSpecWithDefault()
+}
+
+// NewHostaliasSpecEmpty instantiates a new HostaliasSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewHostaliasSpecEmpty() *HostaliasSpec {
 	this := HostaliasSpec{}
 	return &this
 }
@@ -57,35 +73,37 @@ func NewHostaliasSpecList(ps ...*HostaliasSpec) []HostaliasSpec {
 	return objs
 }
 
-// GetHostAliases returns the HostAliases field value if set, zero value otherwise.
+// Validate validates this HostaliasSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *HostaliasTrait) Validate() error {
+	if o.Properties.HostAliases == nil {
+		return errors.New("HostAliases in HostaliasSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetHostAliases returns the HostAliases field value
 func (o *HostaliasTrait) GetHostAliases() []HostAliases {
-	if o == nil || utils.IsNil(o.Properties.HostAliases) {
+	if o == nil {
 		var ret []HostAliases
 		return ret
 	}
+
 	return o.Properties.HostAliases
 }
 
-// GetHostAliasesOk returns a tuple with the HostAliases field value if set, nil otherwise
+// GetHostAliasesOk returns a tuple with the HostAliases field value
 // and a boolean to check if the value has been set.
 func (o *HostaliasTrait) GetHostAliasesOk() ([]HostAliases, bool) {
-	if o == nil || utils.IsNil(o.Properties.HostAliases) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.HostAliases, true
 }
 
-// HasHostAliases returns a boolean if a field has been set.
-func (o *HostaliasTrait) HasHostAliases() bool {
-	if o != nil && !utils.IsNil(o.Properties.HostAliases) {
-		return true
-	}
-
-	return false
-}
-
-// SetHostAliases gets a reference to the given []HostAliases and assigns it to the hostAliases field.
-// HostAliases:  Specify the hostAliases to add
+// SetHostAliases sets field value
 func (o *HostaliasTrait) SetHostAliases(v []HostAliases) *HostaliasTrait {
 	o.Properties.HostAliases = v
 	return o
@@ -101,9 +119,7 @@ func (o HostaliasSpec) MarshalJSON() ([]byte, error) {
 
 func (o HostaliasSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.HostAliases) {
-		toSerialize["hostAliases"] = o.HostAliases
-	}
+	toSerialize["hostAliases"] = o.HostAliases
 	return toSerialize, nil
 }
 
@@ -112,7 +128,7 @@ type NullableHostaliasSpec struct {
 	isSet bool
 }
 
-func (v NullableHostaliasSpec) Get() *HostaliasSpec {
+func (v *NullableHostaliasSpec) Get() *HostaliasSpec {
 	return v.value
 }
 
@@ -121,7 +137,7 @@ func (v *NullableHostaliasSpec) Set(val *HostaliasSpec) {
 	v.isSet = true
 }
 
-func (v NullableHostaliasSpec) IsSet() bool {
+func (v *NullableHostaliasSpec) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package service_binding
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,22 +23,37 @@ var _ utils.MappedNullable = &KeySecret{}
 // KeySecret struct for KeySecret
 type KeySecret struct {
 	Key    *string `json:"key,omitempty"`
-	Secret *string `json:"secret,omitempty"`
+	Secret *string `json:"secret"`
 }
 
 // NewKeySecretWith instantiates a new KeySecret object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewKeySecretWith() *KeySecret {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewKeySecretWith(secret string) *KeySecret {
+	this := KeySecret{}
+	this.Secret = &secret
+	return &this
+}
+
+// NewKeySecretWithDefault instantiates a new KeySecret object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewKeySecretWithDefault() *KeySecret {
 	this := KeySecret{}
 	return &this
 }
 
-// NewKeySecret instantiates a new KeySecret object
+// NewKeySecret is short for NewKeySecretWithDefault which instantiates a new KeySecret object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewKeySecret() *KeySecret {
+	return NewKeySecretWithDefault()
+}
+
+// NewKeySecretEmpty instantiates a new KeySecret object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewKeySecretEmpty() *KeySecret {
 	this := KeySecret{}
 	return &this
 }
@@ -50,6 +66,17 @@ func NewKeySecretList(ps ...*KeySecret) []KeySecret {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this KeySecret
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *KeySecret) Validate() error {
+	if o.Secret == nil {
+		return errors.New("Secret in KeySecret must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetKey returns the Key field value if set, zero value otherwise.
@@ -86,35 +113,26 @@ func (o *KeySecret) SetKey(v string) *KeySecret {
 	return o
 }
 
-// GetSecret returns the Secret field value if set, zero value otherwise.
+// GetSecret returns the Secret field value
 func (o *KeySecret) GetSecret() string {
-	if o == nil || utils.IsNil(o.Secret) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Secret
 }
 
-// GetSecretOk returns a tuple with the Secret field value if set, nil otherwise
+// GetSecretOk returns a tuple with the Secret field value
 // and a boolean to check if the value has been set.
 func (o *KeySecret) GetSecretOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Secret) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Secret, true
 }
 
-// HasSecret returns a boolean if a field has been set.
-func (o *KeySecret) HasSecret() bool {
-	if o != nil && !utils.IsNil(o.Secret) {
-		return true
-	}
-
-	return false
-}
-
-// SetSecret gets a reference to the given string and assigns it to the secret field.
-// Secret:
+// SetSecret sets field value
 func (o *KeySecret) SetSecret(v string) *KeySecret {
 	o.Secret = &v
 	return o
@@ -133,9 +151,7 @@ func (o KeySecret) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Key) {
 		toSerialize["key"] = o.Key
 	}
-	if !utils.IsNil(o.Secret) {
-		toSerialize["secret"] = o.Secret
-	}
+	toSerialize["secret"] = o.Secret
 	return toSerialize, nil
 }
 
@@ -144,7 +160,7 @@ type NullableKeySecret struct {
 	isSet bool
 }
 
-func (v NullableKeySecret) Get() *KeySecret {
+func (v *NullableKeySecret) Get() *KeySecret {
 	return v.value
 }
 
@@ -153,7 +169,7 @@ func (v *NullableKeySecret) Set(val *KeySecret) {
 	v.isSet = true
 }
 
-func (v NullableKeySecret) IsSet() bool {
+func (v *NullableKeySecret) IsSet() bool {
 	return v.isSet
 }
 

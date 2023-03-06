@@ -34,18 +34,32 @@ type AffinitySpec struct {
 }
 
 // NewAffinitySpecWith instantiates a new AffinitySpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewAffinitySpecWith() *AffinitySpec {
 	this := AffinitySpec{}
 	return &this
 }
 
-// NewAffinitySpec instantiates a new AffinitySpec object
+// NewAffinitySpecWithDefault instantiates a new AffinitySpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewAffinitySpecWithDefault() *AffinitySpec {
+	this := AffinitySpec{}
+	return &this
+}
+
+// NewAffinitySpec is short for NewAffinitySpecWithDefault which instantiates a new AffinitySpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewAffinitySpec() *AffinitySpec {
+	return NewAffinitySpecWithDefault()
+}
+
+// NewAffinitySpecEmpty instantiates a new AffinitySpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewAffinitySpecEmpty() *AffinitySpec {
 	this := AffinitySpec{}
 	return &this
 }
@@ -58,6 +72,29 @@ func NewAffinitySpecList(ps ...*AffinitySpec) []AffinitySpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this AffinitySpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *AffinityTrait) Validate() error {
+	// validate all nested properties
+	if o.Properties.NodeAffinity != nil {
+		if err := o.Properties.NodeAffinity.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.PodAffinity != nil {
+		if err := o.Properties.PodAffinity.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.PodAntiAffinity != nil {
+		if err := o.Properties.PodAntiAffinity.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetNodeAffinity returns the NodeAffinity field value if set, zero value otherwise.
@@ -226,7 +263,7 @@ type NullableAffinitySpec struct {
 	isSet bool
 }
 
-func (v NullableAffinitySpec) Get() *AffinitySpec {
+func (v *NullableAffinitySpec) Get() *AffinitySpec {
 	return v.value
 }
 
@@ -235,7 +272,7 @@ func (v *NullableAffinitySpec) Set(val *AffinitySpec) {
 	v.isSet = true
 }
 
-func (v NullableAffinitySpec) IsSet() bool {
+func (v *NullableAffinitySpec) IsSet() bool {
 	return v.isSet
 }
 

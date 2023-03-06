@@ -12,6 +12,7 @@ package env
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,20 +23,32 @@ var _ utils.MappedNullable = &PatchParams{}
 // PatchParams struct for PatchParams
 type PatchParams struct {
 	// Specify the name of the target container, if not set, use the component name
-	ContainerName *string `json:"containerName,omitempty"`
+	ContainerName *string `json:"containerName"`
 	// Specify the  environment variables to merge, if key already existing, override its value
-	Env *map[string]string `json:"env,omitempty"`
+	Env map[string]string `json:"env"`
 	// Specify if replacing the whole environment settings for the container
-	Replace *bool `json:"replace,omitempty"`
+	Replace *bool `json:"replace"`
 	// Specify which existing environment variables to unset
-	Unset []string `json:"unset,omitempty"`
+	Unset []string `json:"unset"`
 }
 
 // NewPatchParamsWith instantiates a new PatchParams object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPatchParamsWith() *PatchParams {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPatchParamsWith(containerName string, env map[string]string, replace bool, unset []string) *PatchParams {
+	this := PatchParams{}
+	this.ContainerName = &containerName
+	this.Env = env
+	this.Replace = &replace
+	this.Unset = unset
+	return &this
+}
+
+// NewPatchParamsWithDefault instantiates a new PatchParams object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPatchParamsWithDefault() *PatchParams {
 	this := PatchParams{}
 	var containerName string = ""
 	this.ContainerName = &containerName
@@ -44,15 +57,17 @@ func NewPatchParamsWith() *PatchParams {
 	return &this
 }
 
-// NewPatchParams instantiates a new PatchParams object
+// NewPatchParams is short for NewPatchParamsWithDefault which instantiates a new PatchParams object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPatchParams() *PatchParams {
+	return NewPatchParamsWithDefault()
+}
+
+// NewPatchParamsEmpty instantiates a new PatchParams object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPatchParamsEmpty() *PatchParams {
 	this := PatchParams{}
-	var containerName string = ""
-	this.ContainerName = &containerName
-	var replace bool = false
-	this.Replace = &replace
 	return &this
 }
 
@@ -66,137 +81,121 @@ func NewPatchParamsList(ps ...*PatchParams) []PatchParams {
 	return objs
 }
 
-// GetContainerName returns the ContainerName field value if set, zero value otherwise.
+// Validate validates this PatchParams
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PatchParams) Validate() error {
+	if o.ContainerName == nil {
+		return errors.New("ContainerName in PatchParams must be set")
+	}
+	if o.Env == nil {
+		return errors.New("Env in PatchParams must be set")
+	}
+	if o.Replace == nil {
+		return errors.New("Replace in PatchParams must be set")
+	}
+	if o.Unset == nil {
+		return errors.New("Unset in PatchParams must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetContainerName returns the ContainerName field value
 func (o *PatchParams) GetContainerName() string {
-	if o == nil || utils.IsNil(o.ContainerName) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.ContainerName
 }
 
-// GetContainerNameOk returns a tuple with the ContainerName field value if set, nil otherwise
+// GetContainerNameOk returns a tuple with the ContainerName field value
 // and a boolean to check if the value has been set.
 func (o *PatchParams) GetContainerNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.ContainerName) {
+	if o == nil {
 		return nil, false
 	}
 	return o.ContainerName, true
 }
 
-// HasContainerName returns a boolean if a field has been set.
-func (o *PatchParams) HasContainerName() bool {
-	if o != nil && !utils.IsNil(o.ContainerName) {
-		return true
-	}
-
-	return false
-}
-
-// SetContainerName gets a reference to the given string and assigns it to the containerName field.
-// ContainerName:  Specify the name of the target container, if not set, use the component name
+// SetContainerName sets field value
 func (o *PatchParams) SetContainerName(v string) *PatchParams {
 	o.ContainerName = &v
 	return o
 }
 
-// GetEnv returns the Env field value if set, zero value otherwise.
+// GetEnv returns the Env field value
 func (o *PatchParams) GetEnv() map[string]string {
-	if o == nil || utils.IsNil(o.Env) {
+	if o == nil {
 		var ret map[string]string
 		return ret
 	}
-	return *o.Env
+
+	return o.Env
 }
 
-// GetEnvOk returns a tuple with the Env field value if set, nil otherwise
+// GetEnvOk returns a tuple with the Env field value
 // and a boolean to check if the value has been set.
-func (o *PatchParams) GetEnvOk() (*map[string]string, bool) {
-	if o == nil || utils.IsNil(o.Env) {
+func (o *PatchParams) GetEnvOk() (map[string]string, bool) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Env, true
 }
 
-// HasEnv returns a boolean if a field has been set.
-func (o *PatchParams) HasEnv() bool {
-	if o != nil && !utils.IsNil(o.Env) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnv gets a reference to the given map[string]string and assigns it to the env field.
-// Env:  Specify the  environment variables to merge, if key already existing, override its value
+// SetEnv sets field value
 func (o *PatchParams) SetEnv(v map[string]string) *PatchParams {
-	o.Env = &v
+	o.Env = v
 	return o
 }
 
-// GetReplace returns the Replace field value if set, zero value otherwise.
+// GetReplace returns the Replace field value
 func (o *PatchParams) GetReplace() bool {
-	if o == nil || utils.IsNil(o.Replace) {
+	if o == nil {
 		var ret bool
 		return ret
 	}
+
 	return *o.Replace
 }
 
-// GetReplaceOk returns a tuple with the Replace field value if set, nil otherwise
+// GetReplaceOk returns a tuple with the Replace field value
 // and a boolean to check if the value has been set.
 func (o *PatchParams) GetReplaceOk() (*bool, bool) {
-	if o == nil || utils.IsNil(o.Replace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Replace, true
 }
 
-// HasReplace returns a boolean if a field has been set.
-func (o *PatchParams) HasReplace() bool {
-	if o != nil && !utils.IsNil(o.Replace) {
-		return true
-	}
-
-	return false
-}
-
-// SetReplace gets a reference to the given bool and assigns it to the replace field.
-// Replace:  Specify if replacing the whole environment settings for the container
+// SetReplace sets field value
 func (o *PatchParams) SetReplace(v bool) *PatchParams {
 	o.Replace = &v
 	return o
 }
 
-// GetUnset returns the Unset field value if set, zero value otherwise.
+// GetUnset returns the Unset field value
 func (o *PatchParams) GetUnset() []string {
-	if o == nil || utils.IsNil(o.Unset) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Unset
 }
 
-// GetUnsetOk returns a tuple with the Unset field value if set, nil otherwise
+// GetUnsetOk returns a tuple with the Unset field value
 // and a boolean to check if the value has been set.
 func (o *PatchParams) GetUnsetOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Unset) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Unset, true
 }
 
-// HasUnset returns a boolean if a field has been set.
-func (o *PatchParams) HasUnset() bool {
-	if o != nil && !utils.IsNil(o.Unset) {
-		return true
-	}
-
-	return false
-}
-
-// SetUnset gets a reference to the given []string and assigns it to the unset field.
-// Unset:  Specify which existing environment variables to unset
+// SetUnset sets field value
 func (o *PatchParams) SetUnset(v []string) *PatchParams {
 	o.Unset = v
 	return o
@@ -212,18 +211,10 @@ func (o PatchParams) MarshalJSON() ([]byte, error) {
 
 func (o PatchParams) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.ContainerName) {
-		toSerialize["containerName"] = o.ContainerName
-	}
-	if !utils.IsNil(o.Env) {
-		toSerialize["env"] = o.Env
-	}
-	if !utils.IsNil(o.Replace) {
-		toSerialize["replace"] = o.Replace
-	}
-	if !utils.IsNil(o.Unset) {
-		toSerialize["unset"] = o.Unset
-	}
+	toSerialize["containerName"] = o.ContainerName
+	toSerialize["env"] = o.Env
+	toSerialize["replace"] = o.Replace
+	toSerialize["unset"] = o.Unset
 	return toSerialize, nil
 }
 
@@ -232,7 +223,7 @@ type NullablePatchParams struct {
 	isSet bool
 }
 
-func (v NullablePatchParams) Get() *PatchParams {
+func (v *NullablePatchParams) Get() *PatchParams {
 	return v.value
 }
 
@@ -241,7 +232,7 @@ func (v *NullablePatchParams) Set(val *PatchParams) {
 	v.isSet = true
 }
 
-func (v NullablePatchParams) IsSet() bool {
+func (v *NullablePatchParams) IsSet() bool {
 	return v.isSet
 }
 

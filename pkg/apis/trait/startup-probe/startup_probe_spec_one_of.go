@@ -12,6 +12,7 @@ package startup_probe
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -26,19 +27,33 @@ type StartupProbeSpecOneOf struct {
 }
 
 // NewStartupProbeSpecOneOfWith instantiates a new StartupProbeSpecOneOf object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewStartupProbeSpecOneOfWith(probes []StartupProbeParams) *StartupProbeSpecOneOf {
 	this := StartupProbeSpecOneOf{}
 	this.Probes = probes
 	return &this
 }
 
-// NewStartupProbeSpecOneOf instantiates a new StartupProbeSpecOneOf object
+// NewStartupProbeSpecOneOfWithDefault instantiates a new StartupProbeSpecOneOf object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewStartupProbeSpecOneOfWithDefault() *StartupProbeSpecOneOf {
+	this := StartupProbeSpecOneOf{}
+	return &this
+}
+
+// NewStartupProbeSpecOneOf is short for NewStartupProbeSpecOneOfWithDefault which instantiates a new StartupProbeSpecOneOf object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewStartupProbeSpecOneOf() *StartupProbeSpecOneOf {
+	return NewStartupProbeSpecOneOfWithDefault()
+}
+
+// NewStartupProbeSpecOneOfEmpty instantiates a new StartupProbeSpecOneOf object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewStartupProbeSpecOneOfEmpty() *StartupProbeSpecOneOf {
 	this := StartupProbeSpecOneOf{}
 	return &this
 }
@@ -51,6 +66,17 @@ func NewStartupProbeSpecOneOfList(ps ...*StartupProbeSpecOneOf) []StartupProbeSp
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this StartupProbeSpecOneOf
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *StartupProbeSpecOneOf) Validate() error {
+	if o.Probes == nil {
+		return errors.New("Probes in StartupProbeSpecOneOf must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetProbes returns the Probes field value
@@ -97,7 +123,7 @@ type NullableStartupProbeSpecOneOf struct {
 	isSet bool
 }
 
-func (v NullableStartupProbeSpecOneOf) Get() *StartupProbeSpecOneOf {
+func (v *NullableStartupProbeSpecOneOf) Get() *StartupProbeSpecOneOf {
 	return v.value
 }
 
@@ -106,7 +132,7 @@ func (v *NullableStartupProbeSpecOneOf) Set(val *StartupProbeSpecOneOf) {
 	v.isSet = true
 }
 
-func (v NullableStartupProbeSpecOneOf) IsSet() bool {
+func (v *NullableStartupProbeSpecOneOf) IsSet() bool {
 	return v.isSet
 }
 

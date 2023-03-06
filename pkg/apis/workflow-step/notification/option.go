@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,24 +23,40 @@ var _ utils.MappedNullable = &Option{}
 // Option struct for Option
 type Option struct {
 	Description *TextType `json:"description,omitempty"`
-	Text        *TextType `json:"text,omitempty"`
+	Text        *TextType `json:"text"`
 	Url         *string   `json:"url,omitempty"`
-	Value       *string   `json:"value,omitempty"`
+	Value       *string   `json:"value"`
 }
 
 // NewOptionWith instantiates a new Option object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewOptionWith() *Option {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewOptionWith(text TextType, value string) *Option {
+	this := Option{}
+	this.Text = &text
+	this.Value = &value
+	return &this
+}
+
+// NewOptionWithDefault instantiates a new Option object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewOptionWithDefault() *Option {
 	this := Option{}
 	return &this
 }
 
-// NewOption instantiates a new Option object
+// NewOption is short for NewOptionWithDefault which instantiates a new Option object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewOption() *Option {
+	return NewOptionWithDefault()
+}
+
+// NewOptionEmpty instantiates a new Option object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewOptionEmpty() *Option {
 	this := Option{}
 	return &this
 }
@@ -52,6 +69,30 @@ func NewOptionList(ps ...*Option) []Option {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Option
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Option) Validate() error {
+	if o.Text == nil {
+		return errors.New("Text in Option must be set")
+	}
+	if o.Value == nil {
+		return errors.New("Value in Option must be set")
+	}
+	// validate all nested properties
+	if o.Description != nil {
+		if err := o.Description.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Text != nil {
+		if err := o.Text.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise.
@@ -88,35 +129,26 @@ func (o *Option) SetDescription(v TextType) *Option {
 	return o
 }
 
-// GetText returns the Text field value if set, zero value otherwise.
+// GetText returns the Text field value
 func (o *Option) GetText() TextType {
-	if o == nil || utils.IsNil(o.Text) {
+	if o == nil {
 		var ret TextType
 		return ret
 	}
+
 	return *o.Text
 }
 
-// GetTextOk returns a tuple with the Text field value if set, nil otherwise
+// GetTextOk returns a tuple with the Text field value
 // and a boolean to check if the value has been set.
 func (o *Option) GetTextOk() (*TextType, bool) {
-	if o == nil || utils.IsNil(o.Text) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Text, true
 }
 
-// HasText returns a boolean if a field has been set.
-func (o *Option) HasText() bool {
-	if o != nil && !utils.IsNil(o.Text) {
-		return true
-	}
-
-	return false
-}
-
-// SetText gets a reference to the given TextType and assigns it to the text field.
-// Text:
+// SetText sets field value
 func (o *Option) SetText(v TextType) *Option {
 	o.Text = &v
 	return o
@@ -156,35 +188,26 @@ func (o *Option) SetUrl(v string) *Option {
 	return o
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
+// GetValue returns the Value field value
 func (o *Option) GetValue() string {
-	if o == nil || utils.IsNil(o.Value) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Value
 }
 
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// GetValueOk returns a tuple with the Value field value
 // and a boolean to check if the value has been set.
 func (o *Option) GetValueOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Value) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Value, true
 }
 
-// HasValue returns a boolean if a field has been set.
-func (o *Option) HasValue() bool {
-	if o != nil && !utils.IsNil(o.Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetValue gets a reference to the given string and assigns it to the value field.
-// Value:
+// SetValue sets field value
 func (o *Option) SetValue(v string) *Option {
 	o.Value = &v
 	return o
@@ -203,15 +226,11 @@ func (o Option) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Description) {
 		toSerialize["description"] = o.Description
 	}
-	if !utils.IsNil(o.Text) {
-		toSerialize["text"] = o.Text
-	}
+	toSerialize["text"] = o.Text
 	if !utils.IsNil(o.Url) {
 		toSerialize["url"] = o.Url
 	}
-	if !utils.IsNil(o.Value) {
-		toSerialize["value"] = o.Value
-	}
+	toSerialize["value"] = o.Value
 	return toSerialize, nil
 }
 
@@ -220,7 +239,7 @@ type NullableOption struct {
 	isSet bool
 }
 
-func (v NullableOption) Get() *Option {
+func (v *NullableOption) Get() *Option {
 	return v.value
 }
 
@@ -229,7 +248,7 @@ func (v *NullableOption) Set(val *Option) {
 	v.isSet = true
 }
 
-func (v NullableOption) IsSet() bool {
+func (v *NullableOption) IsSet() bool {
 	return v.isSet
 }
 

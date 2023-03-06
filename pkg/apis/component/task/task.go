@@ -12,6 +12,8 @@ package task
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -27,38 +29,49 @@ var _ utils.MappedNullable = &TaskSpec{}
 // TaskSpec struct for TaskSpec
 type TaskSpec struct {
 	// Specify the annotations in the workload
-	Annotations *map[string]string `json:"annotations,omitempty"`
+	Annotations map[string]string `json:"annotations,omitempty"`
 	// Commands to run in the container
 	Cmd []string `json:"cmd,omitempty"`
 	// Specify number of tasks to run in parallel +short=c
-	Count *int32 `json:"count,omitempty"`
+	Count *int32 `json:"count"`
 	// Number of CPU units for the service, like `0.5` (0.5 CPU core), `1` (1 CPU core)
 	Cpu *string `json:"cpu,omitempty"`
 	// Define arguments by using environment variables
 	Env []Env `json:"env,omitempty"`
 	// Which image would you like to use for your service +short=i
-	Image *string `json:"image,omitempty"`
+	Image *string `json:"image"`
 	// Specify image pull policy for your service
 	ImagePullPolicy *string `json:"imagePullPolicy,omitempty"`
 	// Specify image pull secrets for your service
 	ImagePullSecrets []string `json:"imagePullSecrets,omitempty"`
 	// Specify the labels in the workload
-	Labels        *map[string]string `json:"labels,omitempty"`
-	LivenessProbe *HealthProbe       `json:"livenessProbe,omitempty"`
+	Labels        map[string]string `json:"labels,omitempty"`
+	LivenessProbe *HealthProbe      `json:"livenessProbe,omitempty"`
 	// Specifies the attributes of the memory resource required for the container.
 	Memory         *string      `json:"memory,omitempty"`
 	ReadinessProbe *HealthProbe `json:"readinessProbe,omitempty"`
 	// Define the job restart policy, the value can only be Never or OnFailure. By default, it's Never.
-	Restart *string `json:"restart,omitempty"`
+	Restart *string `json:"restart"`
 	// Declare volumes and volumeMounts
 	Volumes []Volumes `json:"volumes,omitempty"`
 }
 
 // NewTaskSpecWith instantiates a new TaskSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewTaskSpecWith() *TaskSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewTaskSpecWith(count int32, image string, restart string) *TaskSpec {
+	this := TaskSpec{}
+	this.Count = &count
+	this.Image = &image
+	this.Restart = &restart
+	return &this
+}
+
+// NewTaskSpecWithDefault instantiates a new TaskSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewTaskSpecWithDefault() *TaskSpec {
 	this := TaskSpec{}
 	var count int32 = 1
 	this.Count = &count
@@ -67,15 +80,17 @@ func NewTaskSpecWith() *TaskSpec {
 	return &this
 }
 
-// NewTaskSpec instantiates a new TaskSpec object
+// NewTaskSpec is short for NewTaskSpecWithDefault which instantiates a new TaskSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewTaskSpec() *TaskSpec {
+	return NewTaskSpecWithDefault()
+}
+
+// NewTaskSpecEmpty instantiates a new TaskSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewTaskSpecEmpty() *TaskSpec {
 	this := TaskSpec{}
-	var count int32 = 1
-	this.Count = &count
-	var restart string = "Never"
-	this.Restart = &restart
 	return &this
 }
 
@@ -89,18 +104,51 @@ func NewTaskSpecList(ps ...*TaskSpec) []TaskSpec {
 	return objs
 }
 
+// Validate validates this TaskSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *TaskComponent) Validate() error {
+	if o.Properties.Count == nil {
+		return errors.New("Count in TaskSpec must be set")
+	}
+	if o.Properties.Image == nil {
+		return errors.New("Image in TaskSpec must be set")
+	}
+	if o.Properties.Restart == nil {
+		return errors.New("Restart in TaskSpec must be set")
+	}
+	// validate all nested properties
+	if o.Properties.LivenessProbe != nil {
+		if err := o.Properties.LivenessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.ReadinessProbe != nil {
+		if err := o.Properties.ReadinessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+
+	for i, v := range o.Base.Traits {
+		if err := v.Validate(); err != nil {
+			return fmt.Errorf("traits[%d] %s in %s component is invalid: %w", i, v.DefType(), TaskType, err)
+		}
+	}
+	return nil
+}
+
 // GetAnnotations returns the Annotations field value if set, zero value otherwise.
 func (o *TaskComponent) GetAnnotations() map[string]string {
 	if o == nil || utils.IsNil(o.Properties.Annotations) {
 		var ret map[string]string
 		return ret
 	}
-	return *o.Properties.Annotations
+	return o.Properties.Annotations
 }
 
 // GetAnnotationsOk returns a tuple with the Annotations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TaskComponent) GetAnnotationsOk() (*map[string]string, bool) {
+func (o *TaskComponent) GetAnnotationsOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.Properties.Annotations) {
 		return nil, false
 	}
@@ -119,7 +167,7 @@ func (o *TaskComponent) HasAnnotations() bool {
 // SetAnnotations gets a reference to the given map[string]string and assigns it to the annotations field.
 // Annotations:  Specify the annotations in the workload
 func (o *TaskComponent) SetAnnotations(v map[string]string) *TaskComponent {
-	o.Properties.Annotations = &v
+	o.Properties.Annotations = v
 	return o
 }
 
@@ -157,35 +205,26 @@ func (o *TaskComponent) SetCmd(v []string) *TaskComponent {
 	return o
 }
 
-// GetCount returns the Count field value if set, zero value otherwise.
+// GetCount returns the Count field value
 func (o *TaskComponent) GetCount() int32 {
-	if o == nil || utils.IsNil(o.Properties.Count) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Properties.Count
 }
 
-// GetCountOk returns a tuple with the Count field value if set, nil otherwise
+// GetCountOk returns a tuple with the Count field value
 // and a boolean to check if the value has been set.
 func (o *TaskComponent) GetCountOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Properties.Count) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Count, true
 }
 
-// HasCount returns a boolean if a field has been set.
-func (o *TaskComponent) HasCount() bool {
-	if o != nil && !utils.IsNil(o.Properties.Count) {
-		return true
-	}
-
-	return false
-}
-
-// SetCount gets a reference to the given int32 and assigns it to the count field.
-// Count:  Specify number of tasks to run in parallel +short=c
+// SetCount sets field value
 func (o *TaskComponent) SetCount(v int32) *TaskComponent {
 	o.Properties.Count = &v
 	return o
@@ -259,35 +298,26 @@ func (o *TaskComponent) SetEnv(v []Env) *TaskComponent {
 	return o
 }
 
-// GetImage returns the Image field value if set, zero value otherwise.
+// GetImage returns the Image field value
 func (o *TaskComponent) GetImage() string {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Image
 }
 
-// GetImageOk returns a tuple with the Image field value if set, nil otherwise
+// GetImageOk returns a tuple with the Image field value
 // and a boolean to check if the value has been set.
 func (o *TaskComponent) GetImageOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Image, true
 }
 
-// HasImage returns a boolean if a field has been set.
-func (o *TaskComponent) HasImage() bool {
-	if o != nil && !utils.IsNil(o.Properties.Image) {
-		return true
-	}
-
-	return false
-}
-
-// SetImage gets a reference to the given string and assigns it to the image field.
-// Image:  Which image would you like to use for your service +short=i
+// SetImage sets field value
 func (o *TaskComponent) SetImage(v string) *TaskComponent {
 	o.Properties.Image = &v
 	return o
@@ -367,12 +397,12 @@ func (o *TaskComponent) GetLabels() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.Properties.Labels
+	return o.Properties.Labels
 }
 
 // GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TaskComponent) GetLabelsOk() (*map[string]string, bool) {
+func (o *TaskComponent) GetLabelsOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.Properties.Labels) {
 		return nil, false
 	}
@@ -391,7 +421,7 @@ func (o *TaskComponent) HasLabels() bool {
 // SetLabels gets a reference to the given map[string]string and assigns it to the labels field.
 // Labels:  Specify the labels in the workload
 func (o *TaskComponent) SetLabels(v map[string]string) *TaskComponent {
-	o.Properties.Labels = &v
+	o.Properties.Labels = v
 	return o
 }
 
@@ -497,35 +527,26 @@ func (o *TaskComponent) SetReadinessProbe(v HealthProbe) *TaskComponent {
 	return o
 }
 
-// GetRestart returns the Restart field value if set, zero value otherwise.
+// GetRestart returns the Restart field value
 func (o *TaskComponent) GetRestart() string {
-	if o == nil || utils.IsNil(o.Properties.Restart) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Restart
 }
 
-// GetRestartOk returns a tuple with the Restart field value if set, nil otherwise
+// GetRestartOk returns a tuple with the Restart field value
 // and a boolean to check if the value has been set.
 func (o *TaskComponent) GetRestartOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Restart) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Restart, true
 }
 
-// HasRestart returns a boolean if a field has been set.
-func (o *TaskComponent) HasRestart() bool {
-	if o != nil && !utils.IsNil(o.Properties.Restart) {
-		return true
-	}
-
-	return false
-}
-
-// SetRestart gets a reference to the given string and assigns it to the restart field.
-// Restart:  Define the job restart policy, the value can only be Never or OnFailure. By default, it's Never.
+// SetRestart sets field value
 func (o *TaskComponent) SetRestart(v string) *TaskComponent {
 	o.Properties.Restart = &v
 	return o
@@ -581,18 +602,14 @@ func (o TaskSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Cmd) {
 		toSerialize["cmd"] = o.Cmd
 	}
-	if !utils.IsNil(o.Count) {
-		toSerialize["count"] = o.Count
-	}
+	toSerialize["count"] = o.Count
 	if !utils.IsNil(o.Cpu) {
 		toSerialize["cpu"] = o.Cpu
 	}
 	if !utils.IsNil(o.Env) {
 		toSerialize["env"] = o.Env
 	}
-	if !utils.IsNil(o.Image) {
-		toSerialize["image"] = o.Image
-	}
+	toSerialize["image"] = o.Image
 	if !utils.IsNil(o.ImagePullPolicy) {
 		toSerialize["imagePullPolicy"] = o.ImagePullPolicy
 	}
@@ -611,9 +628,7 @@ func (o TaskSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.ReadinessProbe) {
 		toSerialize["readinessProbe"] = o.ReadinessProbe
 	}
-	if !utils.IsNil(o.Restart) {
-		toSerialize["restart"] = o.Restart
-	}
+	toSerialize["restart"] = o.Restart
 	if !utils.IsNil(o.Volumes) {
 		toSerialize["volumes"] = o.Volumes
 	}
@@ -625,7 +640,7 @@ type NullableTaskSpec struct {
 	isSet bool
 }
 
-func (v NullableTaskSpec) Get() *TaskSpec {
+func (v *NullableTaskSpec) Get() *TaskSpec {
 	return v.value
 }
 
@@ -634,7 +649,7 @@ func (v *NullableTaskSpec) Set(val *TaskSpec) {
 	v.isSet = true
 }
 
-func (v NullableTaskSpec) IsSet() bool {
+func (v *NullableTaskSpec) IsSet() bool {
 	return v.isSet
 }
 
@@ -745,6 +760,10 @@ func (t *TaskComponent) GetTrait(typ string) apis.Trait {
 		}
 	}
 	return nil
+}
+
+func (t *TaskComponent) GetAllTraits() []apis.Trait {
+	return t.Base.Traits
 }
 
 func (t *TaskComponent) ComponentName() string {

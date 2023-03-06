@@ -12,6 +12,7 @@ package export_service
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,32 +29,49 @@ var _ utils.MappedNullable = &ExportServiceSpec{}
 // ExportServiceSpec struct for ExportServiceSpec
 type ExportServiceSpec struct {
 	// Specify the ip to be export
-	Ip *string `json:"ip,omitempty"`
+	Ip *string `json:"ip"`
 	// Specify the name of the export destination
 	Name *string `json:"name,omitempty"`
 	// Specify the namespace of the export destination
 	Namespace *string `json:"namespace,omitempty"`
 	// Specify the port to be used in service
-	Port *int32 `json:"port,omitempty"`
+	Port *int32 `json:"port"`
 	// Specify the port to be export
-	TargetPort *int32 `json:"targetPort,omitempty"`
+	TargetPort *int32 `json:"targetPort"`
 	// Specify the topology to export
 	Topology *string `json:"topology,omitempty"`
 }
 
 // NewExportServiceSpecWith instantiates a new ExportServiceSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewExportServiceSpecWith() *ExportServiceSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewExportServiceSpecWith(ip string, port int32, targetPort int32) *ExportServiceSpec {
+	this := ExportServiceSpec{}
+	this.Ip = &ip
+	this.Port = &port
+	this.TargetPort = &targetPort
+	return &this
+}
+
+// NewExportServiceSpecWithDefault instantiates a new ExportServiceSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewExportServiceSpecWithDefault() *ExportServiceSpec {
 	this := ExportServiceSpec{}
 	return &this
 }
 
-// NewExportServiceSpec instantiates a new ExportServiceSpec object
+// NewExportServiceSpec is short for NewExportServiceSpecWithDefault which instantiates a new ExportServiceSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewExportServiceSpec() *ExportServiceSpec {
+	return NewExportServiceSpecWithDefault()
+}
+
+// NewExportServiceSpecEmpty instantiates a new ExportServiceSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewExportServiceSpecEmpty() *ExportServiceSpec {
 	this := ExportServiceSpec{}
 	return &this
 }
@@ -68,35 +86,43 @@ func NewExportServiceSpecList(ps ...*ExportServiceSpec) []ExportServiceSpec {
 	return objs
 }
 
-// GetIp returns the Ip field value if set, zero value otherwise.
+// Validate validates this ExportServiceSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ExportServiceWorkflowStep) Validate() error {
+	if o.Properties.Ip == nil {
+		return errors.New("Ip in ExportServiceSpec must be set")
+	}
+	if o.Properties.Port == nil {
+		return errors.New("Port in ExportServiceSpec must be set")
+	}
+	if o.Properties.TargetPort == nil {
+		return errors.New("TargetPort in ExportServiceSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetIp returns the Ip field value
 func (o *ExportServiceWorkflowStep) GetIp() string {
-	if o == nil || utils.IsNil(o.Properties.Ip) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Ip
 }
 
-// GetIpOk returns a tuple with the Ip field value if set, nil otherwise
+// GetIpOk returns a tuple with the Ip field value
 // and a boolean to check if the value has been set.
 func (o *ExportServiceWorkflowStep) GetIpOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Ip) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Ip, true
 }
 
-// HasIp returns a boolean if a field has been set.
-func (o *ExportServiceWorkflowStep) HasIp() bool {
-	if o != nil && !utils.IsNil(o.Properties.Ip) {
-		return true
-	}
-
-	return false
-}
-
-// SetIp gets a reference to the given string and assigns it to the ip field.
-// Ip:  Specify the ip to be export
+// SetIp sets field value
 func (o *ExportServiceWorkflowStep) SetIp(v string) *ExportServiceWorkflowStep {
 	o.Properties.Ip = &v
 	return o
@@ -170,69 +196,51 @@ func (o *ExportServiceWorkflowStep) SetNamespace(v string) *ExportServiceWorkflo
 	return o
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
+// GetPort returns the Port field value
 func (o *ExportServiceWorkflowStep) GetPort() int32 {
-	if o == nil || utils.IsNil(o.Properties.Port) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Properties.Port
 }
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
 func (o *ExportServiceWorkflowStep) GetPortOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Properties.Port) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Port, true
 }
 
-// HasPort returns a boolean if a field has been set.
-func (o *ExportServiceWorkflowStep) HasPort() bool {
-	if o != nil && !utils.IsNil(o.Properties.Port) {
-		return true
-	}
-
-	return false
-}
-
-// SetPort gets a reference to the given int32 and assigns it to the port field.
-// Port:  Specify the port to be used in service
+// SetPort sets field value
 func (o *ExportServiceWorkflowStep) SetPort(v int32) *ExportServiceWorkflowStep {
 	o.Properties.Port = &v
 	return o
 }
 
-// GetTargetPort returns the TargetPort field value if set, zero value otherwise.
+// GetTargetPort returns the TargetPort field value
 func (o *ExportServiceWorkflowStep) GetTargetPort() int32 {
-	if o == nil || utils.IsNil(o.Properties.TargetPort) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Properties.TargetPort
 }
 
-// GetTargetPortOk returns a tuple with the TargetPort field value if set, nil otherwise
+// GetTargetPortOk returns a tuple with the TargetPort field value
 // and a boolean to check if the value has been set.
 func (o *ExportServiceWorkflowStep) GetTargetPortOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Properties.TargetPort) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.TargetPort, true
 }
 
-// HasTargetPort returns a boolean if a field has been set.
-func (o *ExportServiceWorkflowStep) HasTargetPort() bool {
-	if o != nil && !utils.IsNil(o.Properties.TargetPort) {
-		return true
-	}
-
-	return false
-}
-
-// SetTargetPort gets a reference to the given int32 and assigns it to the targetPort field.
-// TargetPort:  Specify the port to be export
+// SetTargetPort sets field value
 func (o *ExportServiceWorkflowStep) SetTargetPort(v int32) *ExportServiceWorkflowStep {
 	o.Properties.TargetPort = &v
 	return o
@@ -282,21 +290,15 @@ func (o ExportServiceSpec) MarshalJSON() ([]byte, error) {
 
 func (o ExportServiceSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Ip) {
-		toSerialize["ip"] = o.Ip
-	}
+	toSerialize["ip"] = o.Ip
 	if !utils.IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
 	if !utils.IsNil(o.Namespace) {
 		toSerialize["namespace"] = o.Namespace
 	}
-	if !utils.IsNil(o.Port) {
-		toSerialize["port"] = o.Port
-	}
-	if !utils.IsNil(o.TargetPort) {
-		toSerialize["targetPort"] = o.TargetPort
-	}
+	toSerialize["port"] = o.Port
+	toSerialize["targetPort"] = o.TargetPort
 	if !utils.IsNil(o.Topology) {
 		toSerialize["topology"] = o.Topology
 	}
@@ -308,7 +310,7 @@ type NullableExportServiceSpec struct {
 	isSet bool
 }
 
-func (v NullableExportServiceSpec) Get() *ExportServiceSpec {
+func (v *NullableExportServiceSpec) Get() *ExportServiceSpec {
 	return v.value
 }
 
@@ -317,7 +319,7 @@ func (v *NullableExportServiceSpec) Set(val *ExportServiceSpec) {
 	v.isSet = true
 }
 
-func (v NullableExportServiceSpec) IsSet() bool {
+func (v *NullableExportServiceSpec) IsSet() bool {
 	return v.isSet
 }
 

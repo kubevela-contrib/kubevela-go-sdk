@@ -22,22 +22,36 @@ var _ utils.MappedNullable = &LabSelector{}
 // LabSelector struct for LabSelector
 type LabSelector struct {
 	MatchExpressions []MatchExpressions `json:"matchExpressions,omitempty"`
-	MatchLabels      *map[string]string `json:"matchLabels,omitempty"`
+	MatchLabels      map[string]string  `json:"matchLabels,omitempty"`
 }
 
 // NewLabSelectorWith instantiates a new LabSelector object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewLabSelectorWith() *LabSelector {
 	this := LabSelector{}
 	return &this
 }
 
-// NewLabSelector instantiates a new LabSelector object
+// NewLabSelectorWithDefault instantiates a new LabSelector object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewLabSelectorWithDefault() *LabSelector {
+	this := LabSelector{}
+	return &this
+}
+
+// NewLabSelector is short for NewLabSelectorWithDefault which instantiates a new LabSelector object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewLabSelector() *LabSelector {
+	return NewLabSelectorWithDefault()
+}
+
+// NewLabSelectorEmpty instantiates a new LabSelector object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewLabSelectorEmpty() *LabSelector {
 	this := LabSelector{}
 	return &this
 }
@@ -50,6 +64,14 @@ func NewLabSelectorList(ps ...*LabSelector) []LabSelector {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this LabSelector
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *LabSelector) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetMatchExpressions returns the MatchExpressions field value if set, zero value otherwise.
@@ -92,12 +114,12 @@ func (o *LabSelector) GetMatchLabels() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.MatchLabels
+	return o.MatchLabels
 }
 
 // GetMatchLabelsOk returns a tuple with the MatchLabels field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LabSelector) GetMatchLabelsOk() (*map[string]string, bool) {
+func (o *LabSelector) GetMatchLabelsOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.MatchLabels) {
 		return nil, false
 	}
@@ -116,7 +138,7 @@ func (o *LabSelector) HasMatchLabels() bool {
 // SetMatchLabels gets a reference to the given map[string]string and assigns it to the matchLabels field.
 // MatchLabels:
 func (o *LabSelector) SetMatchLabels(v map[string]string) *LabSelector {
-	o.MatchLabels = &v
+	o.MatchLabels = v
 	return o
 }
 
@@ -144,7 +166,7 @@ type NullableLabSelector struct {
 	isSet bool
 }
 
-func (v NullableLabSelector) Get() *LabSelector {
+func (v *NullableLabSelector) Get() *LabSelector {
 	return v.value
 }
 
@@ -153,7 +175,7 @@ func (v *NullableLabSelector) Set(val *LabSelector) {
 	v.isSet = true
 }
 
-func (v NullableLabSelector) IsSet() bool {
+func (v *NullableLabSelector) IsSet() bool {
 	return v.isSet
 }
 

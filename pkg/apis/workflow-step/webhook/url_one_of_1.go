@@ -12,6 +12,7 @@ package webhook
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,37 @@ var _ utils.MappedNullable = &UrlOneOf1{}
 
 // UrlOneOf1 struct for UrlOneOf1
 type UrlOneOf1 struct {
-	SecretRef SecretRef `json:"secretRef"`
+	SecretRef *SecretRef `json:"secretRef"`
 }
 
 // NewUrlOneOf1With instantiates a new UrlOneOf1 object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewUrlOneOf1With(secretRef SecretRef) *UrlOneOf1 {
 	this := UrlOneOf1{}
-	this.SecretRef = secretRef
+	this.SecretRef = &secretRef
 	return &this
 }
 
-// NewUrlOneOf1 instantiates a new UrlOneOf1 object
+// NewUrlOneOf1WithDefault instantiates a new UrlOneOf1 object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewUrlOneOf1WithDefault() *UrlOneOf1 {
+	this := UrlOneOf1{}
+	return &this
+}
+
+// NewUrlOneOf1 is short for NewUrlOneOf1WithDefault which instantiates a new UrlOneOf1 object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewUrlOneOf1() *UrlOneOf1 {
+	return NewUrlOneOf1WithDefault()
+}
+
+// NewUrlOneOf1Empty instantiates a new UrlOneOf1 object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewUrlOneOf1Empty() *UrlOneOf1 {
 	this := UrlOneOf1{}
 	return &this
 }
@@ -52,6 +67,22 @@ func NewUrlOneOf1List(ps ...*UrlOneOf1) []UrlOneOf1 {
 	return objs
 }
 
+// Validate validates this UrlOneOf1
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *UrlOneOf1) Validate() error {
+	if o.SecretRef == nil {
+		return errors.New("SecretRef in UrlOneOf1 must be set")
+	}
+	// validate all nested properties
+	if o.SecretRef != nil {
+		if err := o.SecretRef.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // GetSecretRef returns the SecretRef field value
 func (o *UrlOneOf1) GetSecretRef() SecretRef {
 	if o == nil {
@@ -59,7 +90,7 @@ func (o *UrlOneOf1) GetSecretRef() SecretRef {
 		return ret
 	}
 
-	return o.SecretRef
+	return *o.SecretRef
 }
 
 // GetSecretRefOk returns a tuple with the SecretRef field value
@@ -68,12 +99,12 @@ func (o *UrlOneOf1) GetSecretRefOk() (*SecretRef, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.SecretRef, true
+	return o.SecretRef, true
 }
 
 // SetSecretRef sets field value
 func (o *UrlOneOf1) SetSecretRef(v SecretRef) *UrlOneOf1 {
-	o.SecretRef = v
+	o.SecretRef = &v
 	return o
 }
 
@@ -96,7 +127,7 @@ type NullableUrlOneOf1 struct {
 	isSet bool
 }
 
-func (v NullableUrlOneOf1) Get() *UrlOneOf1 {
+func (v *NullableUrlOneOf1) Get() *UrlOneOf1 {
 	return v.value
 }
 
@@ -105,7 +136,7 @@ func (v *NullableUrlOneOf1) Set(val *UrlOneOf1) {
 	v.isSet = true
 }
 
-func (v NullableUrlOneOf1) IsSet() bool {
+func (v *NullableUrlOneOf1) IsSet() bool {
 	return v.isSet
 }
 

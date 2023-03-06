@@ -12,6 +12,7 @@ package override
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -27,24 +28,39 @@ var _ utils.MappedNullable = &OverrideSpec{}
 // OverrideSpec struct for OverrideSpec
 type OverrideSpec struct {
 	// Specify the overridden component configuration.
-	Components []PatchParams `json:"components,omitempty"`
+	Components []PatchParams `json:"components"`
 	// Specify a list of component names to use, if empty, all components will be selected.
 	Selector []string `json:"selector,omitempty"`
 }
 
 // NewOverrideSpecWith instantiates a new OverrideSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewOverrideSpecWith() *OverrideSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewOverrideSpecWith(components []PatchParams) *OverrideSpec {
+	this := OverrideSpec{}
+	this.Components = components
+	return &this
+}
+
+// NewOverrideSpecWithDefault instantiates a new OverrideSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewOverrideSpecWithDefault() *OverrideSpec {
 	this := OverrideSpec{}
 	return &this
 }
 
-// NewOverrideSpec instantiates a new OverrideSpec object
+// NewOverrideSpec is short for NewOverrideSpecWithDefault which instantiates a new OverrideSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewOverrideSpec() *OverrideSpec {
+	return NewOverrideSpecWithDefault()
+}
+
+// NewOverrideSpecEmpty instantiates a new OverrideSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewOverrideSpecEmpty() *OverrideSpec {
 	this := OverrideSpec{}
 	return &this
 }
@@ -59,35 +75,37 @@ func NewOverrideSpecList(ps ...*OverrideSpec) []OverrideSpec {
 	return objs
 }
 
-// GetComponents returns the Components field value if set, zero value otherwise.
+// Validate validates this OverrideSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *OverridePolicy) Validate() error {
+	if o.Properties.Components == nil {
+		return errors.New("Components in OverrideSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetComponents returns the Components field value
 func (o *OverridePolicy) GetComponents() []PatchParams {
-	if o == nil || utils.IsNil(o.Properties.Components) {
+	if o == nil {
 		var ret []PatchParams
 		return ret
 	}
+
 	return o.Properties.Components
 }
 
-// GetComponentsOk returns a tuple with the Components field value if set, nil otherwise
+// GetComponentsOk returns a tuple with the Components field value
 // and a boolean to check if the value has been set.
 func (o *OverridePolicy) GetComponentsOk() ([]PatchParams, bool) {
-	if o == nil || utils.IsNil(o.Properties.Components) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Components, true
 }
 
-// HasComponents returns a boolean if a field has been set.
-func (o *OverridePolicy) HasComponents() bool {
-	if o != nil && !utils.IsNil(o.Properties.Components) {
-		return true
-	}
-
-	return false
-}
-
-// SetComponents gets a reference to the given []PatchParams and assigns it to the components field.
-// Components:  Specify the overridden component configuration.
+// SetComponents sets field value
 func (o *OverridePolicy) SetComponents(v []PatchParams) *OverridePolicy {
 	o.Properties.Components = v
 	return o
@@ -137,9 +155,7 @@ func (o OverrideSpec) MarshalJSON() ([]byte, error) {
 
 func (o OverrideSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Components) {
-		toSerialize["components"] = o.Components
-	}
+	toSerialize["components"] = o.Components
 	if !utils.IsNil(o.Selector) {
 		toSerialize["selector"] = o.Selector
 	}
@@ -151,7 +167,7 @@ type NullableOverrideSpec struct {
 	isSet bool
 }
 
-func (v NullableOverrideSpec) Get() *OverrideSpec {
+func (v *NullableOverrideSpec) Get() *OverrideSpec {
 	return v.value
 }
 
@@ -160,7 +176,7 @@ func (v *NullableOverrideSpec) Set(val *OverrideSpec) {
 	v.isSet = true
 }
 
-func (v NullableOverrideSpec) IsSet() bool {
+func (v *NullableOverrideSpec) IsSet() bool {
 	return v.isSet
 }
 

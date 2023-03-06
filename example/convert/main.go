@@ -20,7 +20,7 @@ func main() {
 		SetComponents(
 			Webservice("nginx").
 				SetEnv(NewEnvList(
-					NewEnv().SetName("test").SetValue("test"),
+					NewEnvWithDefault().SetName("test").SetValue("test"),
 				)).
 				SetImage("nginx:latest").
 				SetCpu("500m").
@@ -36,7 +36,7 @@ func main() {
 		).
 		SetWorkflowSteps(
 			stepgroup.StepGroup("group").
-				AddSubStep(bu.BuildPushImage("bp").SetImage("my-image").SetContext(bu.GitAsContext(bu.NewGit().SetBranch("111")))).
+				AddSubStep(bu.BuildPushImage("bp").SetImage("my-image").SetContext(bu.GitAsContext(bu.NewGitWithDefault().SetBranch("111")))).
 				AddSubStep(notify.Notification("notify")),
 			notify.Notification("single-step"),
 		).

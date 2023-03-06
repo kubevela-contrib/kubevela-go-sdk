@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -23,22 +24,37 @@ var _ utils.MappedNullable = &Block{}
 type Block struct {
 	BlockId  *string    `json:"block_id,omitempty"`
 	Elements []Elements `json:"elements,omitempty"`
-	Type     *string    `json:"type,omitempty"`
+	Type     *string    `json:"type"`
 }
 
 // NewBlockWith instantiates a new Block object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewBlockWith() *Block {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewBlockWith(type_ string) *Block {
+	this := Block{}
+	this.Type = &type_
+	return &this
+}
+
+// NewBlockWithDefault instantiates a new Block object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewBlockWithDefault() *Block {
 	this := Block{}
 	return &this
 }
 
-// NewBlock instantiates a new Block object
+// NewBlock is short for NewBlockWithDefault which instantiates a new Block object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewBlock() *Block {
+	return NewBlockWithDefault()
+}
+
+// NewBlockEmpty instantiates a new Block object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewBlockEmpty() *Block {
 	this := Block{}
 	return &this
 }
@@ -51,6 +67,17 @@ func NewBlockList(ps ...*Block) []Block {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Block
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Block) Validate() error {
+	if o.Type == nil {
+		return errors.New("Type in Block must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetBlockId returns the BlockId field value if set, zero value otherwise.
@@ -121,35 +148,26 @@ func (o *Block) SetElements(v []Elements) *Block {
 	return o
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *Block) GetType() string {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *Block) GetTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *Block) HasType() bool {
-	if o != nil && !utils.IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the type_ field.
-// Type:
+// SetType sets field value
 func (o *Block) SetType(v string) *Block {
 	o.Type = &v
 	return o
@@ -171,9 +189,7 @@ func (o Block) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Elements) {
 		toSerialize["elements"] = o.Elements
 	}
-	if !utils.IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["type"] = o.Type
 	return toSerialize, nil
 }
 
@@ -182,7 +198,7 @@ type NullableBlock struct {
 	isSet bool
 }
 
-func (v NullableBlock) Get() *Block {
+func (v *NullableBlock) Get() *Block {
 	return v.value
 }
 
@@ -191,7 +207,7 @@ func (v *NullableBlock) Set(val *Block) {
 	v.isSet = true
 }
 
-func (v NullableBlock) IsSet() bool {
+func (v *NullableBlock) IsSet() bool {
 	return v.isSet
 }
 

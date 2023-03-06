@@ -12,6 +12,7 @@ package print_message_in_status
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -27,22 +28,37 @@ var _ utils.MappedNullable = &PrintMessageInStatusSpec{}
 
 // PrintMessageInStatusSpec struct for PrintMessageInStatusSpec
 type PrintMessageInStatusSpec struct {
-	Message *string `json:"message,omitempty"`
+	Message *string `json:"message"`
 }
 
 // NewPrintMessageInStatusSpecWith instantiates a new PrintMessageInStatusSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPrintMessageInStatusSpecWith() *PrintMessageInStatusSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPrintMessageInStatusSpecWith(message string) *PrintMessageInStatusSpec {
+	this := PrintMessageInStatusSpec{}
+	this.Message = &message
+	return &this
+}
+
+// NewPrintMessageInStatusSpecWithDefault instantiates a new PrintMessageInStatusSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPrintMessageInStatusSpecWithDefault() *PrintMessageInStatusSpec {
 	this := PrintMessageInStatusSpec{}
 	return &this
 }
 
-// NewPrintMessageInStatusSpec instantiates a new PrintMessageInStatusSpec object
+// NewPrintMessageInStatusSpec is short for NewPrintMessageInStatusSpecWithDefault which instantiates a new PrintMessageInStatusSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPrintMessageInStatusSpec() *PrintMessageInStatusSpec {
+	return NewPrintMessageInStatusSpecWithDefault()
+}
+
+// NewPrintMessageInStatusSpecEmpty instantiates a new PrintMessageInStatusSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPrintMessageInStatusSpecEmpty() *PrintMessageInStatusSpec {
 	this := PrintMessageInStatusSpec{}
 	return &this
 }
@@ -57,35 +73,37 @@ func NewPrintMessageInStatusSpecList(ps ...*PrintMessageInStatusSpec) []PrintMes
 	return objs
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
+// Validate validates this PrintMessageInStatusSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PrintMessageInStatusWorkflowStep) Validate() error {
+	if o.Properties.Message == nil {
+		return errors.New("Message in PrintMessageInStatusSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetMessage returns the Message field value
 func (o *PrintMessageInStatusWorkflowStep) GetMessage() string {
-	if o == nil || utils.IsNil(o.Properties.Message) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Message
 }
 
-// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// GetMessageOk returns a tuple with the Message field value
 // and a boolean to check if the value has been set.
 func (o *PrintMessageInStatusWorkflowStep) GetMessageOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Message) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Message, true
 }
 
-// HasMessage returns a boolean if a field has been set.
-func (o *PrintMessageInStatusWorkflowStep) HasMessage() bool {
-	if o != nil && !utils.IsNil(o.Properties.Message) {
-		return true
-	}
-
-	return false
-}
-
-// SetMessage gets a reference to the given string and assigns it to the message field.
-// Message:
+// SetMessage sets field value
 func (o *PrintMessageInStatusWorkflowStep) SetMessage(v string) *PrintMessageInStatusWorkflowStep {
 	o.Properties.Message = &v
 	return o
@@ -101,9 +119,7 @@ func (o PrintMessageInStatusSpec) MarshalJSON() ([]byte, error) {
 
 func (o PrintMessageInStatusSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Message) {
-		toSerialize["message"] = o.Message
-	}
+	toSerialize["message"] = o.Message
 	return toSerialize, nil
 }
 
@@ -112,7 +128,7 @@ type NullablePrintMessageInStatusSpec struct {
 	isSet bool
 }
 
-func (v NullablePrintMessageInStatusSpec) Get() *PrintMessageInStatusSpec {
+func (v *NullablePrintMessageInStatusSpec) Get() *PrintMessageInStatusSpec {
 	return v.value
 }
 
@@ -121,7 +137,7 @@ func (v *NullablePrintMessageInStatusSpec) Set(val *PrintMessageInStatusSpec) {
 	v.isSet = true
 }
 
-func (v NullablePrintMessageInStatusSpec) IsSet() bool {
+func (v *NullablePrintMessageInStatusSpec) IsSet() bool {
 	return v.isSet
 }
 

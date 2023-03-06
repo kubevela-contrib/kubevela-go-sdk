@@ -12,6 +12,7 @@ package daemon
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,20 +23,31 @@ var _ utils.MappedNullable = &Ports{}
 // Ports struct for Ports
 type Ports struct {
 	// Specify if the port should be exposed
-	Expose *bool `json:"expose,omitempty"`
+	Expose *bool `json:"expose"`
 	// Name of the port
 	Name *string `json:"name,omitempty"`
 	// Number of port to expose on the pod's IP address
-	Port *int32 `json:"port,omitempty"`
+	Port *int32 `json:"port"`
 	// Protocol for port. Must be UDP, TCP, or SCTP
-	Protocol *string `json:"protocol,omitempty"`
+	Protocol *string `json:"protocol"`
 }
 
 // NewPortsWith instantiates a new Ports object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPortsWith() *Ports {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPortsWith(expose bool, port int32, protocol string) *Ports {
+	this := Ports{}
+	this.Expose = &expose
+	this.Port = &port
+	this.Protocol = &protocol
+	return &this
+}
+
+// NewPortsWithDefault instantiates a new Ports object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPortsWithDefault() *Ports {
 	this := Ports{}
 	var expose bool = false
 	this.Expose = &expose
@@ -44,15 +56,17 @@ func NewPortsWith() *Ports {
 	return &this
 }
 
-// NewPorts instantiates a new Ports object
+// NewPorts is short for NewPortsWithDefault which instantiates a new Ports object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPorts() *Ports {
+	return NewPortsWithDefault()
+}
+
+// NewPortsEmpty instantiates a new Ports object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPortsEmpty() *Ports {
 	this := Ports{}
-	var expose bool = false
-	this.Expose = &expose
-	var protocol string = "TCP"
-	this.Protocol = &protocol
 	return &this
 }
 
@@ -66,35 +80,43 @@ func NewPortsList(ps ...*Ports) []Ports {
 	return objs
 }
 
-// GetExpose returns the Expose field value if set, zero value otherwise.
+// Validate validates this Ports
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Ports) Validate() error {
+	if o.Expose == nil {
+		return errors.New("Expose in Ports must be set")
+	}
+	if o.Port == nil {
+		return errors.New("Port in Ports must be set")
+	}
+	if o.Protocol == nil {
+		return errors.New("Protocol in Ports must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetExpose returns the Expose field value
 func (o *Ports) GetExpose() bool {
-	if o == nil || utils.IsNil(o.Expose) {
+	if o == nil {
 		var ret bool
 		return ret
 	}
+
 	return *o.Expose
 }
 
-// GetExposeOk returns a tuple with the Expose field value if set, nil otherwise
+// GetExposeOk returns a tuple with the Expose field value
 // and a boolean to check if the value has been set.
 func (o *Ports) GetExposeOk() (*bool, bool) {
-	if o == nil || utils.IsNil(o.Expose) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Expose, true
 }
 
-// HasExpose returns a boolean if a field has been set.
-func (o *Ports) HasExpose() bool {
-	if o != nil && !utils.IsNil(o.Expose) {
-		return true
-	}
-
-	return false
-}
-
-// SetExpose gets a reference to the given bool and assigns it to the expose field.
-// Expose:  Specify if the port should be exposed
+// SetExpose sets field value
 func (o *Ports) SetExpose(v bool) *Ports {
 	o.Expose = &v
 	return o
@@ -134,69 +156,51 @@ func (o *Ports) SetName(v string) *Ports {
 	return o
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
+// GetPort returns the Port field value
 func (o *Ports) GetPort() int32 {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Port
 }
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
 func (o *Ports) GetPortOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Port, true
 }
 
-// HasPort returns a boolean if a field has been set.
-func (o *Ports) HasPort() bool {
-	if o != nil && !utils.IsNil(o.Port) {
-		return true
-	}
-
-	return false
-}
-
-// SetPort gets a reference to the given int32 and assigns it to the port field.
-// Port:  Number of port to expose on the pod's IP address
+// SetPort sets field value
 func (o *Ports) SetPort(v int32) *Ports {
 	o.Port = &v
 	return o
 }
 
-// GetProtocol returns the Protocol field value if set, zero value otherwise.
+// GetProtocol returns the Protocol field value
 func (o *Ports) GetProtocol() string {
-	if o == nil || utils.IsNil(o.Protocol) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Protocol
 }
 
-// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
+// GetProtocolOk returns a tuple with the Protocol field value
 // and a boolean to check if the value has been set.
 func (o *Ports) GetProtocolOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Protocol) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Protocol, true
 }
 
-// HasProtocol returns a boolean if a field has been set.
-func (o *Ports) HasProtocol() bool {
-	if o != nil && !utils.IsNil(o.Protocol) {
-		return true
-	}
-
-	return false
-}
-
-// SetProtocol gets a reference to the given string and assigns it to the protocol field.
-// Protocol:  Protocol for port. Must be UDP, TCP, or SCTP
+// SetProtocol sets field value
 func (o *Ports) SetProtocol(v string) *Ports {
 	o.Protocol = &v
 	return o
@@ -212,18 +216,12 @@ func (o Ports) MarshalJSON() ([]byte, error) {
 
 func (o Ports) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Expose) {
-		toSerialize["expose"] = o.Expose
-	}
+	toSerialize["expose"] = o.Expose
 	if !utils.IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
-	if !utils.IsNil(o.Port) {
-		toSerialize["port"] = o.Port
-	}
-	if !utils.IsNil(o.Protocol) {
-		toSerialize["protocol"] = o.Protocol
-	}
+	toSerialize["port"] = o.Port
+	toSerialize["protocol"] = o.Protocol
 	return toSerialize, nil
 }
 
@@ -232,7 +230,7 @@ type NullablePorts struct {
 	isSet bool
 }
 
-func (v NullablePorts) Get() *Ports {
+func (v *NullablePorts) Get() *Ports {
 	return v.value
 }
 
@@ -241,7 +239,7 @@ func (v *NullablePorts) Set(val *Ports) {
 	v.isSet = true
 }
 
-func (v NullablePorts) IsSet() bool {
+func (v *NullablePorts) IsSet() bool {
 	return v.isSet
 }
 

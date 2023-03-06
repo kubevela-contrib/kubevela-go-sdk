@@ -12,6 +12,7 @@ package override
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,31 +23,45 @@ var _ utils.MappedNullable = &Traits{}
 // Traits struct for Traits
 type Traits struct {
 	// Specify if the trait should be remove, default false
-	Disable *bool `json:"disable,omitempty"`
+	Disable *bool `json:"disable"`
 	// Specify the properties to override.
 	Properties map[string]interface{} `json:"properties,omitempty"`
 	// Specify the type of the trait to be patched.
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type"`
 }
 
 // NewTraitsWith instantiates a new Traits object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewTraitsWith() *Traits {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewTraitsWith(disable bool, type_ string) *Traits {
+	this := Traits{}
+	this.Disable = &disable
+	this.Type = &type_
+	return &this
+}
+
+// NewTraitsWithDefault instantiates a new Traits object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewTraitsWithDefault() *Traits {
 	this := Traits{}
 	var disable bool = false
 	this.Disable = &disable
 	return &this
 }
 
-// NewTraits instantiates a new Traits object
+// NewTraits is short for NewTraitsWithDefault which instantiates a new Traits object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewTraits() *Traits {
+	return NewTraitsWithDefault()
+}
+
+// NewTraitsEmpty instantiates a new Traits object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewTraitsEmpty() *Traits {
 	this := Traits{}
-	var disable bool = false
-	this.Disable = &disable
 	return &this
 }
 
@@ -60,35 +75,40 @@ func NewTraitsList(ps ...*Traits) []Traits {
 	return objs
 }
 
-// GetDisable returns the Disable field value if set, zero value otherwise.
+// Validate validates this Traits
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Traits) Validate() error {
+	if o.Disable == nil {
+		return errors.New("Disable in Traits must be set")
+	}
+	if o.Type == nil {
+		return errors.New("Type in Traits must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetDisable returns the Disable field value
 func (o *Traits) GetDisable() bool {
-	if o == nil || utils.IsNil(o.Disable) {
+	if o == nil {
 		var ret bool
 		return ret
 	}
+
 	return *o.Disable
 }
 
-// GetDisableOk returns a tuple with the Disable field value if set, nil otherwise
+// GetDisableOk returns a tuple with the Disable field value
 // and a boolean to check if the value has been set.
 func (o *Traits) GetDisableOk() (*bool, bool) {
-	if o == nil || utils.IsNil(o.Disable) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Disable, true
 }
 
-// HasDisable returns a boolean if a field has been set.
-func (o *Traits) HasDisable() bool {
-	if o != nil && !utils.IsNil(o.Disable) {
-		return true
-	}
-
-	return false
-}
-
-// SetDisable gets a reference to the given bool and assigns it to the disable field.
-// Disable:  Specify if the trait should be remove, default false
+// SetDisable sets field value
 func (o *Traits) SetDisable(v bool) *Traits {
 	o.Disable = &v
 	return o
@@ -128,35 +148,26 @@ func (o *Traits) SetProperties(v map[string]interface{}) *Traits {
 	return o
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *Traits) GetType() string {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *Traits) GetTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *Traits) HasType() bool {
-	if o != nil && !utils.IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the type_ field.
-// Type:  Specify the type of the trait to be patched.
+// SetType sets field value
 func (o *Traits) SetType(v string) *Traits {
 	o.Type = &v
 	return o
@@ -172,15 +183,11 @@ func (o Traits) MarshalJSON() ([]byte, error) {
 
 func (o Traits) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Disable) {
-		toSerialize["disable"] = o.Disable
-	}
+	toSerialize["disable"] = o.Disable
 	if !utils.IsNil(o.Properties) {
 		toSerialize["properties"] = o.Properties
 	}
-	if !utils.IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["type"] = o.Type
 	return toSerialize, nil
 }
 
@@ -189,7 +196,7 @@ type NullableTraits struct {
 	isSet bool
 }
 
-func (v NullableTraits) Get() *Traits {
+func (v *NullableTraits) Get() *Traits {
 	return v.value
 }
 
@@ -198,7 +205,7 @@ func (v *NullableTraits) Set(val *Traits) {
 	v.isSet = true
 }
 
-func (v NullableTraits) IsSet() bool {
+func (v *NullableTraits) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package worker
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -23,24 +24,37 @@ var _ utils.MappedNullable = &HealthProbe{}
 type HealthProbe struct {
 	Exec *Exec `json:"exec,omitempty"`
 	// Number of consecutive failures required to determine the container is not alive (liveness probe) or not ready (readiness probe).
-	FailureThreshold *int32   `json:"failureThreshold,omitempty"`
+	FailureThreshold *int32   `json:"failureThreshold"`
 	HttpGet          *HttpGet `json:"httpGet,omitempty"`
 	// Number of seconds after the container is started before the first probe is initiated.
-	InitialDelaySeconds *int32 `json:"initialDelaySeconds,omitempty"`
+	InitialDelaySeconds *int32 `json:"initialDelaySeconds"`
 	// How often, in seconds, to execute the probe.
-	PeriodSeconds *int32 `json:"periodSeconds,omitempty"`
+	PeriodSeconds *int32 `json:"periodSeconds"`
 	// Minimum consecutive successes for the probe to be considered successful after having failed.
-	SuccessThreshold *int32     `json:"successThreshold,omitempty"`
+	SuccessThreshold *int32     `json:"successThreshold"`
 	TcpSocket        *TcpSocket `json:"tcpSocket,omitempty"`
 	// Number of seconds after which the probe times out.
-	TimeoutSeconds *int32 `json:"timeoutSeconds,omitempty"`
+	TimeoutSeconds *int32 `json:"timeoutSeconds"`
 }
 
 // NewHealthProbeWith instantiates a new HealthProbe object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewHealthProbeWith() *HealthProbe {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewHealthProbeWith(failureThreshold int32, initialDelaySeconds int32, periodSeconds int32, successThreshold int32, timeoutSeconds int32) *HealthProbe {
+	this := HealthProbe{}
+	this.FailureThreshold = &failureThreshold
+	this.InitialDelaySeconds = &initialDelaySeconds
+	this.PeriodSeconds = &periodSeconds
+	this.SuccessThreshold = &successThreshold
+	this.TimeoutSeconds = &timeoutSeconds
+	return &this
+}
+
+// NewHealthProbeWithDefault instantiates a new HealthProbe object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewHealthProbeWithDefault() *HealthProbe {
 	this := HealthProbe{}
 	var failureThreshold int32 = 3
 	this.FailureThreshold = &failureThreshold
@@ -55,21 +69,17 @@ func NewHealthProbeWith() *HealthProbe {
 	return &this
 }
 
-// NewHealthProbe instantiates a new HealthProbe object
+// NewHealthProbe is short for NewHealthProbeWithDefault which instantiates a new HealthProbe object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewHealthProbe() *HealthProbe {
+	return NewHealthProbeWithDefault()
+}
+
+// NewHealthProbeEmpty instantiates a new HealthProbe object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewHealthProbeEmpty() *HealthProbe {
 	this := HealthProbe{}
-	var failureThreshold int32 = 3
-	this.FailureThreshold = &failureThreshold
-	var initialDelaySeconds int32 = 0
-	this.InitialDelaySeconds = &initialDelaySeconds
-	var periodSeconds int32 = 10
-	this.PeriodSeconds = &periodSeconds
-	var successThreshold int32 = 1
-	this.SuccessThreshold = &successThreshold
-	var timeoutSeconds int32 = 1
-	this.TimeoutSeconds = &timeoutSeconds
 	return &this
 }
 
@@ -81,6 +91,44 @@ func NewHealthProbeList(ps ...*HealthProbe) []HealthProbe {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this HealthProbe
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *HealthProbe) Validate() error {
+	if o.FailureThreshold == nil {
+		return errors.New("FailureThreshold in HealthProbe must be set")
+	}
+	if o.InitialDelaySeconds == nil {
+		return errors.New("InitialDelaySeconds in HealthProbe must be set")
+	}
+	if o.PeriodSeconds == nil {
+		return errors.New("PeriodSeconds in HealthProbe must be set")
+	}
+	if o.SuccessThreshold == nil {
+		return errors.New("SuccessThreshold in HealthProbe must be set")
+	}
+	if o.TimeoutSeconds == nil {
+		return errors.New("TimeoutSeconds in HealthProbe must be set")
+	}
+	// validate all nested properties
+	if o.Exec != nil {
+		if err := o.Exec.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.HttpGet != nil {
+		if err := o.HttpGet.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.TcpSocket != nil {
+		if err := o.TcpSocket.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetExec returns the Exec field value if set, zero value otherwise.
@@ -117,35 +165,26 @@ func (o *HealthProbe) SetExec(v Exec) *HealthProbe {
 	return o
 }
 
-// GetFailureThreshold returns the FailureThreshold field value if set, zero value otherwise.
+// GetFailureThreshold returns the FailureThreshold field value
 func (o *HealthProbe) GetFailureThreshold() int32 {
-	if o == nil || utils.IsNil(o.FailureThreshold) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.FailureThreshold
 }
 
-// GetFailureThresholdOk returns a tuple with the FailureThreshold field value if set, nil otherwise
+// GetFailureThresholdOk returns a tuple with the FailureThreshold field value
 // and a boolean to check if the value has been set.
 func (o *HealthProbe) GetFailureThresholdOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.FailureThreshold) {
+	if o == nil {
 		return nil, false
 	}
 	return o.FailureThreshold, true
 }
 
-// HasFailureThreshold returns a boolean if a field has been set.
-func (o *HealthProbe) HasFailureThreshold() bool {
-	if o != nil && !utils.IsNil(o.FailureThreshold) {
-		return true
-	}
-
-	return false
-}
-
-// SetFailureThreshold gets a reference to the given int32 and assigns it to the failureThreshold field.
-// FailureThreshold:  Number of consecutive failures required to determine the container is not alive (liveness probe) or not ready (readiness probe).
+// SetFailureThreshold sets field value
 func (o *HealthProbe) SetFailureThreshold(v int32) *HealthProbe {
 	o.FailureThreshold = &v
 	return o
@@ -185,103 +224,76 @@ func (o *HealthProbe) SetHttpGet(v HttpGet) *HealthProbe {
 	return o
 }
 
-// GetInitialDelaySeconds returns the InitialDelaySeconds field value if set, zero value otherwise.
+// GetInitialDelaySeconds returns the InitialDelaySeconds field value
 func (o *HealthProbe) GetInitialDelaySeconds() int32 {
-	if o == nil || utils.IsNil(o.InitialDelaySeconds) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.InitialDelaySeconds
 }
 
-// GetInitialDelaySecondsOk returns a tuple with the InitialDelaySeconds field value if set, nil otherwise
+// GetInitialDelaySecondsOk returns a tuple with the InitialDelaySeconds field value
 // and a boolean to check if the value has been set.
 func (o *HealthProbe) GetInitialDelaySecondsOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.InitialDelaySeconds) {
+	if o == nil {
 		return nil, false
 	}
 	return o.InitialDelaySeconds, true
 }
 
-// HasInitialDelaySeconds returns a boolean if a field has been set.
-func (o *HealthProbe) HasInitialDelaySeconds() bool {
-	if o != nil && !utils.IsNil(o.InitialDelaySeconds) {
-		return true
-	}
-
-	return false
-}
-
-// SetInitialDelaySeconds gets a reference to the given int32 and assigns it to the initialDelaySeconds field.
-// InitialDelaySeconds:  Number of seconds after the container is started before the first probe is initiated.
+// SetInitialDelaySeconds sets field value
 func (o *HealthProbe) SetInitialDelaySeconds(v int32) *HealthProbe {
 	o.InitialDelaySeconds = &v
 	return o
 }
 
-// GetPeriodSeconds returns the PeriodSeconds field value if set, zero value otherwise.
+// GetPeriodSeconds returns the PeriodSeconds field value
 func (o *HealthProbe) GetPeriodSeconds() int32 {
-	if o == nil || utils.IsNil(o.PeriodSeconds) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.PeriodSeconds
 }
 
-// GetPeriodSecondsOk returns a tuple with the PeriodSeconds field value if set, nil otherwise
+// GetPeriodSecondsOk returns a tuple with the PeriodSeconds field value
 // and a boolean to check if the value has been set.
 func (o *HealthProbe) GetPeriodSecondsOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.PeriodSeconds) {
+	if o == nil {
 		return nil, false
 	}
 	return o.PeriodSeconds, true
 }
 
-// HasPeriodSeconds returns a boolean if a field has been set.
-func (o *HealthProbe) HasPeriodSeconds() bool {
-	if o != nil && !utils.IsNil(o.PeriodSeconds) {
-		return true
-	}
-
-	return false
-}
-
-// SetPeriodSeconds gets a reference to the given int32 and assigns it to the periodSeconds field.
-// PeriodSeconds:  How often, in seconds, to execute the probe.
+// SetPeriodSeconds sets field value
 func (o *HealthProbe) SetPeriodSeconds(v int32) *HealthProbe {
 	o.PeriodSeconds = &v
 	return o
 }
 
-// GetSuccessThreshold returns the SuccessThreshold field value if set, zero value otherwise.
+// GetSuccessThreshold returns the SuccessThreshold field value
 func (o *HealthProbe) GetSuccessThreshold() int32 {
-	if o == nil || utils.IsNil(o.SuccessThreshold) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.SuccessThreshold
 }
 
-// GetSuccessThresholdOk returns a tuple with the SuccessThreshold field value if set, nil otherwise
+// GetSuccessThresholdOk returns a tuple with the SuccessThreshold field value
 // and a boolean to check if the value has been set.
 func (o *HealthProbe) GetSuccessThresholdOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.SuccessThreshold) {
+	if o == nil {
 		return nil, false
 	}
 	return o.SuccessThreshold, true
 }
 
-// HasSuccessThreshold returns a boolean if a field has been set.
-func (o *HealthProbe) HasSuccessThreshold() bool {
-	if o != nil && !utils.IsNil(o.SuccessThreshold) {
-		return true
-	}
-
-	return false
-}
-
-// SetSuccessThreshold gets a reference to the given int32 and assigns it to the successThreshold field.
-// SuccessThreshold:  Minimum consecutive successes for the probe to be considered successful after having failed.
+// SetSuccessThreshold sets field value
 func (o *HealthProbe) SetSuccessThreshold(v int32) *HealthProbe {
 	o.SuccessThreshold = &v
 	return o
@@ -321,35 +333,26 @@ func (o *HealthProbe) SetTcpSocket(v TcpSocket) *HealthProbe {
 	return o
 }
 
-// GetTimeoutSeconds returns the TimeoutSeconds field value if set, zero value otherwise.
+// GetTimeoutSeconds returns the TimeoutSeconds field value
 func (o *HealthProbe) GetTimeoutSeconds() int32 {
-	if o == nil || utils.IsNil(o.TimeoutSeconds) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.TimeoutSeconds
 }
 
-// GetTimeoutSecondsOk returns a tuple with the TimeoutSeconds field value if set, nil otherwise
+// GetTimeoutSecondsOk returns a tuple with the TimeoutSeconds field value
 // and a boolean to check if the value has been set.
 func (o *HealthProbe) GetTimeoutSecondsOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.TimeoutSeconds) {
+	if o == nil {
 		return nil, false
 	}
 	return o.TimeoutSeconds, true
 }
 
-// HasTimeoutSeconds returns a boolean if a field has been set.
-func (o *HealthProbe) HasTimeoutSeconds() bool {
-	if o != nil && !utils.IsNil(o.TimeoutSeconds) {
-		return true
-	}
-
-	return false
-}
-
-// SetTimeoutSeconds gets a reference to the given int32 and assigns it to the timeoutSeconds field.
-// TimeoutSeconds:  Number of seconds after which the probe times out.
+// SetTimeoutSeconds sets field value
 func (o *HealthProbe) SetTimeoutSeconds(v int32) *HealthProbe {
 	o.TimeoutSeconds = &v
 	return o
@@ -368,27 +371,17 @@ func (o HealthProbe) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Exec) {
 		toSerialize["exec"] = o.Exec
 	}
-	if !utils.IsNil(o.FailureThreshold) {
-		toSerialize["failureThreshold"] = o.FailureThreshold
-	}
+	toSerialize["failureThreshold"] = o.FailureThreshold
 	if !utils.IsNil(o.HttpGet) {
 		toSerialize["httpGet"] = o.HttpGet
 	}
-	if !utils.IsNil(o.InitialDelaySeconds) {
-		toSerialize["initialDelaySeconds"] = o.InitialDelaySeconds
-	}
-	if !utils.IsNil(o.PeriodSeconds) {
-		toSerialize["periodSeconds"] = o.PeriodSeconds
-	}
-	if !utils.IsNil(o.SuccessThreshold) {
-		toSerialize["successThreshold"] = o.SuccessThreshold
-	}
+	toSerialize["initialDelaySeconds"] = o.InitialDelaySeconds
+	toSerialize["periodSeconds"] = o.PeriodSeconds
+	toSerialize["successThreshold"] = o.SuccessThreshold
 	if !utils.IsNil(o.TcpSocket) {
 		toSerialize["tcpSocket"] = o.TcpSocket
 	}
-	if !utils.IsNil(o.TimeoutSeconds) {
-		toSerialize["timeoutSeconds"] = o.TimeoutSeconds
-	}
+	toSerialize["timeoutSeconds"] = o.TimeoutSeconds
 	return toSerialize, nil
 }
 
@@ -397,7 +390,7 @@ type NullableHealthProbe struct {
 	isSet bool
 }
 
-func (v NullableHealthProbe) Get() *HealthProbe {
+func (v *NullableHealthProbe) Get() *HealthProbe {
 	return v.value
 }
 
@@ -406,7 +399,7 @@ func (v *NullableHealthProbe) Set(val *HealthProbe) {
 	v.isSet = true
 }
 
-func (v NullableHealthProbe) IsSet() bool {
+func (v *NullableHealthProbe) IsSet() bool {
 	return v.isSet
 }
 

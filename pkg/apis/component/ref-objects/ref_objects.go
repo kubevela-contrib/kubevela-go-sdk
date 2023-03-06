@@ -12,6 +12,7 @@ package ref_objects
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -33,18 +34,32 @@ type RefObjectsSpec struct {
 }
 
 // NewRefObjectsSpecWith instantiates a new RefObjectsSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewRefObjectsSpecWith() *RefObjectsSpec {
 	this := RefObjectsSpec{}
 	return &this
 }
 
-// NewRefObjectsSpec instantiates a new RefObjectsSpec object
+// NewRefObjectsSpecWithDefault instantiates a new RefObjectsSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewRefObjectsSpecWithDefault() *RefObjectsSpec {
+	this := RefObjectsSpec{}
+	return &this
+}
+
+// NewRefObjectsSpec is short for NewRefObjectsSpecWithDefault which instantiates a new RefObjectsSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewRefObjectsSpec() *RefObjectsSpec {
+	return NewRefObjectsSpecWithDefault()
+}
+
+// NewRefObjectsSpecEmpty instantiates a new RefObjectsSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewRefObjectsSpecEmpty() *RefObjectsSpec {
 	this := RefObjectsSpec{}
 	return &this
 }
@@ -57,6 +72,20 @@ func NewRefObjectsSpecList(ps ...*RefObjectsSpec) []RefObjectsSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this RefObjectsSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *RefObjectsComponent) Validate() error {
+	// validate all nested properties
+
+	for i, v := range o.Base.Traits {
+		if err := v.Validate(); err != nil {
+			return fmt.Errorf("traits[%d] %s in %s component is invalid: %w", i, v.DefType(), RefObjectsType, err)
+		}
+	}
+	return nil
 }
 
 // GetObjects returns the Objects field value if set, zero value otherwise.
@@ -151,7 +180,7 @@ type NullableRefObjectsSpec struct {
 	isSet bool
 }
 
-func (v NullableRefObjectsSpec) Get() *RefObjectsSpec {
+func (v *NullableRefObjectsSpec) Get() *RefObjectsSpec {
 	return v.value
 }
 
@@ -160,7 +189,7 @@ func (v *NullableRefObjectsSpec) Set(val *RefObjectsSpec) {
 	v.isSet = true
 }
 
-func (v NullableRefObjectsSpec) IsSet() bool {
+func (v *NullableRefObjectsSpec) IsSet() bool {
 	return v.isSet
 }
 
@@ -271,6 +300,10 @@ func (r *RefObjectsComponent) GetTrait(typ string) apis.Trait {
 		}
 	}
 	return nil
+}
+
+func (r *RefObjectsComponent) GetAllTraits() []apis.Trait {
+	return r.Base.Traits
 }
 
 func (r *RefObjectsComponent) ComponentName() string {

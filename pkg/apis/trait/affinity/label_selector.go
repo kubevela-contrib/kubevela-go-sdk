@@ -22,22 +22,36 @@ var _ utils.MappedNullable = &LabelSelector{}
 // LabelSelector struct for LabelSelector
 type LabelSelector struct {
 	MatchExpressions []MatchExpressions `json:"matchExpressions,omitempty"`
-	MatchLabels      *map[string]string `json:"matchLabels,omitempty"`
+	MatchLabels      map[string]string  `json:"matchLabels,omitempty"`
 }
 
 // NewLabelSelectorWith instantiates a new LabelSelector object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewLabelSelectorWith() *LabelSelector {
 	this := LabelSelector{}
 	return &this
 }
 
-// NewLabelSelector instantiates a new LabelSelector object
+// NewLabelSelectorWithDefault instantiates a new LabelSelector object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewLabelSelectorWithDefault() *LabelSelector {
+	this := LabelSelector{}
+	return &this
+}
+
+// NewLabelSelector is short for NewLabelSelectorWithDefault which instantiates a new LabelSelector object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewLabelSelector() *LabelSelector {
+	return NewLabelSelectorWithDefault()
+}
+
+// NewLabelSelectorEmpty instantiates a new LabelSelector object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewLabelSelectorEmpty() *LabelSelector {
 	this := LabelSelector{}
 	return &this
 }
@@ -50,6 +64,14 @@ func NewLabelSelectorList(ps ...*LabelSelector) []LabelSelector {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this LabelSelector
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *LabelSelector) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetMatchExpressions returns the MatchExpressions field value if set, zero value otherwise.
@@ -92,12 +114,12 @@ func (o *LabelSelector) GetMatchLabels() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.MatchLabels
+	return o.MatchLabels
 }
 
 // GetMatchLabelsOk returns a tuple with the MatchLabels field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LabelSelector) GetMatchLabelsOk() (*map[string]string, bool) {
+func (o *LabelSelector) GetMatchLabelsOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.MatchLabels) {
 		return nil, false
 	}
@@ -116,7 +138,7 @@ func (o *LabelSelector) HasMatchLabels() bool {
 // SetMatchLabels gets a reference to the given map[string]string and assigns it to the matchLabels field.
 // MatchLabels:
 func (o *LabelSelector) SetMatchLabels(v map[string]string) *LabelSelector {
-	o.MatchLabels = &v
+	o.MatchLabels = v
 	return o
 }
 
@@ -144,7 +166,7 @@ type NullableLabelSelector struct {
 	isSet bool
 }
 
-func (v NullableLabelSelector) Get() *LabelSelector {
+func (v *NullableLabelSelector) Get() *LabelSelector {
 	return v.value
 }
 
@@ -153,7 +175,7 @@ func (v *NullableLabelSelector) Set(val *LabelSelector) {
 	v.isSet = true
 }
 
-func (v NullableLabelSelector) IsSet() bool {
+func (v *NullableLabelSelector) IsSet() bool {
 	return v.isSet
 }
 

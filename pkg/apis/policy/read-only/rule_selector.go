@@ -36,18 +36,32 @@ type RuleSelector struct {
 }
 
 // NewRuleSelectorWith instantiates a new RuleSelector object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewRuleSelectorWith() *RuleSelector {
 	this := RuleSelector{}
 	return &this
 }
 
-// NewRuleSelector instantiates a new RuleSelector object
+// NewRuleSelectorWithDefault instantiates a new RuleSelector object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewRuleSelectorWithDefault() *RuleSelector {
+	this := RuleSelector{}
+	return &this
+}
+
+// NewRuleSelector is short for NewRuleSelectorWithDefault which instantiates a new RuleSelector object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewRuleSelector() *RuleSelector {
+	return NewRuleSelectorWithDefault()
+}
+
+// NewRuleSelectorEmpty instantiates a new RuleSelector object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewRuleSelectorEmpty() *RuleSelector {
 	this := RuleSelector{}
 	return &this
 }
@@ -60,6 +74,14 @@ func NewRuleSelectorList(ps ...*RuleSelector) []RuleSelector {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this RuleSelector
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *RuleSelector) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetComponentNames returns the ComponentNames field value if set, zero value otherwise.
@@ -302,7 +324,7 @@ type NullableRuleSelector struct {
 	isSet bool
 }
 
-func (v NullableRuleSelector) Get() *RuleSelector {
+func (v *NullableRuleSelector) Get() *RuleSelector {
 	return v.value
 }
 
@@ -311,7 +333,7 @@ func (v *NullableRuleSelector) Set(val *RuleSelector) {
 	v.isSet = true
 }
 
-func (v NullableRuleSelector) IsSet() bool {
+func (v *NullableRuleSelector) IsSet() bool {
 	return v.isSet
 }
 

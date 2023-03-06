@@ -29,18 +29,32 @@ type LabelsSpec struct {
 }
 
 // NewLabelsSpecWith instantiates a new LabelsSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewLabelsSpecWith() *LabelsSpec {
 	this := LabelsSpec{}
 	return &this
 }
 
-// NewLabelsSpec instantiates a new LabelsSpec object
+// NewLabelsSpecWithDefault instantiates a new LabelsSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewLabelsSpecWithDefault() *LabelsSpec {
+	this := LabelsSpec{}
+	return &this
+}
+
+// NewLabelsSpec is short for NewLabelsSpecWithDefault which instantiates a new LabelsSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewLabelsSpec() *LabelsSpec {
+	return NewLabelsSpecWithDefault()
+}
+
+// NewLabelsSpecEmpty instantiates a new LabelsSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewLabelsSpecEmpty() *LabelsSpec {
 	this := LabelsSpec{}
 	return &this
 }
@@ -53,6 +67,14 @@ func NewLabelsSpecList(ps ...*LabelsSpec) []LabelsSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this LabelsSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *LabelsTrait) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 func (o LabelsSpec) MarshalJSON() ([]byte, error) {
@@ -73,7 +95,7 @@ type NullableLabelsSpec struct {
 	isSet bool
 }
 
-func (v NullableLabelsSpec) Get() *LabelsSpec {
+func (v *NullableLabelsSpec) Get() *LabelsSpec {
 	return v.value
 }
 
@@ -82,7 +104,7 @@ func (v *NullableLabelsSpec) Set(val *LabelsSpec) {
 	v.isSet = true
 }
 
-func (v NullableLabelsSpec) IsSet() bool {
+func (v *NullableLabelsSpec) IsSet() bool {
 	return v.isSet
 }
 

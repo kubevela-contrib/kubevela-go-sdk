@@ -12,6 +12,7 @@ package webservice
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,25 +22,42 @@ var _ utils.MappedNullable = &HostPath{}
 
 // HostPath struct for HostPath
 type HostPath struct {
-	MountPath *string `json:"mountPath,omitempty"`
-	Name      *string `json:"name,omitempty"`
-	Path      *string `json:"path,omitempty"`
+	MountPath *string `json:"mountPath"`
+	Name      *string `json:"name"`
+	Path      *string `json:"path"`
 	SubPath   *string `json:"subPath,omitempty"`
 }
 
 // NewHostPathWith instantiates a new HostPath object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewHostPathWith() *HostPath {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewHostPathWith(mountPath string, name string, path string) *HostPath {
+	this := HostPath{}
+	this.MountPath = &mountPath
+	this.Name = &name
+	this.Path = &path
+	return &this
+}
+
+// NewHostPathWithDefault instantiates a new HostPath object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewHostPathWithDefault() *HostPath {
 	this := HostPath{}
 	return &this
 }
 
-// NewHostPath instantiates a new HostPath object
+// NewHostPath is short for NewHostPathWithDefault which instantiates a new HostPath object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewHostPath() *HostPath {
+	return NewHostPathWithDefault()
+}
+
+// NewHostPathEmpty instantiates a new HostPath object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewHostPathEmpty() *HostPath {
 	this := HostPath{}
 	return &this
 }
@@ -54,103 +72,93 @@ func NewHostPathList(ps ...*HostPath) []HostPath {
 	return objs
 }
 
-// GetMountPath returns the MountPath field value if set, zero value otherwise.
+// Validate validates this HostPath
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *HostPath) Validate() error {
+	if o.MountPath == nil {
+		return errors.New("MountPath in HostPath must be set")
+	}
+	if o.Name == nil {
+		return errors.New("Name in HostPath must be set")
+	}
+	if o.Path == nil {
+		return errors.New("Path in HostPath must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetMountPath returns the MountPath field value
 func (o *HostPath) GetMountPath() string {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MountPath
 }
 
-// GetMountPathOk returns a tuple with the MountPath field value if set, nil otherwise
+// GetMountPathOk returns a tuple with the MountPath field value
 // and a boolean to check if the value has been set.
 func (o *HostPath) GetMountPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		return nil, false
 	}
 	return o.MountPath, true
 }
 
-// HasMountPath returns a boolean if a field has been set.
-func (o *HostPath) HasMountPath() bool {
-	if o != nil && !utils.IsNil(o.MountPath) {
-		return true
-	}
-
-	return false
-}
-
-// SetMountPath gets a reference to the given string and assigns it to the mountPath field.
-// MountPath:
+// SetMountPath sets field value
 func (o *HostPath) SetMountPath(v string) *HostPath {
 	o.MountPath = &v
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *HostPath) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *HostPath) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *HostPath) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
+// SetName sets field value
 func (o *HostPath) SetName(v string) *HostPath {
 	o.Name = &v
 	return o
 }
 
-// GetPath returns the Path field value if set, zero value otherwise.
+// GetPath returns the Path field value
 func (o *HostPath) GetPath() string {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Path
 }
 
-// GetPathOk returns a tuple with the Path field value if set, nil otherwise
+// GetPathOk returns a tuple with the Path field value
 // and a boolean to check if the value has been set.
 func (o *HostPath) GetPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Path, true
 }
 
-// HasPath returns a boolean if a field has been set.
-func (o *HostPath) HasPath() bool {
-	if o != nil && !utils.IsNil(o.Path) {
-		return true
-	}
-
-	return false
-}
-
-// SetPath gets a reference to the given string and assigns it to the path field.
-// Path:
+// SetPath sets field value
 func (o *HostPath) SetPath(v string) *HostPath {
 	o.Path = &v
 	return o
@@ -200,15 +208,9 @@ func (o HostPath) MarshalJSON() ([]byte, error) {
 
 func (o HostPath) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.MountPath) {
-		toSerialize["mountPath"] = o.MountPath
-	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Path) {
-		toSerialize["path"] = o.Path
-	}
+	toSerialize["mountPath"] = o.MountPath
+	toSerialize["name"] = o.Name
+	toSerialize["path"] = o.Path
 	if !utils.IsNil(o.SubPath) {
 		toSerialize["subPath"] = o.SubPath
 	}
@@ -220,7 +222,7 @@ type NullableHostPath struct {
 	isSet bool
 }
 
-func (v NullableHostPath) Get() *HostPath {
+func (v *NullableHostPath) Get() *HostPath {
 	return v.value
 }
 
@@ -229,7 +231,7 @@ func (v *NullableHostPath) Set(val *HostPath) {
 	v.isSet = true
 }
 
-func (v NullableHostPath) IsSet() bool {
+func (v *NullableHostPath) IsSet() bool {
 	return v.isSet
 }
 

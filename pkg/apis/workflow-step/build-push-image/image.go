@@ -12,6 +12,7 @@ package build_push_image
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,29 +23,43 @@ var _ utils.MappedNullable = &Image{}
 // Image Specify the credentials to access image registry
 type Image struct {
 	// Specify the secret key
-	Key *string `json:"key,omitempty"`
+	Key *string `json:"key"`
 	// Specify the secret name
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 }
 
 // NewImageWith instantiates a new Image object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewImageWith() *Image {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewImageWith(key string, name string) *Image {
+	this := Image{}
+	this.Key = &key
+	this.Name = &name
+	return &this
+}
+
+// NewImageWithDefault instantiates a new Image object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewImageWithDefault() *Image {
 	this := Image{}
 	var key string = ".dockerconfigjson"
 	this.Key = &key
 	return &this
 }
 
-// NewImage instantiates a new Image object
+// NewImage is short for NewImageWithDefault which instantiates a new Image object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewImage() *Image {
+	return NewImageWithDefault()
+}
+
+// NewImageEmpty instantiates a new Image object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewImageEmpty() *Image {
 	this := Image{}
-	var key string = ".dockerconfigjson"
-	this.Key = &key
 	return &this
 }
 
@@ -58,69 +73,65 @@ func NewImageList(ps ...*Image) []Image {
 	return objs
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
+// Validate validates this Image
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Image) Validate() error {
+	if o.Key == nil {
+		return errors.New("Key in Image must be set")
+	}
+	if o.Name == nil {
+		return errors.New("Name in Image must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetKey returns the Key field value
 func (o *Image) GetKey() string {
-	if o == nil || utils.IsNil(o.Key) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Key
 }
 
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// GetKeyOk returns a tuple with the Key field value
 // and a boolean to check if the value has been set.
 func (o *Image) GetKeyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Key) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Key, true
 }
 
-// HasKey returns a boolean if a field has been set.
-func (o *Image) HasKey() bool {
-	if o != nil && !utils.IsNil(o.Key) {
-		return true
-	}
-
-	return false
-}
-
-// SetKey gets a reference to the given string and assigns it to the key field.
-// Key:  Specify the secret key
+// SetKey sets field value
 func (o *Image) SetKey(v string) *Image {
 	o.Key = &v
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *Image) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *Image) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *Image) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Specify the secret name
+// SetName sets field value
 func (o *Image) SetName(v string) *Image {
 	o.Name = &v
 	return o
@@ -136,12 +147,8 @@ func (o Image) MarshalJSON() ([]byte, error) {
 
 func (o Image) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Key) {
-		toSerialize["key"] = o.Key
-	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
+	toSerialize["key"] = o.Key
+	toSerialize["name"] = o.Name
 	return toSerialize, nil
 }
 
@@ -150,7 +157,7 @@ type NullableImage struct {
 	isSet bool
 }
 
-func (v NullableImage) Get() *Image {
+func (v *NullableImage) Get() *Image {
 	return v.value
 }
 
@@ -159,7 +166,7 @@ func (v *NullableImage) Set(val *Image) {
 	v.isSet = true
 }
 
-func (v NullableImage) IsSet() bool {
+func (v *NullableImage) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &Markdown{}
 
 // Markdown struct for Markdown
 type Markdown struct {
-	Text  *string `json:"text,omitempty"`
-	Title *string `json:"title,omitempty"`
+	Text  *string `json:"text"`
+	Title *string `json:"title"`
 }
 
 // NewMarkdownWith instantiates a new Markdown object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewMarkdownWith() *Markdown {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewMarkdownWith(text string, title string) *Markdown {
+	this := Markdown{}
+	this.Text = &text
+	this.Title = &title
+	return &this
+}
+
+// NewMarkdownWithDefault instantiates a new Markdown object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewMarkdownWithDefault() *Markdown {
 	this := Markdown{}
 	return &this
 }
 
-// NewMarkdown instantiates a new Markdown object
+// NewMarkdown is short for NewMarkdownWithDefault which instantiates a new Markdown object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewMarkdown() *Markdown {
+	return NewMarkdownWithDefault()
+}
+
+// NewMarkdownEmpty instantiates a new Markdown object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewMarkdownEmpty() *Markdown {
 	this := Markdown{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewMarkdownList(ps ...*Markdown) []Markdown {
 	return objs
 }
 
-// GetText returns the Text field value if set, zero value otherwise.
+// Validate validates this Markdown
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Markdown) Validate() error {
+	if o.Text == nil {
+		return errors.New("Text in Markdown must be set")
+	}
+	if o.Title == nil {
+		return errors.New("Title in Markdown must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetText returns the Text field value
 func (o *Markdown) GetText() string {
-	if o == nil || utils.IsNil(o.Text) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Text
 }
 
-// GetTextOk returns a tuple with the Text field value if set, nil otherwise
+// GetTextOk returns a tuple with the Text field value
 // and a boolean to check if the value has been set.
 func (o *Markdown) GetTextOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Text) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Text, true
 }
 
-// HasText returns a boolean if a field has been set.
-func (o *Markdown) HasText() bool {
-	if o != nil && !utils.IsNil(o.Text) {
-		return true
-	}
-
-	return false
-}
-
-// SetText gets a reference to the given string and assigns it to the text field.
-// Text:
+// SetText sets field value
 func (o *Markdown) SetText(v string) *Markdown {
 	o.Text = &v
 	return o
 }
 
-// GetTitle returns the Title field value if set, zero value otherwise.
+// GetTitle returns the Title field value
 func (o *Markdown) GetTitle() string {
-	if o == nil || utils.IsNil(o.Title) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Title
 }
 
-// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
+// GetTitleOk returns a tuple with the Title field value
 // and a boolean to check if the value has been set.
 func (o *Markdown) GetTitleOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Title) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Title, true
 }
 
-// HasTitle returns a boolean if a field has been set.
-func (o *Markdown) HasTitle() bool {
-	if o != nil && !utils.IsNil(o.Title) {
-		return true
-	}
-
-	return false
-}
-
-// SetTitle gets a reference to the given string and assigns it to the title field.
-// Title:
+// SetTitle sets field value
 func (o *Markdown) SetTitle(v string) *Markdown {
 	o.Title = &v
 	return o
@@ -130,12 +143,8 @@ func (o Markdown) MarshalJSON() ([]byte, error) {
 
 func (o Markdown) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Text) {
-		toSerialize["text"] = o.Text
-	}
-	if !utils.IsNil(o.Title) {
-		toSerialize["title"] = o.Title
-	}
+	toSerialize["text"] = o.Text
+	toSerialize["title"] = o.Title
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableMarkdown struct {
 	isSet bool
 }
 
-func (v NullableMarkdown) Get() *Markdown {
+func (v *NullableMarkdown) Get() *Markdown {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableMarkdown) Set(val *Markdown) {
 	v.isSet = true
 }
 
-func (v NullableMarkdown) IsSet() bool {
+func (v *NullableMarkdown) IsSet() bool {
 	return v.isSet
 }
 

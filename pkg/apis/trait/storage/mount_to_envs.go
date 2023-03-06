@@ -12,6 +12,7 @@ package storage
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &MountToEnvs{}
 
 // MountToEnvs struct for MountToEnvs
 type MountToEnvs struct {
-	ConfigMapKey *string `json:"configMapKey,omitempty"`
-	EnvName      *string `json:"envName,omitempty"`
+	ConfigMapKey *string `json:"configMapKey"`
+	EnvName      *string `json:"envName"`
 }
 
 // NewMountToEnvsWith instantiates a new MountToEnvs object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewMountToEnvsWith() *MountToEnvs {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewMountToEnvsWith(configMapKey string, envName string) *MountToEnvs {
+	this := MountToEnvs{}
+	this.ConfigMapKey = &configMapKey
+	this.EnvName = &envName
+	return &this
+}
+
+// NewMountToEnvsWithDefault instantiates a new MountToEnvs object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewMountToEnvsWithDefault() *MountToEnvs {
 	this := MountToEnvs{}
 	return &this
 }
 
-// NewMountToEnvs instantiates a new MountToEnvs object
+// NewMountToEnvs is short for NewMountToEnvsWithDefault which instantiates a new MountToEnvs object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewMountToEnvs() *MountToEnvs {
+	return NewMountToEnvsWithDefault()
+}
+
+// NewMountToEnvsEmpty instantiates a new MountToEnvs object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewMountToEnvsEmpty() *MountToEnvs {
 	this := MountToEnvs{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewMountToEnvsList(ps ...*MountToEnvs) []MountToEnvs {
 	return objs
 }
 
-// GetConfigMapKey returns the ConfigMapKey field value if set, zero value otherwise.
+// Validate validates this MountToEnvs
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *MountToEnvs) Validate() error {
+	if o.ConfigMapKey == nil {
+		return errors.New("ConfigMapKey in MountToEnvs must be set")
+	}
+	if o.EnvName == nil {
+		return errors.New("EnvName in MountToEnvs must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetConfigMapKey returns the ConfigMapKey field value
 func (o *MountToEnvs) GetConfigMapKey() string {
-	if o == nil || utils.IsNil(o.ConfigMapKey) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.ConfigMapKey
 }
 
-// GetConfigMapKeyOk returns a tuple with the ConfigMapKey field value if set, nil otherwise
+// GetConfigMapKeyOk returns a tuple with the ConfigMapKey field value
 // and a boolean to check if the value has been set.
 func (o *MountToEnvs) GetConfigMapKeyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.ConfigMapKey) {
+	if o == nil {
 		return nil, false
 	}
 	return o.ConfigMapKey, true
 }
 
-// HasConfigMapKey returns a boolean if a field has been set.
-func (o *MountToEnvs) HasConfigMapKey() bool {
-	if o != nil && !utils.IsNil(o.ConfigMapKey) {
-		return true
-	}
-
-	return false
-}
-
-// SetConfigMapKey gets a reference to the given string and assigns it to the configMapKey field.
-// ConfigMapKey:
+// SetConfigMapKey sets field value
 func (o *MountToEnvs) SetConfigMapKey(v string) *MountToEnvs {
 	o.ConfigMapKey = &v
 	return o
 }
 
-// GetEnvName returns the EnvName field value if set, zero value otherwise.
+// GetEnvName returns the EnvName field value
 func (o *MountToEnvs) GetEnvName() string {
-	if o == nil || utils.IsNil(o.EnvName) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.EnvName
 }
 
-// GetEnvNameOk returns a tuple with the EnvName field value if set, nil otherwise
+// GetEnvNameOk returns a tuple with the EnvName field value
 // and a boolean to check if the value has been set.
 func (o *MountToEnvs) GetEnvNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.EnvName) {
+	if o == nil {
 		return nil, false
 	}
 	return o.EnvName, true
 }
 
-// HasEnvName returns a boolean if a field has been set.
-func (o *MountToEnvs) HasEnvName() bool {
-	if o != nil && !utils.IsNil(o.EnvName) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnvName gets a reference to the given string and assigns it to the envName field.
-// EnvName:
+// SetEnvName sets field value
 func (o *MountToEnvs) SetEnvName(v string) *MountToEnvs {
 	o.EnvName = &v
 	return o
@@ -130,12 +143,8 @@ func (o MountToEnvs) MarshalJSON() ([]byte, error) {
 
 func (o MountToEnvs) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.ConfigMapKey) {
-		toSerialize["configMapKey"] = o.ConfigMapKey
-	}
-	if !utils.IsNil(o.EnvName) {
-		toSerialize["envName"] = o.EnvName
-	}
+	toSerialize["configMapKey"] = o.ConfigMapKey
+	toSerialize["envName"] = o.EnvName
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableMountToEnvs struct {
 	isSet bool
 }
 
-func (v NullableMountToEnvs) Get() *MountToEnvs {
+func (v *NullableMountToEnvs) Get() *MountToEnvs {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableMountToEnvs) Set(val *MountToEnvs) {
 	v.isSet = true
 }
 
-func (v NullableMountToEnvs) IsSet() bool {
+func (v *NullableMountToEnvs) IsSet() bool {
 	return v.isSet
 }
 

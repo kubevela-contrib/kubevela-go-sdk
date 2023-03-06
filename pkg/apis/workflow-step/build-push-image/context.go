@@ -12,7 +12,6 @@ package build_push_image
 
 import (
 	"encoding/json"
-
 	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
@@ -36,6 +35,19 @@ func StringAsContext(v *string) Context {
 	return Context{
 		String: v,
 	}
+}
+
+// Validate validates this Context
+func (o *Context) Validate() error {
+	if o.Git != nil {
+		return nil
+	}
+
+	if o.String != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in Context")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -116,7 +128,7 @@ type NullableContext struct {
 	isSet bool
 }
 
-func (v NullableContext) Get() *Context {
+func (v *NullableContext) Get() *Context {
 	return v.value
 }
 
@@ -125,7 +137,7 @@ func (v *NullableContext) Set(val *Context) {
 	v.isSet = true
 }
 
-func (v NullableContext) IsSet() bool {
+func (v *NullableContext) IsSet() bool {
 	return v.isSet
 }
 

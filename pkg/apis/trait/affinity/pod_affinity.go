@@ -28,18 +28,32 @@ type PodAffinity struct {
 }
 
 // NewPodAffinityWith instantiates a new PodAffinity object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewPodAffinityWith() *PodAffinity {
 	this := PodAffinity{}
 	return &this
 }
 
-// NewPodAffinity instantiates a new PodAffinity object
+// NewPodAffinityWithDefault instantiates a new PodAffinity object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPodAffinityWithDefault() *PodAffinity {
+	this := PodAffinity{}
+	return &this
+}
+
+// NewPodAffinity is short for NewPodAffinityWithDefault which instantiates a new PodAffinity object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPodAffinity() *PodAffinity {
+	return NewPodAffinityWithDefault()
+}
+
+// NewPodAffinityEmpty instantiates a new PodAffinity object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPodAffinityEmpty() *PodAffinity {
 	this := PodAffinity{}
 	return &this
 }
@@ -52,6 +66,14 @@ func NewPodAffinityList(ps ...*PodAffinity) []PodAffinity {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this PodAffinity
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PodAffinity) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetPreferred returns the Preferred field value if set, zero value otherwise.
@@ -146,7 +168,7 @@ type NullablePodAffinity struct {
 	isSet bool
 }
 
-func (v NullablePodAffinity) Get() *PodAffinity {
+func (v *NullablePodAffinity) Get() *PodAffinity {
 	return v.value
 }
 
@@ -155,7 +177,7 @@ func (v *NullablePodAffinity) Set(val *PodAffinity) {
 	v.isSet = true
 }
 
-func (v NullablePodAffinity) IsSet() bool {
+func (v *NullablePodAffinity) IsSet() bool {
 	return v.isSet
 }
 

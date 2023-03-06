@@ -12,6 +12,7 @@ package delete_config
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,24 +29,39 @@ var _ utils.MappedNullable = &DeleteConfigSpec{}
 // DeleteConfigSpec struct for DeleteConfigSpec
 type DeleteConfigSpec struct {
 	// Specify the name of the config.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 	// Specify the namespace of the config.
 	Namespace *string `json:"namespace,omitempty"`
 }
 
 // NewDeleteConfigSpecWith instantiates a new DeleteConfigSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewDeleteConfigSpecWith() *DeleteConfigSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewDeleteConfigSpecWith(name string) *DeleteConfigSpec {
+	this := DeleteConfigSpec{}
+	this.Name = &name
+	return &this
+}
+
+// NewDeleteConfigSpecWithDefault instantiates a new DeleteConfigSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewDeleteConfigSpecWithDefault() *DeleteConfigSpec {
 	this := DeleteConfigSpec{}
 	return &this
 }
 
-// NewDeleteConfigSpec instantiates a new DeleteConfigSpec object
+// NewDeleteConfigSpec is short for NewDeleteConfigSpecWithDefault which instantiates a new DeleteConfigSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewDeleteConfigSpec() *DeleteConfigSpec {
+	return NewDeleteConfigSpecWithDefault()
+}
+
+// NewDeleteConfigSpecEmpty instantiates a new DeleteConfigSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewDeleteConfigSpecEmpty() *DeleteConfigSpec {
 	this := DeleteConfigSpec{}
 	return &this
 }
@@ -60,35 +76,37 @@ func NewDeleteConfigSpecList(ps ...*DeleteConfigSpec) []DeleteConfigSpec {
 	return objs
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// Validate validates this DeleteConfigSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *DeleteConfigWorkflowStep) Validate() error {
+	if o.Properties.Name == nil {
+		return errors.New("Name in DeleteConfigSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetName returns the Name field value
 func (o *DeleteConfigWorkflowStep) GetName() string {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *DeleteConfigWorkflowStep) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *DeleteConfigWorkflowStep) HasName() bool {
-	if o != nil && !utils.IsNil(o.Properties.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Specify the name of the config.
+// SetName sets field value
 func (o *DeleteConfigWorkflowStep) SetName(v string) *DeleteConfigWorkflowStep {
 	o.Properties.Name = &v
 	return o
@@ -138,9 +156,7 @@ func (o DeleteConfigSpec) MarshalJSON() ([]byte, error) {
 
 func (o DeleteConfigSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
+	toSerialize["name"] = o.Name
 	if !utils.IsNil(o.Namespace) {
 		toSerialize["namespace"] = o.Namespace
 	}
@@ -152,7 +168,7 @@ type NullableDeleteConfigSpec struct {
 	isSet bool
 }
 
-func (v NullableDeleteConfigSpec) Get() *DeleteConfigSpec {
+func (v *NullableDeleteConfigSpec) Get() *DeleteConfigSpec {
 	return v.value
 }
 
@@ -161,7 +177,7 @@ func (v *NullableDeleteConfigSpec) Set(val *DeleteConfigSpec) {
 	v.isSet = true
 }
 
-func (v NullableDeleteConfigSpec) IsSet() bool {
+func (v *NullableDeleteConfigSpec) IsSet() bool {
 	return v.isSet
 }
 

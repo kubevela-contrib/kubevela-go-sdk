@@ -12,6 +12,7 @@ package export_data
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,9 +29,9 @@ var _ utils.MappedNullable = &ExportDataSpec{}
 // ExportDataSpec struct for ExportDataSpec
 type ExportDataSpec struct {
 	// Specify the data to export
-	Data map[string]interface{} `json:"data,omitempty"`
+	Data map[string]interface{} `json:"data"`
 	// Specify the kind of the export destination
-	Kind *string `json:"kind,omitempty"`
+	Kind *string `json:"kind"`
 	// Specify the name of the export destination
 	Name *string `json:"name,omitempty"`
 	// Specify the namespace of the export destination
@@ -40,23 +41,37 @@ type ExportDataSpec struct {
 }
 
 // NewExportDataSpecWith instantiates a new ExportDataSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewExportDataSpecWith() *ExportDataSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewExportDataSpecWith(data map[string]interface{}, kind string) *ExportDataSpec {
+	this := ExportDataSpec{}
+	this.Data = data
+	this.Kind = &kind
+	return &this
+}
+
+// NewExportDataSpecWithDefault instantiates a new ExportDataSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewExportDataSpecWithDefault() *ExportDataSpec {
 	this := ExportDataSpec{}
 	var kind string = "ConfigMap"
 	this.Kind = &kind
 	return &this
 }
 
-// NewExportDataSpec instantiates a new ExportDataSpec object
+// NewExportDataSpec is short for NewExportDataSpecWithDefault which instantiates a new ExportDataSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewExportDataSpec() *ExportDataSpec {
+	return NewExportDataSpecWithDefault()
+}
+
+// NewExportDataSpecEmpty instantiates a new ExportDataSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewExportDataSpecEmpty() *ExportDataSpec {
 	this := ExportDataSpec{}
-	var kind string = "ConfigMap"
-	this.Kind = &kind
 	return &this
 }
 
@@ -70,69 +85,65 @@ func NewExportDataSpecList(ps ...*ExportDataSpec) []ExportDataSpec {
 	return objs
 }
 
-// GetData returns the Data field value if set, zero value otherwise.
+// Validate validates this ExportDataSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ExportDataWorkflowStep) Validate() error {
+	if o.Properties.Data == nil {
+		return errors.New("Data in ExportDataSpec must be set")
+	}
+	if o.Properties.Kind == nil {
+		return errors.New("Kind in ExportDataSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetData returns the Data field value
 func (o *ExportDataWorkflowStep) GetData() map[string]interface{} {
-	if o == nil || utils.IsNil(o.Properties.Data) {
+	if o == nil {
 		var ret map[string]interface{}
 		return ret
 	}
+
 	return o.Properties.Data
 }
 
-// GetDataOk returns a tuple with the Data field value if set, nil otherwise
+// GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
 func (o *ExportDataWorkflowStep) GetDataOk() (map[string]interface{}, bool) {
-	if o == nil || utils.IsNil(o.Properties.Data) {
+	if o == nil {
 		return map[string]interface{}{}, false
 	}
 	return o.Properties.Data, true
 }
 
-// HasData returns a boolean if a field has been set.
-func (o *ExportDataWorkflowStep) HasData() bool {
-	if o != nil && !utils.IsNil(o.Properties.Data) {
-		return true
-	}
-
-	return false
-}
-
-// SetData gets a reference to the given map[string]interface{} and assigns it to the data field.
-// Data:  Specify the data to export
+// SetData sets field value
 func (o *ExportDataWorkflowStep) SetData(v map[string]interface{}) *ExportDataWorkflowStep {
 	o.Properties.Data = v
 	return o
 }
 
-// GetKind returns the Kind field value if set, zero value otherwise.
+// GetKind returns the Kind field value
 func (o *ExportDataWorkflowStep) GetKind() string {
-	if o == nil || utils.IsNil(o.Properties.Kind) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Kind
 }
 
-// GetKindOk returns a tuple with the Kind field value if set, nil otherwise
+// GetKindOk returns a tuple with the Kind field value
 // and a boolean to check if the value has been set.
 func (o *ExportDataWorkflowStep) GetKindOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Kind) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Kind, true
 }
 
-// HasKind returns a boolean if a field has been set.
-func (o *ExportDataWorkflowStep) HasKind() bool {
-	if o != nil && !utils.IsNil(o.Properties.Kind) {
-		return true
-	}
-
-	return false
-}
-
-// SetKind gets a reference to the given string and assigns it to the kind field.
-// Kind:  Specify the kind of the export destination
+// SetKind sets field value
 func (o *ExportDataWorkflowStep) SetKind(v string) *ExportDataWorkflowStep {
 	o.Properties.Kind = &v
 	return o
@@ -250,12 +261,8 @@ func (o ExportDataSpec) MarshalJSON() ([]byte, error) {
 
 func (o ExportDataSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Data) {
-		toSerialize["data"] = o.Data
-	}
-	if !utils.IsNil(o.Kind) {
-		toSerialize["kind"] = o.Kind
-	}
+	toSerialize["data"] = o.Data
+	toSerialize["kind"] = o.Kind
 	if !utils.IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
@@ -273,7 +280,7 @@ type NullableExportDataSpec struct {
 	isSet bool
 }
 
-func (v NullableExportDataSpec) Get() *ExportDataSpec {
+func (v *NullableExportDataSpec) Get() *ExportDataSpec {
 	return v.value
 }
 
@@ -282,7 +289,7 @@ func (v *NullableExportDataSpec) Set(val *ExportDataSpec) {
 	v.isSet = true
 }
 
-func (v NullableExportDataSpec) IsSet() bool {
+func (v *NullableExportDataSpec) IsSet() bool {
 	return v.isSet
 }
 

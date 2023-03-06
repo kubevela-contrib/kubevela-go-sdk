@@ -12,6 +12,7 @@ package replication
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -27,24 +28,39 @@ var _ utils.MappedNullable = &ReplicationSpec{}
 // ReplicationSpec struct for ReplicationSpec
 type ReplicationSpec struct {
 	// Spicify the keys of replication. Every key coresponds to a replication components
-	Keys []string `json:"keys,omitempty"`
+	Keys []string `json:"keys"`
 	// Specify the components which will be replicated.
 	Selector []string `json:"selector,omitempty"`
 }
 
 // NewReplicationSpecWith instantiates a new ReplicationSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewReplicationSpecWith() *ReplicationSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewReplicationSpecWith(keys []string) *ReplicationSpec {
+	this := ReplicationSpec{}
+	this.Keys = keys
+	return &this
+}
+
+// NewReplicationSpecWithDefault instantiates a new ReplicationSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewReplicationSpecWithDefault() *ReplicationSpec {
 	this := ReplicationSpec{}
 	return &this
 }
 
-// NewReplicationSpec instantiates a new ReplicationSpec object
+// NewReplicationSpec is short for NewReplicationSpecWithDefault which instantiates a new ReplicationSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewReplicationSpec() *ReplicationSpec {
+	return NewReplicationSpecWithDefault()
+}
+
+// NewReplicationSpecEmpty instantiates a new ReplicationSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewReplicationSpecEmpty() *ReplicationSpec {
 	this := ReplicationSpec{}
 	return &this
 }
@@ -59,35 +75,37 @@ func NewReplicationSpecList(ps ...*ReplicationSpec) []ReplicationSpec {
 	return objs
 }
 
-// GetKeys returns the Keys field value if set, zero value otherwise.
+// Validate validates this ReplicationSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ReplicationPolicy) Validate() error {
+	if o.Properties.Keys == nil {
+		return errors.New("Keys in ReplicationSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetKeys returns the Keys field value
 func (o *ReplicationPolicy) GetKeys() []string {
-	if o == nil || utils.IsNil(o.Properties.Keys) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Properties.Keys
 }
 
-// GetKeysOk returns a tuple with the Keys field value if set, nil otherwise
+// GetKeysOk returns a tuple with the Keys field value
 // and a boolean to check if the value has been set.
 func (o *ReplicationPolicy) GetKeysOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Keys) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Keys, true
 }
 
-// HasKeys returns a boolean if a field has been set.
-func (o *ReplicationPolicy) HasKeys() bool {
-	if o != nil && !utils.IsNil(o.Properties.Keys) {
-		return true
-	}
-
-	return false
-}
-
-// SetKeys gets a reference to the given []string and assigns it to the keys field.
-// Keys:  Spicify the keys of replication. Every key coresponds to a replication components
+// SetKeys sets field value
 func (o *ReplicationPolicy) SetKeys(v []string) *ReplicationPolicy {
 	o.Properties.Keys = v
 	return o
@@ -137,9 +155,7 @@ func (o ReplicationSpec) MarshalJSON() ([]byte, error) {
 
 func (o ReplicationSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Keys) {
-		toSerialize["keys"] = o.Keys
-	}
+	toSerialize["keys"] = o.Keys
 	if !utils.IsNil(o.Selector) {
 		toSerialize["selector"] = o.Selector
 	}
@@ -151,7 +167,7 @@ type NullableReplicationSpec struct {
 	isSet bool
 }
 
-func (v NullableReplicationSpec) Get() *ReplicationSpec {
+func (v *NullableReplicationSpec) Get() *ReplicationSpec {
 	return v.value
 }
 
@@ -160,7 +176,7 @@ func (v *NullableReplicationSpec) Set(val *ReplicationSpec) {
 	v.isSet = true
 }
 
-func (v NullableReplicationSpec) IsSet() bool {
+func (v *NullableReplicationSpec) IsSet() bool {
 	return v.isSet
 }
 

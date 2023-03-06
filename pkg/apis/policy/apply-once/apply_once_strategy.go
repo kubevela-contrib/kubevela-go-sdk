@@ -12,6 +12,7 @@ package apply_once
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -24,22 +25,37 @@ type ApplyOnceStrategy struct {
 	// When the strategy takes effect,e.g. onUpdate、onStateKeep
 	Affect *string `json:"affect,omitempty"`
 	// Specify the path of the resource that allow configuration drift
-	Path []string `json:"path,omitempty"`
+	Path []string `json:"path"`
 }
 
 // NewApplyOnceStrategyWith instantiates a new ApplyOnceStrategy object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewApplyOnceStrategyWith() *ApplyOnceStrategy {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewApplyOnceStrategyWith(path []string) *ApplyOnceStrategy {
+	this := ApplyOnceStrategy{}
+	this.Path = path
+	return &this
+}
+
+// NewApplyOnceStrategyWithDefault instantiates a new ApplyOnceStrategy object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewApplyOnceStrategyWithDefault() *ApplyOnceStrategy {
 	this := ApplyOnceStrategy{}
 	return &this
 }
 
-// NewApplyOnceStrategy instantiates a new ApplyOnceStrategy object
+// NewApplyOnceStrategy is short for NewApplyOnceStrategyWithDefault which instantiates a new ApplyOnceStrategy object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewApplyOnceStrategy() *ApplyOnceStrategy {
+	return NewApplyOnceStrategyWithDefault()
+}
+
+// NewApplyOnceStrategyEmpty instantiates a new ApplyOnceStrategy object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewApplyOnceStrategyEmpty() *ApplyOnceStrategy {
 	this := ApplyOnceStrategy{}
 	return &this
 }
@@ -52,6 +68,17 @@ func NewApplyOnceStrategyList(ps ...*ApplyOnceStrategy) []ApplyOnceStrategy {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this ApplyOnceStrategy
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ApplyOnceStrategy) Validate() error {
+	if o.Path == nil {
+		return errors.New("Path in ApplyOnceStrategy must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetAffect returns the Affect field value if set, zero value otherwise.
@@ -88,35 +115,26 @@ func (o *ApplyOnceStrategy) SetAffect(v string) *ApplyOnceStrategy {
 	return o
 }
 
-// GetPath returns the Path field value if set, zero value otherwise.
+// GetPath returns the Path field value
 func (o *ApplyOnceStrategy) GetPath() []string {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Path
 }
 
-// GetPathOk returns a tuple with the Path field value if set, nil otherwise
+// GetPathOk returns a tuple with the Path field value
 // and a boolean to check if the value has been set.
 func (o *ApplyOnceStrategy) GetPathOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Path, true
 }
 
-// HasPath returns a boolean if a field has been set.
-func (o *ApplyOnceStrategy) HasPath() bool {
-	if o != nil && !utils.IsNil(o.Path) {
-		return true
-	}
-
-	return false
-}
-
-// SetPath gets a reference to the given []string and assigns it to the path field.
-// Path:  Specify the path of the resource that allow configuration drift
+// SetPath sets field value
 func (o *ApplyOnceStrategy) SetPath(v []string) *ApplyOnceStrategy {
 	o.Path = v
 	return o
@@ -135,9 +153,7 @@ func (o ApplyOnceStrategy) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Affect) {
 		toSerialize["affect"] = o.Affect
 	}
-	if !utils.IsNil(o.Path) {
-		toSerialize["path"] = o.Path
-	}
+	toSerialize["path"] = o.Path
 	return toSerialize, nil
 }
 
@@ -146,7 +162,7 @@ type NullableApplyOnceStrategy struct {
 	isSet bool
 }
 
-func (v NullableApplyOnceStrategy) Get() *ApplyOnceStrategy {
+func (v *NullableApplyOnceStrategy) Get() *ApplyOnceStrategy {
 	return v.value
 }
 
@@ -155,7 +171,7 @@ func (v *NullableApplyOnceStrategy) Set(val *ApplyOnceStrategy) {
 	v.isSet = true
 }
 
-func (v NullableApplyOnceStrategy) IsSet() bool {
+func (v *NullableApplyOnceStrategy) IsSet() bool {
 	return v.isSet
 }
 

@@ -26,18 +26,32 @@ type Credentials struct {
 }
 
 // NewCredentialsWith instantiates a new Credentials object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewCredentialsWith() *Credentials {
 	this := Credentials{}
 	return &this
 }
 
-// NewCredentials instantiates a new Credentials object
+// NewCredentialsWithDefault instantiates a new Credentials object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewCredentialsWithDefault() *Credentials {
+	this := Credentials{}
+	return &this
+}
+
+// NewCredentials is short for NewCredentialsWithDefault which instantiates a new Credentials object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewCredentials() *Credentials {
+	return NewCredentialsWithDefault()
+}
+
+// NewCredentialsEmpty instantiates a new Credentials object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewCredentialsEmpty() *Credentials {
 	this := Credentials{}
 	return &this
 }
@@ -50,6 +64,24 @@ func NewCredentialsList(ps ...*Credentials) []Credentials {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Credentials
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Credentials) Validate() error {
+	// validate all nested properties
+	if o.Git != nil {
+		if err := o.Git.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Image != nil {
+		if err := o.Image.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetGit returns the Git field value if set, zero value otherwise.
@@ -144,7 +176,7 @@ type NullableCredentials struct {
 	isSet bool
 }
 
-func (v NullableCredentials) Get() *Credentials {
+func (v *NullableCredentials) Get() *Credentials {
 	return v.value
 }
 
@@ -153,7 +185,7 @@ func (v *NullableCredentials) Set(val *Credentials) {
 	v.isSet = true
 }
 
-func (v NullableCredentials) IsSet() bool {
+func (v *NullableCredentials) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,25 +22,42 @@ var _ utils.MappedNullable = &Email{}
 
 // Email Please fulfill its from, to and content if you want to send email
 type Email struct {
-	Content *Content `json:"content,omitempty"`
-	From    *From    `json:"from,omitempty"`
+	Content *Content `json:"content"`
+	From    *From    `json:"from"`
 	// Specify the email address that you want to send to
-	To []string `json:"to,omitempty"`
+	To []string `json:"to"`
 }
 
 // NewEmailWith instantiates a new Email object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewEmailWith() *Email {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewEmailWith(content Content, from From, to []string) *Email {
+	this := Email{}
+	this.Content = &content
+	this.From = &from
+	this.To = to
+	return &this
+}
+
+// NewEmailWithDefault instantiates a new Email object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewEmailWithDefault() *Email {
 	this := Email{}
 	return &this
 }
 
-// NewEmail instantiates a new Email object
+// NewEmail is short for NewEmailWithDefault which instantiates a new Email object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewEmail() *Email {
+	return NewEmailWithDefault()
+}
+
+// NewEmailEmpty instantiates a new Email object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewEmailEmpty() *Email {
 	this := Email{}
 	return &this
 }
@@ -54,103 +72,103 @@ func NewEmailList(ps ...*Email) []Email {
 	return objs
 }
 
-// GetContent returns the Content field value if set, zero value otherwise.
+// Validate validates this Email
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Email) Validate() error {
+	if o.Content == nil {
+		return errors.New("Content in Email must be set")
+	}
+	if o.From == nil {
+		return errors.New("From in Email must be set")
+	}
+	if o.To == nil {
+		return errors.New("To in Email must be set")
+	}
+	// validate all nested properties
+	if o.Content != nil {
+		if err := o.Content.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.From != nil {
+		if err := o.From.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetContent returns the Content field value
 func (o *Email) GetContent() Content {
-	if o == nil || utils.IsNil(o.Content) {
+	if o == nil {
 		var ret Content
 		return ret
 	}
+
 	return *o.Content
 }
 
-// GetContentOk returns a tuple with the Content field value if set, nil otherwise
+// GetContentOk returns a tuple with the Content field value
 // and a boolean to check if the value has been set.
 func (o *Email) GetContentOk() (*Content, bool) {
-	if o == nil || utils.IsNil(o.Content) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Content, true
 }
 
-// HasContent returns a boolean if a field has been set.
-func (o *Email) HasContent() bool {
-	if o != nil && !utils.IsNil(o.Content) {
-		return true
-	}
-
-	return false
-}
-
-// SetContent gets a reference to the given Content and assigns it to the content field.
-// Content:
+// SetContent sets field value
 func (o *Email) SetContent(v Content) *Email {
 	o.Content = &v
 	return o
 }
 
-// GetFrom returns the From field value if set, zero value otherwise.
+// GetFrom returns the From field value
 func (o *Email) GetFrom() From {
-	if o == nil || utils.IsNil(o.From) {
+	if o == nil {
 		var ret From
 		return ret
 	}
+
 	return *o.From
 }
 
-// GetFromOk returns a tuple with the From field value if set, nil otherwise
+// GetFromOk returns a tuple with the From field value
 // and a boolean to check if the value has been set.
 func (o *Email) GetFromOk() (*From, bool) {
-	if o == nil || utils.IsNil(o.From) {
+	if o == nil {
 		return nil, false
 	}
 	return o.From, true
 }
 
-// HasFrom returns a boolean if a field has been set.
-func (o *Email) HasFrom() bool {
-	if o != nil && !utils.IsNil(o.From) {
-		return true
-	}
-
-	return false
-}
-
-// SetFrom gets a reference to the given From and assigns it to the from field.
-// From:
+// SetFrom sets field value
 func (o *Email) SetFrom(v From) *Email {
 	o.From = &v
 	return o
 }
 
-// GetTo returns the To field value if set, zero value otherwise.
+// GetTo returns the To field value
 func (o *Email) GetTo() []string {
-	if o == nil || utils.IsNil(o.To) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.To
 }
 
-// GetToOk returns a tuple with the To field value if set, nil otherwise
+// GetToOk returns a tuple with the To field value
 // and a boolean to check if the value has been set.
 func (o *Email) GetToOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.To) {
+	if o == nil {
 		return nil, false
 	}
 	return o.To, true
 }
 
-// HasTo returns a boolean if a field has been set.
-func (o *Email) HasTo() bool {
-	if o != nil && !utils.IsNil(o.To) {
-		return true
-	}
-
-	return false
-}
-
-// SetTo gets a reference to the given []string and assigns it to the to field.
-// To:  Specify the email address that you want to send to
+// SetTo sets field value
 func (o *Email) SetTo(v []string) *Email {
 	o.To = v
 	return o
@@ -166,15 +184,9 @@ func (o Email) MarshalJSON() ([]byte, error) {
 
 func (o Email) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Content) {
-		toSerialize["content"] = o.Content
-	}
-	if !utils.IsNil(o.From) {
-		toSerialize["from"] = o.From
-	}
-	if !utils.IsNil(o.To) {
-		toSerialize["to"] = o.To
-	}
+	toSerialize["content"] = o.Content
+	toSerialize["from"] = o.From
+	toSerialize["to"] = o.To
 	return toSerialize, nil
 }
 
@@ -183,7 +195,7 @@ type NullableEmail struct {
 	isSet bool
 }
 
-func (v NullableEmail) Get() *Email {
+func (v *NullableEmail) Get() *Email {
 	return v.value
 }
 
@@ -192,7 +204,7 @@ func (v *NullableEmail) Set(val *Email) {
 	v.isSet = true
 }
 
-func (v NullableEmail) IsSet() bool {
+func (v *NullableEmail) IsSet() bool {
 	return v.isSet
 }
 

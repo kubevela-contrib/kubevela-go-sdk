@@ -12,6 +12,7 @@ package storage
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &MountToEnv1{}
 
 // MountToEnv1 struct for MountToEnv1
 type MountToEnv1 struct {
-	EnvName   *string `json:"envName,omitempty"`
-	SecretKey *string `json:"secretKey,omitempty"`
+	EnvName   *string `json:"envName"`
+	SecretKey *string `json:"secretKey"`
 }
 
 // NewMountToEnv1With instantiates a new MountToEnv1 object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewMountToEnv1With() *MountToEnv1 {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewMountToEnv1With(envName string, secretKey string) *MountToEnv1 {
+	this := MountToEnv1{}
+	this.EnvName = &envName
+	this.SecretKey = &secretKey
+	return &this
+}
+
+// NewMountToEnv1WithDefault instantiates a new MountToEnv1 object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewMountToEnv1WithDefault() *MountToEnv1 {
 	this := MountToEnv1{}
 	return &this
 }
 
-// NewMountToEnv1 instantiates a new MountToEnv1 object
+// NewMountToEnv1 is short for NewMountToEnv1WithDefault which instantiates a new MountToEnv1 object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewMountToEnv1() *MountToEnv1 {
+	return NewMountToEnv1WithDefault()
+}
+
+// NewMountToEnv1Empty instantiates a new MountToEnv1 object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewMountToEnv1Empty() *MountToEnv1 {
 	this := MountToEnv1{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewMountToEnv1List(ps ...*MountToEnv1) []MountToEnv1 {
 	return objs
 }
 
-// GetEnvName returns the EnvName field value if set, zero value otherwise.
+// Validate validates this MountToEnv1
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *MountToEnv1) Validate() error {
+	if o.EnvName == nil {
+		return errors.New("EnvName in MountToEnv1 must be set")
+	}
+	if o.SecretKey == nil {
+		return errors.New("SecretKey in MountToEnv1 must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetEnvName returns the EnvName field value
 func (o *MountToEnv1) GetEnvName() string {
-	if o == nil || utils.IsNil(o.EnvName) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.EnvName
 }
 
-// GetEnvNameOk returns a tuple with the EnvName field value if set, nil otherwise
+// GetEnvNameOk returns a tuple with the EnvName field value
 // and a boolean to check if the value has been set.
 func (o *MountToEnv1) GetEnvNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.EnvName) {
+	if o == nil {
 		return nil, false
 	}
 	return o.EnvName, true
 }
 
-// HasEnvName returns a boolean if a field has been set.
-func (o *MountToEnv1) HasEnvName() bool {
-	if o != nil && !utils.IsNil(o.EnvName) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnvName gets a reference to the given string and assigns it to the envName field.
-// EnvName:
+// SetEnvName sets field value
 func (o *MountToEnv1) SetEnvName(v string) *MountToEnv1 {
 	o.EnvName = &v
 	return o
 }
 
-// GetSecretKey returns the SecretKey field value if set, zero value otherwise.
+// GetSecretKey returns the SecretKey field value
 func (o *MountToEnv1) GetSecretKey() string {
-	if o == nil || utils.IsNil(o.SecretKey) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.SecretKey
 }
 
-// GetSecretKeyOk returns a tuple with the SecretKey field value if set, nil otherwise
+// GetSecretKeyOk returns a tuple with the SecretKey field value
 // and a boolean to check if the value has been set.
 func (o *MountToEnv1) GetSecretKeyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.SecretKey) {
+	if o == nil {
 		return nil, false
 	}
 	return o.SecretKey, true
 }
 
-// HasSecretKey returns a boolean if a field has been set.
-func (o *MountToEnv1) HasSecretKey() bool {
-	if o != nil && !utils.IsNil(o.SecretKey) {
-		return true
-	}
-
-	return false
-}
-
-// SetSecretKey gets a reference to the given string and assigns it to the secretKey field.
-// SecretKey:
+// SetSecretKey sets field value
 func (o *MountToEnv1) SetSecretKey(v string) *MountToEnv1 {
 	o.SecretKey = &v
 	return o
@@ -130,12 +143,8 @@ func (o MountToEnv1) MarshalJSON() ([]byte, error) {
 
 func (o MountToEnv1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.EnvName) {
-		toSerialize["envName"] = o.EnvName
-	}
-	if !utils.IsNil(o.SecretKey) {
-		toSerialize["secretKey"] = o.SecretKey
-	}
+	toSerialize["envName"] = o.EnvName
+	toSerialize["secretKey"] = o.SecretKey
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableMountToEnv1 struct {
 	isSet bool
 }
 
-func (v NullableMountToEnv1) Get() *MountToEnv1 {
+func (v *NullableMountToEnv1) Get() *MountToEnv1 {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableMountToEnv1) Set(val *MountToEnv1) {
 	v.isSet = true
 }
 
-func (v NullableMountToEnv1) IsSet() bool {
+func (v *NullableMountToEnv1) IsSet() bool {
 	return v.isSet
 }
 

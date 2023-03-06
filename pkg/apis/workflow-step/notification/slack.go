@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &Slack{}
 
 // Slack Please fulfill its url and message if you want to send Slack messages
 type Slack struct {
-	Message *Message2 `json:"message,omitempty"`
-	Url     *Url2     `json:"url,omitempty"`
+	Message *Message2 `json:"message"`
+	Url     *Url2     `json:"url"`
 }
 
 // NewSlackWith instantiates a new Slack object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewSlackWith() *Slack {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewSlackWith(message Message2, url Url2) *Slack {
+	this := Slack{}
+	this.Message = &message
+	this.Url = &url
+	return &this
+}
+
+// NewSlackWithDefault instantiates a new Slack object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSlackWithDefault() *Slack {
 	this := Slack{}
 	return &this
 }
 
-// NewSlack instantiates a new Slack object
+// NewSlack is short for NewSlackWithDefault which instantiates a new Slack object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSlack() *Slack {
+	return NewSlackWithDefault()
+}
+
+// NewSlackEmpty instantiates a new Slack object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSlackEmpty() *Slack {
 	this := Slack{}
 	return &this
 }
@@ -52,69 +69,75 @@ func NewSlackList(ps ...*Slack) []Slack {
 	return objs
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
+// Validate validates this Slack
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Slack) Validate() error {
+	if o.Message == nil {
+		return errors.New("Message in Slack must be set")
+	}
+	if o.Url == nil {
+		return errors.New("Url in Slack must be set")
+	}
+	// validate all nested properties
+	if o.Message != nil {
+		if err := o.Message.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Url != nil {
+		if err := o.Url.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetMessage returns the Message field value
 func (o *Slack) GetMessage() Message2 {
-	if o == nil || utils.IsNil(o.Message) {
+	if o == nil {
 		var ret Message2
 		return ret
 	}
+
 	return *o.Message
 }
 
-// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// GetMessageOk returns a tuple with the Message field value
 // and a boolean to check if the value has been set.
 func (o *Slack) GetMessageOk() (*Message2, bool) {
-	if o == nil || utils.IsNil(o.Message) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Message, true
 }
 
-// HasMessage returns a boolean if a field has been set.
-func (o *Slack) HasMessage() bool {
-	if o != nil && !utils.IsNil(o.Message) {
-		return true
-	}
-
-	return false
-}
-
-// SetMessage gets a reference to the given Message2 and assigns it to the message field.
-// Message:
+// SetMessage sets field value
 func (o *Slack) SetMessage(v Message2) *Slack {
 	o.Message = &v
 	return o
 }
 
-// GetUrl returns the Url field value if set, zero value otherwise.
+// GetUrl returns the Url field value
 func (o *Slack) GetUrl() Url2 {
-	if o == nil || utils.IsNil(o.Url) {
+	if o == nil {
 		var ret Url2
 		return ret
 	}
+
 	return *o.Url
 }
 
-// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
+// GetUrlOk returns a tuple with the Url field value
 // and a boolean to check if the value has been set.
 func (o *Slack) GetUrlOk() (*Url2, bool) {
-	if o == nil || utils.IsNil(o.Url) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Url, true
 }
 
-// HasUrl returns a boolean if a field has been set.
-func (o *Slack) HasUrl() bool {
-	if o != nil && !utils.IsNil(o.Url) {
-		return true
-	}
-
-	return false
-}
-
-// SetUrl gets a reference to the given Url2 and assigns it to the url field.
-// Url:
+// SetUrl sets field value
 func (o *Slack) SetUrl(v Url2) *Slack {
 	o.Url = &v
 	return o
@@ -130,12 +153,8 @@ func (o Slack) MarshalJSON() ([]byte, error) {
 
 func (o Slack) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Message) {
-		toSerialize["message"] = o.Message
-	}
-	if !utils.IsNil(o.Url) {
-		toSerialize["url"] = o.Url
-	}
+	toSerialize["message"] = o.Message
+	toSerialize["url"] = o.Url
 	return toSerialize, nil
 }
 
@@ -144,7 +163,7 @@ type NullableSlack struct {
 	isSet bool
 }
 
-func (v NullableSlack) Get() *Slack {
+func (v *NullableSlack) Get() *Slack {
 	return v.value
 }
 
@@ -153,7 +172,7 @@ func (v *NullableSlack) Set(val *Slack) {
 	v.isSet = true
 }
 
-func (v NullableSlack) IsSet() bool {
+func (v *NullableSlack) IsSet() bool {
 	return v.isSet
 }
 

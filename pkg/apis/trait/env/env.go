@@ -12,11 +12,10 @@ package env
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
-
-	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
 	sdkcommon "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
@@ -41,6 +40,19 @@ func PatchParamsAsEnvSpec(v *PatchParams) EnvSpec {
 	return EnvSpec{
 		PatchParams: v,
 	}
+}
+
+// Validate validates this EnvSpec
+func (o *EnvTrait) Validate() error {
+	if o.Properties.EnvSpecOneOf != nil {
+		return nil
+	}
+
+	if o.Properties.PatchParams != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in EnvSpec")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -121,7 +133,7 @@ type NullableEnvSpec struct {
 	isSet bool
 }
 
-func (v NullableEnvSpec) Get() *EnvSpec {
+func (v *NullableEnvSpec) Get() *EnvSpec {
 	return v.value
 }
 
@@ -130,7 +142,7 @@ func (v *NullableEnvSpec) Set(val *EnvSpec) {
 	v.isSet = true
 }
 
-func (v NullableEnvSpec) IsSet() bool {
+func (v *NullableEnvSpec) IsSet() bool {
 	return v.isSet
 }
 

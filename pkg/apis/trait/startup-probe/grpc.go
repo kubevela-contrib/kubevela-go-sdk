@@ -12,6 +12,7 @@ package startup_probe
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,24 +23,39 @@ var _ utils.MappedNullable = &Grpc{}
 // Grpc Instructions for assessing container startup status by probing a gRPC service. Either this attribute or the exec attribute or the grpc attribute or the httpGet attribute MUST be specified. This attribute is mutually exclusive with the exec attribute and the httpGet attribute and the tcpSocket attribute.
 type Grpc struct {
 	// The port number of the gRPC service.
-	Port *int32 `json:"port,omitempty"`
+	Port *int32 `json:"port"`
 	// The name of the service to place in the gRPC HealthCheckRequest
 	Service *string `json:"service,omitempty"`
 }
 
 // NewGrpcWith instantiates a new Grpc object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewGrpcWith() *Grpc {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewGrpcWith(port int32) *Grpc {
+	this := Grpc{}
+	this.Port = &port
+	return &this
+}
+
+// NewGrpcWithDefault instantiates a new Grpc object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewGrpcWithDefault() *Grpc {
 	this := Grpc{}
 	return &this
 }
 
-// NewGrpc instantiates a new Grpc object
+// NewGrpc is short for NewGrpcWithDefault which instantiates a new Grpc object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewGrpc() *Grpc {
+	return NewGrpcWithDefault()
+}
+
+// NewGrpcEmpty instantiates a new Grpc object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewGrpcEmpty() *Grpc {
 	this := Grpc{}
 	return &this
 }
@@ -54,35 +70,37 @@ func NewGrpcList(ps ...*Grpc) []Grpc {
 	return objs
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
+// Validate validates this Grpc
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Grpc) Validate() error {
+	if o.Port == nil {
+		return errors.New("Port in Grpc must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetPort returns the Port field value
 func (o *Grpc) GetPort() int32 {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Port
 }
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
 func (o *Grpc) GetPortOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Port, true
 }
 
-// HasPort returns a boolean if a field has been set.
-func (o *Grpc) HasPort() bool {
-	if o != nil && !utils.IsNil(o.Port) {
-		return true
-	}
-
-	return false
-}
-
-// SetPort gets a reference to the given int32 and assigns it to the port field.
-// Port:  The port number of the gRPC service.
+// SetPort sets field value
 func (o *Grpc) SetPort(v int32) *Grpc {
 	o.Port = &v
 	return o
@@ -132,9 +150,7 @@ func (o Grpc) MarshalJSON() ([]byte, error) {
 
 func (o Grpc) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Port) {
-		toSerialize["port"] = o.Port
-	}
+	toSerialize["port"] = o.Port
 	if !utils.IsNil(o.Service) {
 		toSerialize["service"] = o.Service
 	}
@@ -146,7 +162,7 @@ type NullableGrpc struct {
 	isSet bool
 }
 
-func (v NullableGrpc) Get() *Grpc {
+func (v *NullableGrpc) Get() *Grpc {
 	return v.value
 }
 
@@ -155,7 +171,7 @@ func (v *NullableGrpc) Set(val *Grpc) {
 	v.isSet = true
 }
 
-func (v NullableGrpc) IsSet() bool {
+func (v *NullableGrpc) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package build_push_image
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,28 +22,42 @@ var _ utils.MappedNullable = &Git{}
 
 // Git struct for Git
 type Git struct {
-	Branch *string `json:"branch,omitempty"`
-	Git    *string `json:"git,omitempty"`
+	Branch *string `json:"branch"`
+	Git    *string `json:"git"`
 }
 
 // NewGitWith instantiates a new Git object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewGitWith() *Git {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewGitWith(branch string, git string) *Git {
+	this := Git{}
+	this.Branch = &branch
+	this.Git = &git
+	return &this
+}
+
+// NewGitWithDefault instantiates a new Git object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewGitWithDefault() *Git {
 	this := Git{}
 	var branch string = "master"
 	this.Branch = &branch
 	return &this
 }
 
-// NewGit instantiates a new Git object
+// NewGit is short for NewGitWithDefault which instantiates a new Git object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewGit() *Git {
+	return NewGitWithDefault()
+}
+
+// NewGitEmpty instantiates a new Git object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewGitEmpty() *Git {
 	this := Git{}
-	var branch string = "master"
-	this.Branch = &branch
 	return &this
 }
 
@@ -56,69 +71,65 @@ func NewGitList(ps ...*Git) []Git {
 	return objs
 }
 
-// GetBranch returns the Branch field value if set, zero value otherwise.
+// Validate validates this Git
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Git) Validate() error {
+	if o.Branch == nil {
+		return errors.New("Branch in Git must be set")
+	}
+	if o.Git == nil {
+		return errors.New("Git in Git must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetBranch returns the Branch field value
 func (o *Git) GetBranch() string {
-	if o == nil || utils.IsNil(o.Branch) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Branch
 }
 
-// GetBranchOk returns a tuple with the Branch field value if set, nil otherwise
+// GetBranchOk returns a tuple with the Branch field value
 // and a boolean to check if the value has been set.
 func (o *Git) GetBranchOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Branch) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Branch, true
 }
 
-// HasBranch returns a boolean if a field has been set.
-func (o *Git) HasBranch() bool {
-	if o != nil && !utils.IsNil(o.Branch) {
-		return true
-	}
-
-	return false
-}
-
-// SetBranch gets a reference to the given string and assigns it to the branch field.
-// Branch:
+// SetBranch sets field value
 func (o *Git) SetBranch(v string) *Git {
 	o.Branch = &v
 	return o
 }
 
-// GetGit returns the Git field value if set, zero value otherwise.
+// GetGit returns the Git field value
 func (o *Git) GetGit() string {
-	if o == nil || utils.IsNil(o.Git) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Git
 }
 
-// GetGitOk returns a tuple with the Git field value if set, nil otherwise
+// GetGitOk returns a tuple with the Git field value
 // and a boolean to check if the value has been set.
 func (o *Git) GetGitOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Git) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Git, true
 }
 
-// HasGit returns a boolean if a field has been set.
-func (o *Git) HasGit() bool {
-	if o != nil && !utils.IsNil(o.Git) {
-		return true
-	}
-
-	return false
-}
-
-// SetGit gets a reference to the given string and assigns it to the git field.
-// Git:
+// SetGit sets field value
 func (o *Git) SetGit(v string) *Git {
 	o.Git = &v
 	return o
@@ -134,12 +145,8 @@ func (o Git) MarshalJSON() ([]byte, error) {
 
 func (o Git) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Branch) {
-		toSerialize["branch"] = o.Branch
-	}
-	if !utils.IsNil(o.Git) {
-		toSerialize["git"] = o.Git
-	}
+	toSerialize["branch"] = o.Branch
+	toSerialize["git"] = o.Git
 	return toSerialize, nil
 }
 
@@ -148,7 +155,7 @@ type NullableGit struct {
 	isSet bool
 }
 
-func (v NullableGit) Get() *Git {
+func (v *NullableGit) Get() *Git {
 	return v.value
 }
 
@@ -157,7 +164,7 @@ func (v *NullableGit) Set(val *Git) {
 	v.isSet = true
 }
 
-func (v NullableGit) IsSet() bool {
+func (v *NullableGit) IsSet() bool {
 	return v.isSet
 }
 

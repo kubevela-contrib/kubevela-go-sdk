@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &Lark{}
 
 // Lark Please fulfill its url and message if you want to send Lark messages
 type Lark struct {
-	Message *Message1 `json:"message,omitempty"`
-	Url     *Url1     `json:"url,omitempty"`
+	Message *Message1 `json:"message"`
+	Url     *Url1     `json:"url"`
 }
 
 // NewLarkWith instantiates a new Lark object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewLarkWith() *Lark {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewLarkWith(message Message1, url Url1) *Lark {
+	this := Lark{}
+	this.Message = &message
+	this.Url = &url
+	return &this
+}
+
+// NewLarkWithDefault instantiates a new Lark object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewLarkWithDefault() *Lark {
 	this := Lark{}
 	return &this
 }
 
-// NewLark instantiates a new Lark object
+// NewLark is short for NewLarkWithDefault which instantiates a new Lark object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewLark() *Lark {
+	return NewLarkWithDefault()
+}
+
+// NewLarkEmpty instantiates a new Lark object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewLarkEmpty() *Lark {
 	this := Lark{}
 	return &this
 }
@@ -52,69 +69,75 @@ func NewLarkList(ps ...*Lark) []Lark {
 	return objs
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
+// Validate validates this Lark
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Lark) Validate() error {
+	if o.Message == nil {
+		return errors.New("Message in Lark must be set")
+	}
+	if o.Url == nil {
+		return errors.New("Url in Lark must be set")
+	}
+	// validate all nested properties
+	if o.Message != nil {
+		if err := o.Message.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Url != nil {
+		if err := o.Url.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetMessage returns the Message field value
 func (o *Lark) GetMessage() Message1 {
-	if o == nil || utils.IsNil(o.Message) {
+	if o == nil {
 		var ret Message1
 		return ret
 	}
+
 	return *o.Message
 }
 
-// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// GetMessageOk returns a tuple with the Message field value
 // and a boolean to check if the value has been set.
 func (o *Lark) GetMessageOk() (*Message1, bool) {
-	if o == nil || utils.IsNil(o.Message) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Message, true
 }
 
-// HasMessage returns a boolean if a field has been set.
-func (o *Lark) HasMessage() bool {
-	if o != nil && !utils.IsNil(o.Message) {
-		return true
-	}
-
-	return false
-}
-
-// SetMessage gets a reference to the given Message1 and assigns it to the message field.
-// Message:
+// SetMessage sets field value
 func (o *Lark) SetMessage(v Message1) *Lark {
 	o.Message = &v
 	return o
 }
 
-// GetUrl returns the Url field value if set, zero value otherwise.
+// GetUrl returns the Url field value
 func (o *Lark) GetUrl() Url1 {
-	if o == nil || utils.IsNil(o.Url) {
+	if o == nil {
 		var ret Url1
 		return ret
 	}
+
 	return *o.Url
 }
 
-// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
+// GetUrlOk returns a tuple with the Url field value
 // and a boolean to check if the value has been set.
 func (o *Lark) GetUrlOk() (*Url1, bool) {
-	if o == nil || utils.IsNil(o.Url) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Url, true
 }
 
-// HasUrl returns a boolean if a field has been set.
-func (o *Lark) HasUrl() bool {
-	if o != nil && !utils.IsNil(o.Url) {
-		return true
-	}
-
-	return false
-}
-
-// SetUrl gets a reference to the given Url1 and assigns it to the url field.
-// Url:
+// SetUrl sets field value
 func (o *Lark) SetUrl(v Url1) *Lark {
 	o.Url = &v
 	return o
@@ -130,12 +153,8 @@ func (o Lark) MarshalJSON() ([]byte, error) {
 
 func (o Lark) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Message) {
-		toSerialize["message"] = o.Message
-	}
-	if !utils.IsNil(o.Url) {
-		toSerialize["url"] = o.Url
-	}
+	toSerialize["message"] = o.Message
+	toSerialize["url"] = o.Url
 	return toSerialize, nil
 }
 
@@ -144,7 +163,7 @@ type NullableLark struct {
 	isSet bool
 }
 
-func (v NullableLark) Get() *Lark {
+func (v *NullableLark) Get() *Lark {
 	return v.value
 }
 
@@ -153,7 +172,7 @@ func (v *NullableLark) Set(val *Lark) {
 	v.isSet = true
 }
 
-func (v NullableLark) IsSet() bool {
+func (v *NullableLark) IsSet() bool {
 	return v.isSet
 }
 

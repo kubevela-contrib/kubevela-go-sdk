@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,22 +22,37 @@ var _ utils.MappedNullable = &Text{}
 
 // Text Specify the message content of dingtalk notification
 type Text struct {
-	Content *string `json:"content,omitempty"`
+	Content *string `json:"content"`
 }
 
 // NewTextWith instantiates a new Text object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewTextWith() *Text {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewTextWith(content string) *Text {
+	this := Text{}
+	this.Content = &content
+	return &this
+}
+
+// NewTextWithDefault instantiates a new Text object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewTextWithDefault() *Text {
 	this := Text{}
 	return &this
 }
 
-// NewText instantiates a new Text object
+// NewText is short for NewTextWithDefault which instantiates a new Text object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewText() *Text {
+	return NewTextWithDefault()
+}
+
+// NewTextEmpty instantiates a new Text object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewTextEmpty() *Text {
 	this := Text{}
 	return &this
 }
@@ -51,35 +67,37 @@ func NewTextList(ps ...*Text) []Text {
 	return objs
 }
 
-// GetContent returns the Content field value if set, zero value otherwise.
+// Validate validates this Text
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Text) Validate() error {
+	if o.Content == nil {
+		return errors.New("Content in Text must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetContent returns the Content field value
 func (o *Text) GetContent() string {
-	if o == nil || utils.IsNil(o.Content) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Content
 }
 
-// GetContentOk returns a tuple with the Content field value if set, nil otherwise
+// GetContentOk returns a tuple with the Content field value
 // and a boolean to check if the value has been set.
 func (o *Text) GetContentOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Content) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Content, true
 }
 
-// HasContent returns a boolean if a field has been set.
-func (o *Text) HasContent() bool {
-	if o != nil && !utils.IsNil(o.Content) {
-		return true
-	}
-
-	return false
-}
-
-// SetContent gets a reference to the given string and assigns it to the content field.
-// Content:
+// SetContent sets field value
 func (o *Text) SetContent(v string) *Text {
 	o.Content = &v
 	return o
@@ -95,9 +113,7 @@ func (o Text) MarshalJSON() ([]byte, error) {
 
 func (o Text) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Content) {
-		toSerialize["content"] = o.Content
-	}
+	toSerialize["content"] = o.Content
 	return toSerialize, nil
 }
 
@@ -106,7 +122,7 @@ type NullableText struct {
 	isSet bool
 }
 
-func (v NullableText) Get() *Text {
+func (v *NullableText) Get() *Text {
 	return v.value
 }
 
@@ -115,7 +131,7 @@ func (v *NullableText) Set(val *Text) {
 	v.isSet = true
 }
 
-func (v NullableText) IsSet() bool {
+func (v *NullableText) IsSet() bool {
 	return v.isSet
 }
 

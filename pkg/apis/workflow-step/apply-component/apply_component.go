@@ -12,6 +12,7 @@ package apply_component
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,29 +29,43 @@ var _ utils.MappedNullable = &ApplyComponentSpec{}
 // ApplyComponentSpec struct for ApplyComponentSpec
 type ApplyComponentSpec struct {
 	// Specify the cluster
-	Cluster *string `json:"cluster,omitempty"`
+	Cluster *string `json:"cluster"`
 	// Specify the component name to apply
-	Component *string `json:"component,omitempty"`
+	Component *string `json:"component"`
 }
 
 // NewApplyComponentSpecWith instantiates a new ApplyComponentSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewApplyComponentSpecWith() *ApplyComponentSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewApplyComponentSpecWith(cluster string, component string) *ApplyComponentSpec {
+	this := ApplyComponentSpec{}
+	this.Cluster = &cluster
+	this.Component = &component
+	return &this
+}
+
+// NewApplyComponentSpecWithDefault instantiates a new ApplyComponentSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewApplyComponentSpecWithDefault() *ApplyComponentSpec {
 	this := ApplyComponentSpec{}
 	var cluster string = ""
 	this.Cluster = &cluster
 	return &this
 }
 
-// NewApplyComponentSpec instantiates a new ApplyComponentSpec object
+// NewApplyComponentSpec is short for NewApplyComponentSpecWithDefault which instantiates a new ApplyComponentSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewApplyComponentSpec() *ApplyComponentSpec {
+	return NewApplyComponentSpecWithDefault()
+}
+
+// NewApplyComponentSpecEmpty instantiates a new ApplyComponentSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewApplyComponentSpecEmpty() *ApplyComponentSpec {
 	this := ApplyComponentSpec{}
-	var cluster string = ""
-	this.Cluster = &cluster
 	return &this
 }
 
@@ -64,69 +79,65 @@ func NewApplyComponentSpecList(ps ...*ApplyComponentSpec) []ApplyComponentSpec {
 	return objs
 }
 
-// GetCluster returns the Cluster field value if set, zero value otherwise.
+// Validate validates this ApplyComponentSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ApplyComponentWorkflowStep) Validate() error {
+	if o.Properties.Cluster == nil {
+		return errors.New("Cluster in ApplyComponentSpec must be set")
+	}
+	if o.Properties.Component == nil {
+		return errors.New("Component in ApplyComponentSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetCluster returns the Cluster field value
 func (o *ApplyComponentWorkflowStep) GetCluster() string {
-	if o == nil || utils.IsNil(o.Properties.Cluster) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Cluster
 }
 
-// GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
+// GetClusterOk returns a tuple with the Cluster field value
 // and a boolean to check if the value has been set.
 func (o *ApplyComponentWorkflowStep) GetClusterOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Cluster) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Cluster, true
 }
 
-// HasCluster returns a boolean if a field has been set.
-func (o *ApplyComponentWorkflowStep) HasCluster() bool {
-	if o != nil && !utils.IsNil(o.Properties.Cluster) {
-		return true
-	}
-
-	return false
-}
-
-// SetCluster gets a reference to the given string and assigns it to the cluster field.
-// Cluster:  Specify the cluster
+// SetCluster sets field value
 func (o *ApplyComponentWorkflowStep) SetCluster(v string) *ApplyComponentWorkflowStep {
 	o.Properties.Cluster = &v
 	return o
 }
 
-// GetComponent returns the Component field value if set, zero value otherwise.
+// GetComponent returns the Component field value
 func (o *ApplyComponentWorkflowStep) GetComponent() string {
-	if o == nil || utils.IsNil(o.Properties.Component) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Component
 }
 
-// GetComponentOk returns a tuple with the Component field value if set, nil otherwise
+// GetComponentOk returns a tuple with the Component field value
 // and a boolean to check if the value has been set.
 func (o *ApplyComponentWorkflowStep) GetComponentOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Component) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Component, true
 }
 
-// HasComponent returns a boolean if a field has been set.
-func (o *ApplyComponentWorkflowStep) HasComponent() bool {
-	if o != nil && !utils.IsNil(o.Properties.Component) {
-		return true
-	}
-
-	return false
-}
-
-// SetComponent gets a reference to the given string and assigns it to the component field.
-// Component:  Specify the component name to apply
+// SetComponent sets field value
 func (o *ApplyComponentWorkflowStep) SetComponent(v string) *ApplyComponentWorkflowStep {
 	o.Properties.Component = &v
 	return o
@@ -142,12 +153,8 @@ func (o ApplyComponentSpec) MarshalJSON() ([]byte, error) {
 
 func (o ApplyComponentSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Cluster) {
-		toSerialize["cluster"] = o.Cluster
-	}
-	if !utils.IsNil(o.Component) {
-		toSerialize["component"] = o.Component
-	}
+	toSerialize["cluster"] = o.Cluster
+	toSerialize["component"] = o.Component
 	return toSerialize, nil
 }
 
@@ -156,7 +163,7 @@ type NullableApplyComponentSpec struct {
 	isSet bool
 }
 
-func (v NullableApplyComponentSpec) Get() *ApplyComponentSpec {
+func (v *NullableApplyComponentSpec) Get() *ApplyComponentSpec {
 	return v.value
 }
 
@@ -165,7 +172,7 @@ func (v *NullableApplyComponentSpec) Set(val *ApplyComponentSpec) {
 	v.isSet = true
 }
 
-func (v NullableApplyComponentSpec) IsSet() bool {
+func (v *NullableApplyComponentSpec) IsSet() bool {
 	return v.isSet
 }
 

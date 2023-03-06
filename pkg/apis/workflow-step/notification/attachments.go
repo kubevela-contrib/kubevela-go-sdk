@@ -26,18 +26,32 @@ type Attachments struct {
 }
 
 // NewAttachmentsWith instantiates a new Attachments object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewAttachmentsWith() *Attachments {
 	this := Attachments{}
 	return &this
 }
 
-// NewAttachments instantiates a new Attachments object
+// NewAttachmentsWithDefault instantiates a new Attachments object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewAttachmentsWithDefault() *Attachments {
+	this := Attachments{}
+	return &this
+}
+
+// NewAttachments is short for NewAttachmentsWithDefault which instantiates a new Attachments object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewAttachments() *Attachments {
+	return NewAttachmentsWithDefault()
+}
+
+// NewAttachmentsEmpty instantiates a new Attachments object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewAttachmentsEmpty() *Attachments {
 	this := Attachments{}
 	return &this
 }
@@ -50,6 +64,14 @@ func NewAttachmentsList(ps ...*Attachments) []Attachments {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Attachments
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Attachments) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetBlocks returns the Blocks field value if set, zero value otherwise.
@@ -144,7 +166,7 @@ type NullableAttachments struct {
 	isSet bool
 }
 
-func (v NullableAttachments) Get() *Attachments {
+func (v *NullableAttachments) Get() *Attachments {
 	return v.value
 }
 
@@ -153,7 +175,7 @@ func (v *NullableAttachments) Set(val *Attachments) {
 	v.isSet = true
 }
 
-func (v NullableAttachments) IsSet() bool {
+func (v *NullableAttachments) IsSet() bool {
 	return v.isSet
 }
 

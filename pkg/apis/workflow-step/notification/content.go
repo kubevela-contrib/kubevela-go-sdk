@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,24 +23,40 @@ var _ utils.MappedNullable = &Content{}
 // Content Specify the content of the email
 type Content struct {
 	// Specify the context body of the email
-	Body *string `json:"body,omitempty"`
+	Body *string `json:"body"`
 	// Specify the subject of the email
-	Subject *string `json:"subject,omitempty"`
+	Subject *string `json:"subject"`
 }
 
 // NewContentWith instantiates a new Content object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewContentWith() *Content {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewContentWith(body string, subject string) *Content {
+	this := Content{}
+	this.Body = &body
+	this.Subject = &subject
+	return &this
+}
+
+// NewContentWithDefault instantiates a new Content object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewContentWithDefault() *Content {
 	this := Content{}
 	return &this
 }
 
-// NewContent instantiates a new Content object
+// NewContent is short for NewContentWithDefault which instantiates a new Content object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewContent() *Content {
+	return NewContentWithDefault()
+}
+
+// NewContentEmpty instantiates a new Content object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewContentEmpty() *Content {
 	this := Content{}
 	return &this
 }
@@ -54,69 +71,65 @@ func NewContentList(ps ...*Content) []Content {
 	return objs
 }
 
-// GetBody returns the Body field value if set, zero value otherwise.
+// Validate validates this Content
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Content) Validate() error {
+	if o.Body == nil {
+		return errors.New("Body in Content must be set")
+	}
+	if o.Subject == nil {
+		return errors.New("Subject in Content must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetBody returns the Body field value
 func (o *Content) GetBody() string {
-	if o == nil || utils.IsNil(o.Body) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Body
 }
 
-// GetBodyOk returns a tuple with the Body field value if set, nil otherwise
+// GetBodyOk returns a tuple with the Body field value
 // and a boolean to check if the value has been set.
 func (o *Content) GetBodyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Body) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Body, true
 }
 
-// HasBody returns a boolean if a field has been set.
-func (o *Content) HasBody() bool {
-	if o != nil && !utils.IsNil(o.Body) {
-		return true
-	}
-
-	return false
-}
-
-// SetBody gets a reference to the given string and assigns it to the body field.
-// Body:  Specify the context body of the email
+// SetBody sets field value
 func (o *Content) SetBody(v string) *Content {
 	o.Body = &v
 	return o
 }
 
-// GetSubject returns the Subject field value if set, zero value otherwise.
+// GetSubject returns the Subject field value
 func (o *Content) GetSubject() string {
-	if o == nil || utils.IsNil(o.Subject) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Subject
 }
 
-// GetSubjectOk returns a tuple with the Subject field value if set, nil otherwise
+// GetSubjectOk returns a tuple with the Subject field value
 // and a boolean to check if the value has been set.
 func (o *Content) GetSubjectOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Subject) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Subject, true
 }
 
-// HasSubject returns a boolean if a field has been set.
-func (o *Content) HasSubject() bool {
-	if o != nil && !utils.IsNil(o.Subject) {
-		return true
-	}
-
-	return false
-}
-
-// SetSubject gets a reference to the given string and assigns it to the subject field.
-// Subject:  Specify the subject of the email
+// SetSubject sets field value
 func (o *Content) SetSubject(v string) *Content {
 	o.Subject = &v
 	return o
@@ -132,12 +145,8 @@ func (o Content) MarshalJSON() ([]byte, error) {
 
 func (o Content) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Body) {
-		toSerialize["body"] = o.Body
-	}
-	if !utils.IsNil(o.Subject) {
-		toSerialize["subject"] = o.Subject
-	}
+	toSerialize["body"] = o.Body
+	toSerialize["subject"] = o.Subject
 	return toSerialize, nil
 }
 
@@ -146,7 +155,7 @@ type NullableContent struct {
 	isSet bool
 }
 
-func (v NullableContent) Get() *Content {
+func (v *NullableContent) Get() *Content {
 	return v.value
 }
 
@@ -155,7 +164,7 @@ func (v *NullableContent) Set(val *Content) {
 	v.isSet = true
 }
 
-func (v NullableContent) IsSet() bool {
+func (v *NullableContent) IsSet() bool {
 	return v.isSet
 }
 

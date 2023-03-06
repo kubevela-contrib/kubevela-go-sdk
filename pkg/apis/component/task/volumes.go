@@ -12,6 +12,7 @@ package task
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,18 +22,30 @@ var _ utils.MappedNullable = &Volumes{}
 
 // Volumes struct for Volumes
 type Volumes struct {
-	Medium    *string `json:"medium,omitempty"`
-	MountPath *string `json:"mountPath,omitempty"`
-	Name      *string `json:"name,omitempty"`
+	Medium    *string `json:"medium"`
+	MountPath *string `json:"mountPath"`
+	Name      *string `json:"name"`
 	// Specify volume type, options: \"pvc\",\"configMap\",\"secret\",\"emptyDir\", default to emptyDir
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type"`
 }
 
 // NewVolumesWith instantiates a new Volumes object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewVolumesWith() *Volumes {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewVolumesWith(medium string, mountPath string, name string, type_ string) *Volumes {
+	this := Volumes{}
+	this.Medium = &medium
+	this.MountPath = &mountPath
+	this.Name = &name
+	this.Type = &type_
+	return &this
+}
+
+// NewVolumesWithDefault instantiates a new Volumes object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewVolumesWithDefault() *Volumes {
 	this := Volumes{}
 	var medium string = ""
 	this.Medium = &medium
@@ -41,15 +54,17 @@ func NewVolumesWith() *Volumes {
 	return &this
 }
 
-// NewVolumes instantiates a new Volumes object
+// NewVolumes is short for NewVolumesWithDefault which instantiates a new Volumes object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewVolumes() *Volumes {
+	return NewVolumesWithDefault()
+}
+
+// NewVolumesEmpty instantiates a new Volumes object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewVolumesEmpty() *Volumes {
 	this := Volumes{}
-	var medium string = ""
-	this.Medium = &medium
-	var type_ string = "emptyDir"
-	this.Type = &type_
 	return &this
 }
 
@@ -63,137 +78,121 @@ func NewVolumesList(ps ...*Volumes) []Volumes {
 	return objs
 }
 
-// GetMedium returns the Medium field value if set, zero value otherwise.
+// Validate validates this Volumes
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Volumes) Validate() error {
+	if o.Medium == nil {
+		return errors.New("Medium in Volumes must be set")
+	}
+	if o.MountPath == nil {
+		return errors.New("MountPath in Volumes must be set")
+	}
+	if o.Name == nil {
+		return errors.New("Name in Volumes must be set")
+	}
+	if o.Type == nil {
+		return errors.New("Type in Volumes must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetMedium returns the Medium field value
 func (o *Volumes) GetMedium() string {
-	if o == nil || utils.IsNil(o.Medium) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Medium
 }
 
-// GetMediumOk returns a tuple with the Medium field value if set, nil otherwise
+// GetMediumOk returns a tuple with the Medium field value
 // and a boolean to check if the value has been set.
 func (o *Volumes) GetMediumOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Medium) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Medium, true
 }
 
-// HasMedium returns a boolean if a field has been set.
-func (o *Volumes) HasMedium() bool {
-	if o != nil && !utils.IsNil(o.Medium) {
-		return true
-	}
-
-	return false
-}
-
-// SetMedium gets a reference to the given string and assigns it to the medium field.
-// Medium:
+// SetMedium sets field value
 func (o *Volumes) SetMedium(v string) *Volumes {
 	o.Medium = &v
 	return o
 }
 
-// GetMountPath returns the MountPath field value if set, zero value otherwise.
+// GetMountPath returns the MountPath field value
 func (o *Volumes) GetMountPath() string {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MountPath
 }
 
-// GetMountPathOk returns a tuple with the MountPath field value if set, nil otherwise
+// GetMountPathOk returns a tuple with the MountPath field value
 // and a boolean to check if the value has been set.
 func (o *Volumes) GetMountPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		return nil, false
 	}
 	return o.MountPath, true
 }
 
-// HasMountPath returns a boolean if a field has been set.
-func (o *Volumes) HasMountPath() bool {
-	if o != nil && !utils.IsNil(o.MountPath) {
-		return true
-	}
-
-	return false
-}
-
-// SetMountPath gets a reference to the given string and assigns it to the mountPath field.
-// MountPath:
+// SetMountPath sets field value
 func (o *Volumes) SetMountPath(v string) *Volumes {
 	o.MountPath = &v
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *Volumes) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *Volumes) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *Volumes) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
+// SetName sets field value
 func (o *Volumes) SetName(v string) *Volumes {
 	o.Name = &v
 	return o
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *Volumes) GetType() string {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *Volumes) GetTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *Volumes) HasType() bool {
-	if o != nil && !utils.IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the type_ field.
-// Type:  Specify volume type, options: \"pvc\",\"configMap\",\"secret\",\"emptyDir\", default to emptyDir
+// SetType sets field value
 func (o *Volumes) SetType(v string) *Volumes {
 	o.Type = &v
 	return o
@@ -209,18 +208,10 @@ func (o Volumes) MarshalJSON() ([]byte, error) {
 
 func (o Volumes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Medium) {
-		toSerialize["medium"] = o.Medium
-	}
-	if !utils.IsNil(o.MountPath) {
-		toSerialize["mountPath"] = o.MountPath
-	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["medium"] = o.Medium
+	toSerialize["mountPath"] = o.MountPath
+	toSerialize["name"] = o.Name
+	toSerialize["type"] = o.Type
 	return toSerialize, nil
 }
 
@@ -229,7 +220,7 @@ type NullableVolumes struct {
 	isSet bool
 }
 
-func (v NullableVolumes) Get() *Volumes {
+func (v *NullableVolumes) Get() *Volumes {
 	return v.value
 }
 
@@ -238,7 +229,7 @@ func (v *NullableVolumes) Set(val *Volumes) {
 	v.isSet = true
 }
 
-func (v NullableVolumes) IsSet() bool {
+func (v *NullableVolumes) IsSet() bool {
 	return v.isSet
 }
 

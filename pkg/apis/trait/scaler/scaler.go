@@ -12,6 +12,7 @@ package scaler
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -27,27 +28,40 @@ var _ utils.MappedNullable = &ScalerSpec{}
 // ScalerSpec struct for ScalerSpec
 type ScalerSpec struct {
 	// Specify the number of workload
-	Replicas *int32 `json:"replicas,omitempty"`
+	Replicas *int32 `json:"replicas"`
 }
 
 // NewScalerSpecWith instantiates a new ScalerSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewScalerSpecWith() *ScalerSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewScalerSpecWith(replicas int32) *ScalerSpec {
+	this := ScalerSpec{}
+	this.Replicas = &replicas
+	return &this
+}
+
+// NewScalerSpecWithDefault instantiates a new ScalerSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewScalerSpecWithDefault() *ScalerSpec {
 	this := ScalerSpec{}
 	var replicas int32 = 1
 	this.Replicas = &replicas
 	return &this
 }
 
-// NewScalerSpec instantiates a new ScalerSpec object
+// NewScalerSpec is short for NewScalerSpecWithDefault which instantiates a new ScalerSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewScalerSpec() *ScalerSpec {
+	return NewScalerSpecWithDefault()
+}
+
+// NewScalerSpecEmpty instantiates a new ScalerSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewScalerSpecEmpty() *ScalerSpec {
 	this := ScalerSpec{}
-	var replicas int32 = 1
-	this.Replicas = &replicas
 	return &this
 }
 
@@ -61,35 +75,37 @@ func NewScalerSpecList(ps ...*ScalerSpec) []ScalerSpec {
 	return objs
 }
 
-// GetReplicas returns the Replicas field value if set, zero value otherwise.
+// Validate validates this ScalerSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ScalerTrait) Validate() error {
+	if o.Properties.Replicas == nil {
+		return errors.New("Replicas in ScalerSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetReplicas returns the Replicas field value
 func (o *ScalerTrait) GetReplicas() int32 {
-	if o == nil || utils.IsNil(o.Properties.Replicas) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Properties.Replicas
 }
 
-// GetReplicasOk returns a tuple with the Replicas field value if set, nil otherwise
+// GetReplicasOk returns a tuple with the Replicas field value
 // and a boolean to check if the value has been set.
 func (o *ScalerTrait) GetReplicasOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Properties.Replicas) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Replicas, true
 }
 
-// HasReplicas returns a boolean if a field has been set.
-func (o *ScalerTrait) HasReplicas() bool {
-	if o != nil && !utils.IsNil(o.Properties.Replicas) {
-		return true
-	}
-
-	return false
-}
-
-// SetReplicas gets a reference to the given int32 and assigns it to the replicas field.
-// Replicas:  Specify the number of workload
+// SetReplicas sets field value
 func (o *ScalerTrait) SetReplicas(v int32) *ScalerTrait {
 	o.Properties.Replicas = &v
 	return o
@@ -105,9 +121,7 @@ func (o ScalerSpec) MarshalJSON() ([]byte, error) {
 
 func (o ScalerSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Replicas) {
-		toSerialize["replicas"] = o.Replicas
-	}
+	toSerialize["replicas"] = o.Replicas
 	return toSerialize, nil
 }
 
@@ -116,7 +130,7 @@ type NullableScalerSpec struct {
 	isSet bool
 }
 
-func (v NullableScalerSpec) Get() *ScalerSpec {
+func (v *NullableScalerSpec) Get() *ScalerSpec {
 	return v.value
 }
 
@@ -125,7 +139,7 @@ func (v *NullableScalerSpec) Set(val *ScalerSpec) {
 	v.isSet = true
 }
 
-func (v NullableScalerSpec) IsSet() bool {
+func (v *NullableScalerSpec) IsSet() bool {
 	return v.isSet
 }
 

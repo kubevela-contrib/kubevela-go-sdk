@@ -12,6 +12,7 @@ package storage
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,22 +22,37 @@ var _ utils.MappedNullable = &Requests{}
 
 // Requests struct for Requests
 type Requests struct {
-	Storage *string `json:"storage,omitempty"`
+	Storage *string `json:"storage"`
 }
 
 // NewRequestsWith instantiates a new Requests object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewRequestsWith() *Requests {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewRequestsWith(storage string) *Requests {
+	this := Requests{}
+	this.Storage = &storage
+	return &this
+}
+
+// NewRequestsWithDefault instantiates a new Requests object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewRequestsWithDefault() *Requests {
 	this := Requests{}
 	return &this
 }
 
-// NewRequests instantiates a new Requests object
+// NewRequests is short for NewRequestsWithDefault which instantiates a new Requests object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewRequests() *Requests {
+	return NewRequestsWithDefault()
+}
+
+// NewRequestsEmpty instantiates a new Requests object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewRequestsEmpty() *Requests {
 	this := Requests{}
 	return &this
 }
@@ -51,35 +67,37 @@ func NewRequestsList(ps ...*Requests) []Requests {
 	return objs
 }
 
-// GetStorage returns the Storage field value if set, zero value otherwise.
+// Validate validates this Requests
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Requests) Validate() error {
+	if o.Storage == nil {
+		return errors.New("Storage in Requests must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetStorage returns the Storage field value
 func (o *Requests) GetStorage() string {
-	if o == nil || utils.IsNil(o.Storage) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Storage
 }
 
-// GetStorageOk returns a tuple with the Storage field value if set, nil otherwise
+// GetStorageOk returns a tuple with the Storage field value
 // and a boolean to check if the value has been set.
 func (o *Requests) GetStorageOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Storage) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Storage, true
 }
 
-// HasStorage returns a boolean if a field has been set.
-func (o *Requests) HasStorage() bool {
-	if o != nil && !utils.IsNil(o.Storage) {
-		return true
-	}
-
-	return false
-}
-
-// SetStorage gets a reference to the given string and assigns it to the storage field.
-// Storage:
+// SetStorage sets field value
 func (o *Requests) SetStorage(v string) *Requests {
 	o.Storage = &v
 	return o
@@ -95,9 +113,7 @@ func (o Requests) MarshalJSON() ([]byte, error) {
 
 func (o Requests) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Storage) {
-		toSerialize["storage"] = o.Storage
-	}
+	toSerialize["storage"] = o.Storage
 	return toSerialize, nil
 }
 
@@ -106,7 +122,7 @@ type NullableRequests struct {
 	isSet bool
 }
 
-func (v NullableRequests) Get() *Requests {
+func (v *NullableRequests) Get() *Requests {
 	return v.value
 }
 
@@ -115,7 +131,7 @@ func (v *NullableRequests) Set(val *Requests) {
 	v.isSet = true
 }
 
-func (v NullableRequests) IsSet() bool {
+func (v *NullableRequests) IsSet() bool {
 	return v.isSet
 }
 

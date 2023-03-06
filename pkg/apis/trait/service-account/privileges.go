@@ -12,6 +12,7 @@ package service_account
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -30,29 +31,43 @@ type Privileges struct {
 	// Specify the resources to be allowed
 	Resources []string `json:"resources,omitempty"`
 	// Specify the scope of the privileges, default to be namespace scope
-	Scope *string `json:"scope,omitempty"`
+	Scope *string `json:"scope"`
 	// Specify the verbs to be allowed for the resource
-	Verbs []string `json:"verbs,omitempty"`
+	Verbs []string `json:"verbs"`
 }
 
 // NewPrivilegesWith instantiates a new Privileges object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPrivilegesWith() *Privileges {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPrivilegesWith(scope string, verbs []string) *Privileges {
+	this := Privileges{}
+	this.Scope = &scope
+	this.Verbs = verbs
+	return &this
+}
+
+// NewPrivilegesWithDefault instantiates a new Privileges object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPrivilegesWithDefault() *Privileges {
 	this := Privileges{}
 	var scope string = "namespace"
 	this.Scope = &scope
 	return &this
 }
 
-// NewPrivileges instantiates a new Privileges object
+// NewPrivileges is short for NewPrivilegesWithDefault which instantiates a new Privileges object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPrivileges() *Privileges {
+	return NewPrivilegesWithDefault()
+}
+
+// NewPrivilegesEmpty instantiates a new Privileges object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPrivilegesEmpty() *Privileges {
 	this := Privileges{}
-	var scope string = "namespace"
-	this.Scope = &scope
 	return &this
 }
 
@@ -64,6 +79,20 @@ func NewPrivilegesList(ps ...*Privileges) []Privileges {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Privileges
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Privileges) Validate() error {
+	if o.Scope == nil {
+		return errors.New("Scope in Privileges must be set")
+	}
+	if o.Verbs == nil {
+		return errors.New("Verbs in Privileges must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetApiGroups returns the ApiGroups field value if set, zero value otherwise.
@@ -202,69 +231,51 @@ func (o *Privileges) SetResources(v []string) *Privileges {
 	return o
 }
 
-// GetScope returns the Scope field value if set, zero value otherwise.
+// GetScope returns the Scope field value
 func (o *Privileges) GetScope() string {
-	if o == nil || utils.IsNil(o.Scope) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Scope
 }
 
-// GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
+// GetScopeOk returns a tuple with the Scope field value
 // and a boolean to check if the value has been set.
 func (o *Privileges) GetScopeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Scope) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Scope, true
 }
 
-// HasScope returns a boolean if a field has been set.
-func (o *Privileges) HasScope() bool {
-	if o != nil && !utils.IsNil(o.Scope) {
-		return true
-	}
-
-	return false
-}
-
-// SetScope gets a reference to the given string and assigns it to the scope field.
-// Scope:  Specify the scope of the privileges, default to be namespace scope
+// SetScope sets field value
 func (o *Privileges) SetScope(v string) *Privileges {
 	o.Scope = &v
 	return o
 }
 
-// GetVerbs returns the Verbs field value if set, zero value otherwise.
+// GetVerbs returns the Verbs field value
 func (o *Privileges) GetVerbs() []string {
-	if o == nil || utils.IsNil(o.Verbs) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Verbs
 }
 
-// GetVerbsOk returns a tuple with the Verbs field value if set, nil otherwise
+// GetVerbsOk returns a tuple with the Verbs field value
 // and a boolean to check if the value has been set.
 func (o *Privileges) GetVerbsOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Verbs) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Verbs, true
 }
 
-// HasVerbs returns a boolean if a field has been set.
-func (o *Privileges) HasVerbs() bool {
-	if o != nil && !utils.IsNil(o.Verbs) {
-		return true
-	}
-
-	return false
-}
-
-// SetVerbs gets a reference to the given []string and assigns it to the verbs field.
-// Verbs:  Specify the verbs to be allowed for the resource
+// SetVerbs sets field value
 func (o *Privileges) SetVerbs(v []string) *Privileges {
 	o.Verbs = v
 	return o
@@ -292,12 +303,8 @@ func (o Privileges) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Resources) {
 		toSerialize["resources"] = o.Resources
 	}
-	if !utils.IsNil(o.Scope) {
-		toSerialize["scope"] = o.Scope
-	}
-	if !utils.IsNil(o.Verbs) {
-		toSerialize["verbs"] = o.Verbs
-	}
+	toSerialize["scope"] = o.Scope
+	toSerialize["verbs"] = o.Verbs
 	return toSerialize, nil
 }
 
@@ -306,7 +313,7 @@ type NullablePrivileges struct {
 	isSet bool
 }
 
-func (v NullablePrivileges) Get() *Privileges {
+func (v *NullablePrivileges) Get() *Privileges {
 	return v.value
 }
 
@@ -315,7 +322,7 @@ func (v *NullablePrivileges) Set(val *Privileges) {
 	v.isSet = true
 }
 
-func (v NullablePrivileges) IsSet() bool {
+func (v *NullablePrivileges) IsSet() bool {
 	return v.isSet
 }
 

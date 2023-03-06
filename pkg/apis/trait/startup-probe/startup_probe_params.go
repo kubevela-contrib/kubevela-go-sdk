@@ -12,6 +12,7 @@ package startup_probe
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,30 +23,44 @@ var _ utils.MappedNullable = &StartupProbeParams{}
 // StartupProbeParams struct for StartupProbeParams
 type StartupProbeParams struct {
 	// Specify the name of the target container, if not set, use the component name
-	ContainerName *string `json:"containerName,omitempty"`
+	ContainerName *string `json:"containerName"`
 	Exec          *Exec   `json:"exec,omitempty"`
 	// Minimum consecutive failures for the probe to be considered failed after having succeeded. Minimum value is 1.
-	FailureThreshold *int32   `json:"failureThreshold,omitempty"`
+	FailureThreshold *int32   `json:"failureThreshold"`
 	Grpc             *Grpc    `json:"grpc,omitempty"`
 	HttpGet          *HttpGet `json:"httpGet,omitempty"`
 	// Number of seconds after the container has started before liveness probes are initiated. Minimum value is 0.
-	InitialDelaySeconds *int32 `json:"initialDelaySeconds,omitempty"`
+	InitialDelaySeconds *int32 `json:"initialDelaySeconds"`
 	// How often, in seconds, to execute the probe. Minimum value is 1.
-	PeriodSeconds *int32 `json:"periodSeconds,omitempty"`
+	PeriodSeconds *int32 `json:"periodSeconds"`
 	// Minimum consecutive successes for the probe to be considered successful after having failed.  Minimum value is 1.
-	SuccessThreshold *int32     `json:"successThreshold,omitempty"`
+	SuccessThreshold *int32     `json:"successThreshold"`
 	TcpSocket        *TcpSocket `json:"tcpSocket,omitempty"`
 	// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. Set this value longer than the expected cleanup time for your process.
 	TerminationGracePeriodSeconds *int32 `json:"terminationGracePeriodSeconds,omitempty"`
 	// Number of seconds after which the probe times out. Minimum value is 1.
-	TimeoutSeconds *int32 `json:"timeoutSeconds,omitempty"`
+	TimeoutSeconds *int32 `json:"timeoutSeconds"`
 }
 
 // NewStartupProbeParamsWith instantiates a new StartupProbeParams object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewStartupProbeParamsWith() *StartupProbeParams {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewStartupProbeParamsWith(containerName string, failureThreshold int32, initialDelaySeconds int32, periodSeconds int32, successThreshold int32, timeoutSeconds int32) *StartupProbeParams {
+	this := StartupProbeParams{}
+	this.ContainerName = &containerName
+	this.FailureThreshold = &failureThreshold
+	this.InitialDelaySeconds = &initialDelaySeconds
+	this.PeriodSeconds = &periodSeconds
+	this.SuccessThreshold = &successThreshold
+	this.TimeoutSeconds = &timeoutSeconds
+	return &this
+}
+
+// NewStartupProbeParamsWithDefault instantiates a new StartupProbeParams object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewStartupProbeParamsWithDefault() *StartupProbeParams {
 	this := StartupProbeParams{}
 	var containerName string = ""
 	this.ContainerName = &containerName
@@ -62,23 +77,17 @@ func NewStartupProbeParamsWith() *StartupProbeParams {
 	return &this
 }
 
-// NewStartupProbeParams instantiates a new StartupProbeParams object
+// NewStartupProbeParams is short for NewStartupProbeParamsWithDefault which instantiates a new StartupProbeParams object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewStartupProbeParams() *StartupProbeParams {
+	return NewStartupProbeParamsWithDefault()
+}
+
+// NewStartupProbeParamsEmpty instantiates a new StartupProbeParams object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewStartupProbeParamsEmpty() *StartupProbeParams {
 	this := StartupProbeParams{}
-	var containerName string = ""
-	this.ContainerName = &containerName
-	var failureThreshold int32 = 3
-	this.FailureThreshold = &failureThreshold
-	var initialDelaySeconds int32 = 0
-	this.InitialDelaySeconds = &initialDelaySeconds
-	var periodSeconds int32 = 10
-	this.PeriodSeconds = &periodSeconds
-	var successThreshold int32 = 1
-	this.SuccessThreshold = &successThreshold
-	var timeoutSeconds int32 = 1
-	this.TimeoutSeconds = &timeoutSeconds
 	return &this
 }
 
@@ -92,35 +101,72 @@ func NewStartupProbeParamsList(ps ...*StartupProbeParams) []StartupProbeParams {
 	return objs
 }
 
-// GetContainerName returns the ContainerName field value if set, zero value otherwise.
+// Validate validates this StartupProbeParams
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *StartupProbeParams) Validate() error {
+	if o.ContainerName == nil {
+		return errors.New("ContainerName in StartupProbeParams must be set")
+	}
+	if o.FailureThreshold == nil {
+		return errors.New("FailureThreshold in StartupProbeParams must be set")
+	}
+	if o.InitialDelaySeconds == nil {
+		return errors.New("InitialDelaySeconds in StartupProbeParams must be set")
+	}
+	if o.PeriodSeconds == nil {
+		return errors.New("PeriodSeconds in StartupProbeParams must be set")
+	}
+	if o.SuccessThreshold == nil {
+		return errors.New("SuccessThreshold in StartupProbeParams must be set")
+	}
+	if o.TimeoutSeconds == nil {
+		return errors.New("TimeoutSeconds in StartupProbeParams must be set")
+	}
+	// validate all nested properties
+	if o.Exec != nil {
+		if err := o.Exec.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Grpc != nil {
+		if err := o.Grpc.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.HttpGet != nil {
+		if err := o.HttpGet.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.TcpSocket != nil {
+		if err := o.TcpSocket.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetContainerName returns the ContainerName field value
 func (o *StartupProbeParams) GetContainerName() string {
-	if o == nil || utils.IsNil(o.ContainerName) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.ContainerName
 }
 
-// GetContainerNameOk returns a tuple with the ContainerName field value if set, nil otherwise
+// GetContainerNameOk returns a tuple with the ContainerName field value
 // and a boolean to check if the value has been set.
 func (o *StartupProbeParams) GetContainerNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.ContainerName) {
+	if o == nil {
 		return nil, false
 	}
 	return o.ContainerName, true
 }
 
-// HasContainerName returns a boolean if a field has been set.
-func (o *StartupProbeParams) HasContainerName() bool {
-	if o != nil && !utils.IsNil(o.ContainerName) {
-		return true
-	}
-
-	return false
-}
-
-// SetContainerName gets a reference to the given string and assigns it to the containerName field.
-// ContainerName:  Specify the name of the target container, if not set, use the component name
+// SetContainerName sets field value
 func (o *StartupProbeParams) SetContainerName(v string) *StartupProbeParams {
 	o.ContainerName = &v
 	return o
@@ -160,35 +206,26 @@ func (o *StartupProbeParams) SetExec(v Exec) *StartupProbeParams {
 	return o
 }
 
-// GetFailureThreshold returns the FailureThreshold field value if set, zero value otherwise.
+// GetFailureThreshold returns the FailureThreshold field value
 func (o *StartupProbeParams) GetFailureThreshold() int32 {
-	if o == nil || utils.IsNil(o.FailureThreshold) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.FailureThreshold
 }
 
-// GetFailureThresholdOk returns a tuple with the FailureThreshold field value if set, nil otherwise
+// GetFailureThresholdOk returns a tuple with the FailureThreshold field value
 // and a boolean to check if the value has been set.
 func (o *StartupProbeParams) GetFailureThresholdOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.FailureThreshold) {
+	if o == nil {
 		return nil, false
 	}
 	return o.FailureThreshold, true
 }
 
-// HasFailureThreshold returns a boolean if a field has been set.
-func (o *StartupProbeParams) HasFailureThreshold() bool {
-	if o != nil && !utils.IsNil(o.FailureThreshold) {
-		return true
-	}
-
-	return false
-}
-
-// SetFailureThreshold gets a reference to the given int32 and assigns it to the failureThreshold field.
-// FailureThreshold:  Minimum consecutive failures for the probe to be considered failed after having succeeded. Minimum value is 1.
+// SetFailureThreshold sets field value
 func (o *StartupProbeParams) SetFailureThreshold(v int32) *StartupProbeParams {
 	o.FailureThreshold = &v
 	return o
@@ -262,103 +299,76 @@ func (o *StartupProbeParams) SetHttpGet(v HttpGet) *StartupProbeParams {
 	return o
 }
 
-// GetInitialDelaySeconds returns the InitialDelaySeconds field value if set, zero value otherwise.
+// GetInitialDelaySeconds returns the InitialDelaySeconds field value
 func (o *StartupProbeParams) GetInitialDelaySeconds() int32 {
-	if o == nil || utils.IsNil(o.InitialDelaySeconds) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.InitialDelaySeconds
 }
 
-// GetInitialDelaySecondsOk returns a tuple with the InitialDelaySeconds field value if set, nil otherwise
+// GetInitialDelaySecondsOk returns a tuple with the InitialDelaySeconds field value
 // and a boolean to check if the value has been set.
 func (o *StartupProbeParams) GetInitialDelaySecondsOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.InitialDelaySeconds) {
+	if o == nil {
 		return nil, false
 	}
 	return o.InitialDelaySeconds, true
 }
 
-// HasInitialDelaySeconds returns a boolean if a field has been set.
-func (o *StartupProbeParams) HasInitialDelaySeconds() bool {
-	if o != nil && !utils.IsNil(o.InitialDelaySeconds) {
-		return true
-	}
-
-	return false
-}
-
-// SetInitialDelaySeconds gets a reference to the given int32 and assigns it to the initialDelaySeconds field.
-// InitialDelaySeconds:  Number of seconds after the container has started before liveness probes are initiated. Minimum value is 0.
+// SetInitialDelaySeconds sets field value
 func (o *StartupProbeParams) SetInitialDelaySeconds(v int32) *StartupProbeParams {
 	o.InitialDelaySeconds = &v
 	return o
 }
 
-// GetPeriodSeconds returns the PeriodSeconds field value if set, zero value otherwise.
+// GetPeriodSeconds returns the PeriodSeconds field value
 func (o *StartupProbeParams) GetPeriodSeconds() int32 {
-	if o == nil || utils.IsNil(o.PeriodSeconds) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.PeriodSeconds
 }
 
-// GetPeriodSecondsOk returns a tuple with the PeriodSeconds field value if set, nil otherwise
+// GetPeriodSecondsOk returns a tuple with the PeriodSeconds field value
 // and a boolean to check if the value has been set.
 func (o *StartupProbeParams) GetPeriodSecondsOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.PeriodSeconds) {
+	if o == nil {
 		return nil, false
 	}
 	return o.PeriodSeconds, true
 }
 
-// HasPeriodSeconds returns a boolean if a field has been set.
-func (o *StartupProbeParams) HasPeriodSeconds() bool {
-	if o != nil && !utils.IsNil(o.PeriodSeconds) {
-		return true
-	}
-
-	return false
-}
-
-// SetPeriodSeconds gets a reference to the given int32 and assigns it to the periodSeconds field.
-// PeriodSeconds:  How often, in seconds, to execute the probe. Minimum value is 1.
+// SetPeriodSeconds sets field value
 func (o *StartupProbeParams) SetPeriodSeconds(v int32) *StartupProbeParams {
 	o.PeriodSeconds = &v
 	return o
 }
 
-// GetSuccessThreshold returns the SuccessThreshold field value if set, zero value otherwise.
+// GetSuccessThreshold returns the SuccessThreshold field value
 func (o *StartupProbeParams) GetSuccessThreshold() int32 {
-	if o == nil || utils.IsNil(o.SuccessThreshold) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.SuccessThreshold
 }
 
-// GetSuccessThresholdOk returns a tuple with the SuccessThreshold field value if set, nil otherwise
+// GetSuccessThresholdOk returns a tuple with the SuccessThreshold field value
 // and a boolean to check if the value has been set.
 func (o *StartupProbeParams) GetSuccessThresholdOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.SuccessThreshold) {
+	if o == nil {
 		return nil, false
 	}
 	return o.SuccessThreshold, true
 }
 
-// HasSuccessThreshold returns a boolean if a field has been set.
-func (o *StartupProbeParams) HasSuccessThreshold() bool {
-	if o != nil && !utils.IsNil(o.SuccessThreshold) {
-		return true
-	}
-
-	return false
-}
-
-// SetSuccessThreshold gets a reference to the given int32 and assigns it to the successThreshold field.
-// SuccessThreshold:  Minimum consecutive successes for the probe to be considered successful after having failed.  Minimum value is 1.
+// SetSuccessThreshold sets field value
 func (o *StartupProbeParams) SetSuccessThreshold(v int32) *StartupProbeParams {
 	o.SuccessThreshold = &v
 	return o
@@ -432,35 +442,26 @@ func (o *StartupProbeParams) SetTerminationGracePeriodSeconds(v int32) *StartupP
 	return o
 }
 
-// GetTimeoutSeconds returns the TimeoutSeconds field value if set, zero value otherwise.
+// GetTimeoutSeconds returns the TimeoutSeconds field value
 func (o *StartupProbeParams) GetTimeoutSeconds() int32 {
-	if o == nil || utils.IsNil(o.TimeoutSeconds) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.TimeoutSeconds
 }
 
-// GetTimeoutSecondsOk returns a tuple with the TimeoutSeconds field value if set, nil otherwise
+// GetTimeoutSecondsOk returns a tuple with the TimeoutSeconds field value
 // and a boolean to check if the value has been set.
 func (o *StartupProbeParams) GetTimeoutSecondsOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.TimeoutSeconds) {
+	if o == nil {
 		return nil, false
 	}
 	return o.TimeoutSeconds, true
 }
 
-// HasTimeoutSeconds returns a boolean if a field has been set.
-func (o *StartupProbeParams) HasTimeoutSeconds() bool {
-	if o != nil && !utils.IsNil(o.TimeoutSeconds) {
-		return true
-	}
-
-	return false
-}
-
-// SetTimeoutSeconds gets a reference to the given int32 and assigns it to the timeoutSeconds field.
-// TimeoutSeconds:  Number of seconds after which the probe times out. Minimum value is 1.
+// SetTimeoutSeconds sets field value
 func (o *StartupProbeParams) SetTimeoutSeconds(v int32) *StartupProbeParams {
 	o.TimeoutSeconds = &v
 	return o
@@ -476,39 +477,27 @@ func (o StartupProbeParams) MarshalJSON() ([]byte, error) {
 
 func (o StartupProbeParams) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.ContainerName) {
-		toSerialize["containerName"] = o.ContainerName
-	}
+	toSerialize["containerName"] = o.ContainerName
 	if !utils.IsNil(o.Exec) {
 		toSerialize["exec"] = o.Exec
 	}
-	if !utils.IsNil(o.FailureThreshold) {
-		toSerialize["failureThreshold"] = o.FailureThreshold
-	}
+	toSerialize["failureThreshold"] = o.FailureThreshold
 	if !utils.IsNil(o.Grpc) {
 		toSerialize["grpc"] = o.Grpc
 	}
 	if !utils.IsNil(o.HttpGet) {
 		toSerialize["httpGet"] = o.HttpGet
 	}
-	if !utils.IsNil(o.InitialDelaySeconds) {
-		toSerialize["initialDelaySeconds"] = o.InitialDelaySeconds
-	}
-	if !utils.IsNil(o.PeriodSeconds) {
-		toSerialize["periodSeconds"] = o.PeriodSeconds
-	}
-	if !utils.IsNil(o.SuccessThreshold) {
-		toSerialize["successThreshold"] = o.SuccessThreshold
-	}
+	toSerialize["initialDelaySeconds"] = o.InitialDelaySeconds
+	toSerialize["periodSeconds"] = o.PeriodSeconds
+	toSerialize["successThreshold"] = o.SuccessThreshold
 	if !utils.IsNil(o.TcpSocket) {
 		toSerialize["tcpSocket"] = o.TcpSocket
 	}
 	if !utils.IsNil(o.TerminationGracePeriodSeconds) {
 		toSerialize["terminationGracePeriodSeconds"] = o.TerminationGracePeriodSeconds
 	}
-	if !utils.IsNil(o.TimeoutSeconds) {
-		toSerialize["timeoutSeconds"] = o.TimeoutSeconds
-	}
+	toSerialize["timeoutSeconds"] = o.TimeoutSeconds
 	return toSerialize, nil
 }
 
@@ -517,7 +506,7 @@ type NullableStartupProbeParams struct {
 	isSet bool
 }
 
-func (v NullableStartupProbeParams) Get() *StartupProbeParams {
+func (v *NullableStartupProbeParams) Get() *StartupProbeParams {
 	return v.value
 }
 
@@ -526,7 +515,7 @@ func (v *NullableStartupProbeParams) Set(val *StartupProbeParams) {
 	v.isSet = true
 }
 
-func (v NullableStartupProbeParams) IsSet() bool {
+func (v *NullableStartupProbeParams) IsSet() bool {
 	return v.isSet
 }
 

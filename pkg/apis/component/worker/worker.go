@@ -12,6 +12,8 @@ package worker
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -33,7 +35,7 @@ type WorkerSpec struct {
 	// Define arguments by using environment variables
 	Env []Env `json:"env,omitempty"`
 	// Which image would you like to use for your service +short=i
-	Image *string `json:"image,omitempty"`
+	Image *string `json:"image"`
 	// Specify image pull policy for your service
 	ImagePullPolicy *string `json:"imagePullPolicy,omitempty"`
 	// Specify image pull secrets for your service
@@ -48,18 +50,33 @@ type WorkerSpec struct {
 }
 
 // NewWorkerSpecWith instantiates a new WorkerSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewWorkerSpecWith() *WorkerSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewWorkerSpecWith(image string) *WorkerSpec {
+	this := WorkerSpec{}
+	this.Image = &image
+	return &this
+}
+
+// NewWorkerSpecWithDefault instantiates a new WorkerSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewWorkerSpecWithDefault() *WorkerSpec {
 	this := WorkerSpec{}
 	return &this
 }
 
-// NewWorkerSpec instantiates a new WorkerSpec object
+// NewWorkerSpec is short for NewWorkerSpecWithDefault which instantiates a new WorkerSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewWorkerSpec() *WorkerSpec {
+	return NewWorkerSpecWithDefault()
+}
+
+// NewWorkerSpecEmpty instantiates a new WorkerSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewWorkerSpecEmpty() *WorkerSpec {
 	this := WorkerSpec{}
 	return &this
 }
@@ -72,6 +89,38 @@ func NewWorkerSpecList(ps ...*WorkerSpec) []WorkerSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this WorkerSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *WorkerComponent) Validate() error {
+	if o.Properties.Image == nil {
+		return errors.New("Image in WorkerSpec must be set")
+	}
+	// validate all nested properties
+	if o.Properties.LivenessProbe != nil {
+		if err := o.Properties.LivenessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.ReadinessProbe != nil {
+		if err := o.Properties.ReadinessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.VolumeMounts != nil {
+		if err := o.Properties.VolumeMounts.Validate(); err != nil {
+			return err
+		}
+	}
+
+	for i, v := range o.Base.Traits {
+		if err := v.Validate(); err != nil {
+			return fmt.Errorf("traits[%d] %s in %s component is invalid: %w", i, v.DefType(), WorkerType, err)
+		}
+	}
+	return nil
 }
 
 // GetCmd returns the Cmd field value if set, zero value otherwise.
@@ -176,35 +225,26 @@ func (o *WorkerComponent) SetEnv(v []Env) *WorkerComponent {
 	return o
 }
 
-// GetImage returns the Image field value if set, zero value otherwise.
+// GetImage returns the Image field value
 func (o *WorkerComponent) GetImage() string {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Image
 }
 
-// GetImageOk returns a tuple with the Image field value if set, nil otherwise
+// GetImageOk returns a tuple with the Image field value
 // and a boolean to check if the value has been set.
 func (o *WorkerComponent) GetImageOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Image, true
 }
 
-// HasImage returns a boolean if a field has been set.
-func (o *WorkerComponent) HasImage() bool {
-	if o != nil && !utils.IsNil(o.Properties.Image) {
-		return true
-	}
-
-	return false
-}
-
-// SetImage gets a reference to the given string and assigns it to the image field.
-// Image:  Which image would you like to use for your service +short=i
+// SetImage sets field value
 func (o *WorkerComponent) SetImage(v string) *WorkerComponent {
 	o.Properties.Image = &v
 	return o
@@ -467,9 +507,7 @@ func (o WorkerSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Env) {
 		toSerialize["env"] = o.Env
 	}
-	if !utils.IsNil(o.Image) {
-		toSerialize["image"] = o.Image
-	}
+	toSerialize["image"] = o.Image
 	if !utils.IsNil(o.ImagePullPolicy) {
 		toSerialize["imagePullPolicy"] = o.ImagePullPolicy
 	}
@@ -499,7 +537,7 @@ type NullableWorkerSpec struct {
 	isSet bool
 }
 
-func (v NullableWorkerSpec) Get() *WorkerSpec {
+func (v *NullableWorkerSpec) Get() *WorkerSpec {
 	return v.value
 }
 
@@ -508,7 +546,7 @@ func (v *NullableWorkerSpec) Set(val *WorkerSpec) {
 	v.isSet = true
 }
 
-func (v NullableWorkerSpec) IsSet() bool {
+func (v *NullableWorkerSpec) IsSet() bool {
 	return v.isSet
 }
 
@@ -619,6 +657,10 @@ func (w *WorkerComponent) GetTrait(typ string) apis.Trait {
 		}
 	}
 	return nil
+}
+
+func (w *WorkerComponent) GetAllTraits() []apis.Trait {
+	return w.Base.Traits
 }
 
 func (w *WorkerComponent) ComponentName() string {

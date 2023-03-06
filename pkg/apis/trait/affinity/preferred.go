@@ -12,6 +12,7 @@ package affinity
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,24 +22,40 @@ var _ utils.MappedNullable = &Preferred{}
 
 // Preferred struct for Preferred
 type Preferred struct {
-	Preference *NodeSelectorTerm `json:"preference,omitempty"`
+	Preference *NodeSelectorTerm `json:"preference"`
 	// Specify weight associated with matching the corresponding nodeSelector
-	Weight *int32 `json:"weight,omitempty"`
+	Weight *int32 `json:"weight"`
 }
 
 // NewPreferredWith instantiates a new Preferred object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPreferredWith() *Preferred {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPreferredWith(preference NodeSelectorTerm, weight int32) *Preferred {
+	this := Preferred{}
+	this.Preference = &preference
+	this.Weight = &weight
+	return &this
+}
+
+// NewPreferredWithDefault instantiates a new Preferred object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPreferredWithDefault() *Preferred {
 	this := Preferred{}
 	return &this
 }
 
-// NewPreferred instantiates a new Preferred object
+// NewPreferred is short for NewPreferredWithDefault which instantiates a new Preferred object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPreferred() *Preferred {
+	return NewPreferredWithDefault()
+}
+
+// NewPreferredEmpty instantiates a new Preferred object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPreferredEmpty() *Preferred {
 	this := Preferred{}
 	return &this
 }
@@ -53,69 +70,70 @@ func NewPreferredList(ps ...*Preferred) []Preferred {
 	return objs
 }
 
-// GetPreference returns the Preference field value if set, zero value otherwise.
+// Validate validates this Preferred
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Preferred) Validate() error {
+	if o.Preference == nil {
+		return errors.New("Preference in Preferred must be set")
+	}
+	if o.Weight == nil {
+		return errors.New("Weight in Preferred must be set")
+	}
+	// validate all nested properties
+	if o.Preference != nil {
+		if err := o.Preference.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetPreference returns the Preference field value
 func (o *Preferred) GetPreference() NodeSelectorTerm {
-	if o == nil || utils.IsNil(o.Preference) {
+	if o == nil {
 		var ret NodeSelectorTerm
 		return ret
 	}
+
 	return *o.Preference
 }
 
-// GetPreferenceOk returns a tuple with the Preference field value if set, nil otherwise
+// GetPreferenceOk returns a tuple with the Preference field value
 // and a boolean to check if the value has been set.
 func (o *Preferred) GetPreferenceOk() (*NodeSelectorTerm, bool) {
-	if o == nil || utils.IsNil(o.Preference) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Preference, true
 }
 
-// HasPreference returns a boolean if a field has been set.
-func (o *Preferred) HasPreference() bool {
-	if o != nil && !utils.IsNil(o.Preference) {
-		return true
-	}
-
-	return false
-}
-
-// SetPreference gets a reference to the given NodeSelectorTerm and assigns it to the preference field.
-// Preference:
+// SetPreference sets field value
 func (o *Preferred) SetPreference(v NodeSelectorTerm) *Preferred {
 	o.Preference = &v
 	return o
 }
 
-// GetWeight returns the Weight field value if set, zero value otherwise.
+// GetWeight returns the Weight field value
 func (o *Preferred) GetWeight() int32 {
-	if o == nil || utils.IsNil(o.Weight) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Weight
 }
 
-// GetWeightOk returns a tuple with the Weight field value if set, nil otherwise
+// GetWeightOk returns a tuple with the Weight field value
 // and a boolean to check if the value has been set.
 func (o *Preferred) GetWeightOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Weight) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Weight, true
 }
 
-// HasWeight returns a boolean if a field has been set.
-func (o *Preferred) HasWeight() bool {
-	if o != nil && !utils.IsNil(o.Weight) {
-		return true
-	}
-
-	return false
-}
-
-// SetWeight gets a reference to the given int32 and assigns it to the weight field.
-// Weight:  Specify weight associated with matching the corresponding nodeSelector
+// SetWeight sets field value
 func (o *Preferred) SetWeight(v int32) *Preferred {
 	o.Weight = &v
 	return o
@@ -131,12 +149,8 @@ func (o Preferred) MarshalJSON() ([]byte, error) {
 
 func (o Preferred) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Preference) {
-		toSerialize["preference"] = o.Preference
-	}
-	if !utils.IsNil(o.Weight) {
-		toSerialize["weight"] = o.Weight
-	}
+	toSerialize["preference"] = o.Preference
+	toSerialize["weight"] = o.Weight
 	return toSerialize, nil
 }
 
@@ -145,7 +159,7 @@ type NullablePreferred struct {
 	isSet bool
 }
 
-func (v NullablePreferred) Get() *Preferred {
+func (v *NullablePreferred) Get() *Preferred {
 	return v.value
 }
 
@@ -154,7 +168,7 @@ func (v *NullablePreferred) Set(val *Preferred) {
 	v.isSet = true
 }
 
-func (v NullablePreferred) IsSet() bool {
+func (v *NullablePreferred) IsSet() bool {
 	return v.isSet
 }
 

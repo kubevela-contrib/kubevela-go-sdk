@@ -12,6 +12,7 @@ package apply_terraform_config
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -24,26 +25,40 @@ type SourceOneOf1 struct {
 	// specify the path of the terraform configuration
 	Path *string `json:"path,omitempty"`
 	// specify the remote url of the terraform configuration
-	Remote string `json:"remote"`
+	Remote *string `json:"remote"`
 }
 
 // NewSourceOneOf1With instantiates a new SourceOneOf1 object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewSourceOneOf1With(remote string) *SourceOneOf1 {
 	this := SourceOneOf1{}
-	this.Remote = remote
+	this.Remote = &remote
 	return &this
 }
 
-// NewSourceOneOf1 instantiates a new SourceOneOf1 object
+// NewSourceOneOf1WithDefault instantiates a new SourceOneOf1 object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSourceOneOf1WithDefault() *SourceOneOf1 {
+	this := SourceOneOf1{}
+	var remote string = "https://github.com/kubevela-contrib/terraform-modules.git"
+	this.Remote = &remote
+	return &this
+}
+
+// NewSourceOneOf1 is short for NewSourceOneOf1WithDefault which instantiates a new SourceOneOf1 object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSourceOneOf1() *SourceOneOf1 {
+	return NewSourceOneOf1WithDefault()
+}
+
+// NewSourceOneOf1Empty instantiates a new SourceOneOf1 object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSourceOneOf1Empty() *SourceOneOf1 {
 	this := SourceOneOf1{}
-	var remote string = "https://github.com/kubevela-contrib/terraform-modules.git"
-	this.Remote = remote
 	return &this
 }
 
@@ -55,6 +70,17 @@ func NewSourceOneOf1List(ps ...*SourceOneOf1) []SourceOneOf1 {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this SourceOneOf1
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *SourceOneOf1) Validate() error {
+	if o.Remote == nil {
+		return errors.New("Remote in SourceOneOf1 must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetPath returns the Path field value if set, zero value otherwise.
@@ -98,7 +124,7 @@ func (o *SourceOneOf1) GetRemote() string {
 		return ret
 	}
 
-	return o.Remote
+	return *o.Remote
 }
 
 // GetRemoteOk returns a tuple with the Remote field value
@@ -107,12 +133,12 @@ func (o *SourceOneOf1) GetRemoteOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Remote, true
+	return o.Remote, true
 }
 
 // SetRemote sets field value
 func (o *SourceOneOf1) SetRemote(v string) *SourceOneOf1 {
-	o.Remote = v
+	o.Remote = &v
 	return o
 }
 
@@ -138,7 +164,7 @@ type NullableSourceOneOf1 struct {
 	isSet bool
 }
 
-func (v NullableSourceOneOf1) Get() *SourceOneOf1 {
+func (v *NullableSourceOneOf1) Get() *SourceOneOf1 {
 	return v.value
 }
 
@@ -147,7 +173,7 @@ func (v *NullableSourceOneOf1) Set(val *SourceOneOf1) {
 	v.isSet = true
 }
 
-func (v NullableSourceOneOf1) IsSet() bool {
+func (v *NullableSourceOneOf1) IsSet() bool {
 	return v.isSet
 }
 

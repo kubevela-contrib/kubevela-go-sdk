@@ -12,6 +12,7 @@ package apply_once
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,22 +23,37 @@ var _ utils.MappedNullable = &ApplyOncePolicyRule{}
 // ApplyOncePolicyRule struct for ApplyOncePolicyRule
 type ApplyOncePolicyRule struct {
 	Selector *ResourcePolicyRuleSelector `json:"selector,omitempty"`
-	Strategy *ApplyOnceStrategy          `json:"strategy,omitempty"`
+	Strategy *ApplyOnceStrategy          `json:"strategy"`
 }
 
 // NewApplyOncePolicyRuleWith instantiates a new ApplyOncePolicyRule object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewApplyOncePolicyRuleWith() *ApplyOncePolicyRule {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewApplyOncePolicyRuleWith(strategy ApplyOnceStrategy) *ApplyOncePolicyRule {
+	this := ApplyOncePolicyRule{}
+	this.Strategy = &strategy
+	return &this
+}
+
+// NewApplyOncePolicyRuleWithDefault instantiates a new ApplyOncePolicyRule object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewApplyOncePolicyRuleWithDefault() *ApplyOncePolicyRule {
 	this := ApplyOncePolicyRule{}
 	return &this
 }
 
-// NewApplyOncePolicyRule instantiates a new ApplyOncePolicyRule object
+// NewApplyOncePolicyRule is short for NewApplyOncePolicyRuleWithDefault which instantiates a new ApplyOncePolicyRule object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewApplyOncePolicyRule() *ApplyOncePolicyRule {
+	return NewApplyOncePolicyRuleWithDefault()
+}
+
+// NewApplyOncePolicyRuleEmpty instantiates a new ApplyOncePolicyRule object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewApplyOncePolicyRuleEmpty() *ApplyOncePolicyRule {
 	this := ApplyOncePolicyRule{}
 	return &this
 }
@@ -50,6 +66,27 @@ func NewApplyOncePolicyRuleList(ps ...*ApplyOncePolicyRule) []ApplyOncePolicyRul
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this ApplyOncePolicyRule
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ApplyOncePolicyRule) Validate() error {
+	if o.Strategy == nil {
+		return errors.New("Strategy in ApplyOncePolicyRule must be set")
+	}
+	// validate all nested properties
+	if o.Selector != nil {
+		if err := o.Selector.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Strategy != nil {
+		if err := o.Strategy.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetSelector returns the Selector field value if set, zero value otherwise.
@@ -86,35 +123,26 @@ func (o *ApplyOncePolicyRule) SetSelector(v ResourcePolicyRuleSelector) *ApplyOn
 	return o
 }
 
-// GetStrategy returns the Strategy field value if set, zero value otherwise.
+// GetStrategy returns the Strategy field value
 func (o *ApplyOncePolicyRule) GetStrategy() ApplyOnceStrategy {
-	if o == nil || utils.IsNil(o.Strategy) {
+	if o == nil {
 		var ret ApplyOnceStrategy
 		return ret
 	}
+
 	return *o.Strategy
 }
 
-// GetStrategyOk returns a tuple with the Strategy field value if set, nil otherwise
+// GetStrategyOk returns a tuple with the Strategy field value
 // and a boolean to check if the value has been set.
 func (o *ApplyOncePolicyRule) GetStrategyOk() (*ApplyOnceStrategy, bool) {
-	if o == nil || utils.IsNil(o.Strategy) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Strategy, true
 }
 
-// HasStrategy returns a boolean if a field has been set.
-func (o *ApplyOncePolicyRule) HasStrategy() bool {
-	if o != nil && !utils.IsNil(o.Strategy) {
-		return true
-	}
-
-	return false
-}
-
-// SetStrategy gets a reference to the given ApplyOnceStrategy and assigns it to the strategy field.
-// Strategy:
+// SetStrategy sets field value
 func (o *ApplyOncePolicyRule) SetStrategy(v ApplyOnceStrategy) *ApplyOncePolicyRule {
 	o.Strategy = &v
 	return o
@@ -133,9 +161,7 @@ func (o ApplyOncePolicyRule) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Selector) {
 		toSerialize["selector"] = o.Selector
 	}
-	if !utils.IsNil(o.Strategy) {
-		toSerialize["strategy"] = o.Strategy
-	}
+	toSerialize["strategy"] = o.Strategy
 	return toSerialize, nil
 }
 
@@ -144,7 +170,7 @@ type NullableApplyOncePolicyRule struct {
 	isSet bool
 }
 
-func (v NullableApplyOncePolicyRule) Get() *ApplyOncePolicyRule {
+func (v *NullableApplyOncePolicyRule) Get() *ApplyOncePolicyRule {
 	return v.value
 }
 
@@ -153,7 +179,7 @@ func (v *NullableApplyOncePolicyRule) Set(val *ApplyOncePolicyRule) {
 	v.isSet = true
 }
 
-func (v NullableApplyOncePolicyRule) IsSet() bool {
+func (v *NullableApplyOncePolicyRule) IsSet() bool {
 	return v.isSet
 }
 
