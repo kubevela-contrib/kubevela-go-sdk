@@ -12,6 +12,7 @@ package topologyspreadconstraints
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -26,22 +27,37 @@ var _ utils.MappedNullable = &TopologyspreadconstraintsSpec{}
 
 // TopologyspreadconstraintsSpec struct for TopologyspreadconstraintsSpec
 type TopologyspreadconstraintsSpec struct {
-	Constraints []Constraints `json:"constraints,omitempty"`
+	Constraints []Constraints `json:"constraints"`
 }
 
 // NewTopologyspreadconstraintsSpecWith instantiates a new TopologyspreadconstraintsSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewTopologyspreadconstraintsSpecWith() *TopologyspreadconstraintsSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewTopologyspreadconstraintsSpecWith(constraints []Constraints) *TopologyspreadconstraintsSpec {
+	this := TopologyspreadconstraintsSpec{}
+	this.Constraints = constraints
+	return &this
+}
+
+// NewTopologyspreadconstraintsSpecWithDefault instantiates a new TopologyspreadconstraintsSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewTopologyspreadconstraintsSpecWithDefault() *TopologyspreadconstraintsSpec {
 	this := TopologyspreadconstraintsSpec{}
 	return &this
 }
 
-// NewTopologyspreadconstraintsSpec instantiates a new TopologyspreadconstraintsSpec object
+// NewTopologyspreadconstraintsSpec is short for NewTopologyspreadconstraintsSpecWithDefault which instantiates a new TopologyspreadconstraintsSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewTopologyspreadconstraintsSpec() *TopologyspreadconstraintsSpec {
+	return NewTopologyspreadconstraintsSpecWithDefault()
+}
+
+// NewTopologyspreadconstraintsSpecEmpty instantiates a new TopologyspreadconstraintsSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewTopologyspreadconstraintsSpecEmpty() *TopologyspreadconstraintsSpec {
 	this := TopologyspreadconstraintsSpec{}
 	return &this
 }
@@ -56,35 +72,37 @@ func NewTopologyspreadconstraintsSpecList(ps ...*TopologyspreadconstraintsSpec) 
 	return objs
 }
 
-// GetConstraints returns the Constraints field value if set, zero value otherwise.
+// Validate validates this TopologyspreadconstraintsSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *TopologyspreadconstraintsTrait) Validate() error {
+	if o.Properties.Constraints == nil {
+		return errors.New("Constraints in TopologyspreadconstraintsSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetConstraints returns the Constraints field value
 func (o *TopologyspreadconstraintsTrait) GetConstraints() []Constraints {
-	if o == nil || utils.IsNil(o.Properties.Constraints) {
+	if o == nil {
 		var ret []Constraints
 		return ret
 	}
+
 	return o.Properties.Constraints
 }
 
-// GetConstraintsOk returns a tuple with the Constraints field value if set, nil otherwise
+// GetConstraintsOk returns a tuple with the Constraints field value
 // and a boolean to check if the value has been set.
 func (o *TopologyspreadconstraintsTrait) GetConstraintsOk() ([]Constraints, bool) {
-	if o == nil || utils.IsNil(o.Properties.Constraints) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Constraints, true
 }
 
-// HasConstraints returns a boolean if a field has been set.
-func (o *TopologyspreadconstraintsTrait) HasConstraints() bool {
-	if o != nil && !utils.IsNil(o.Properties.Constraints) {
-		return true
-	}
-
-	return false
-}
-
-// SetConstraints gets a reference to the given []Constraints and assigns it to the constraints field.
-// Constraints:
+// SetConstraints sets field value
 func (o *TopologyspreadconstraintsTrait) SetConstraints(v []Constraints) *TopologyspreadconstraintsTrait {
 	o.Properties.Constraints = v
 	return o
@@ -100,9 +118,7 @@ func (o TopologyspreadconstraintsSpec) MarshalJSON() ([]byte, error) {
 
 func (o TopologyspreadconstraintsSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Constraints) {
-		toSerialize["constraints"] = o.Constraints
-	}
+	toSerialize["constraints"] = o.Constraints
 	return toSerialize, nil
 }
 
@@ -111,7 +127,7 @@ type NullableTopologyspreadconstraintsSpec struct {
 	isSet bool
 }
 
-func (v NullableTopologyspreadconstraintsSpec) Get() *TopologyspreadconstraintsSpec {
+func (v *NullableTopologyspreadconstraintsSpec) Get() *TopologyspreadconstraintsSpec {
 	return v.value
 }
 
@@ -120,7 +136,7 @@ func (v *NullableTopologyspreadconstraintsSpec) Set(val *Topologyspreadconstrain
 	v.isSet = true
 }
 
-func (v NullableTopologyspreadconstraintsSpec) IsSet() bool {
+func (v *NullableTopologyspreadconstraintsSpec) IsSet() bool {
 	return v.isSet
 }
 

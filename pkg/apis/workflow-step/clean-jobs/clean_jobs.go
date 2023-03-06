@@ -12,6 +12,7 @@ package clean_jobs
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,22 +29,37 @@ var _ utils.MappedNullable = &CleanJobsSpec{}
 // CleanJobsSpec struct for CleanJobsSpec
 type CleanJobsSpec struct {
 	Labelselector map[string]interface{} `json:"labelselector,omitempty"`
-	Namespace     *string                `json:"namespace,omitempty"`
+	Namespace     *string                `json:"namespace"`
 }
 
 // NewCleanJobsSpecWith instantiates a new CleanJobsSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCleanJobsSpecWith() *CleanJobsSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewCleanJobsSpecWith(namespace string) *CleanJobsSpec {
+	this := CleanJobsSpec{}
+	this.Namespace = &namespace
+	return &this
+}
+
+// NewCleanJobsSpecWithDefault instantiates a new CleanJobsSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewCleanJobsSpecWithDefault() *CleanJobsSpec {
 	this := CleanJobsSpec{}
 	return &this
 }
 
-// NewCleanJobsSpec instantiates a new CleanJobsSpec object
+// NewCleanJobsSpec is short for NewCleanJobsSpecWithDefault which instantiates a new CleanJobsSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewCleanJobsSpec() *CleanJobsSpec {
+	return NewCleanJobsSpecWithDefault()
+}
+
+// NewCleanJobsSpecEmpty instantiates a new CleanJobsSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewCleanJobsSpecEmpty() *CleanJobsSpec {
 	this := CleanJobsSpec{}
 	return &this
 }
@@ -56,6 +72,17 @@ func NewCleanJobsSpecList(ps ...*CleanJobsSpec) []CleanJobsSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this CleanJobsSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *CleanJobsWorkflowStep) Validate() error {
+	if o.Properties.Namespace == nil {
+		return errors.New("Namespace in CleanJobsSpec must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetLabelselector returns the Labelselector field value if set, zero value otherwise.
@@ -92,35 +119,26 @@ func (o *CleanJobsWorkflowStep) SetLabelselector(v map[string]interface{}) *Clea
 	return o
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *CleanJobsWorkflowStep) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *CleanJobsWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *CleanJobsWorkflowStep) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Properties.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:
+// SetNamespace sets field value
 func (o *CleanJobsWorkflowStep) SetNamespace(v string) *CleanJobsWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -139,9 +157,7 @@ func (o CleanJobsSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Labelselector) {
 		toSerialize["labelselector"] = o.Labelselector
 	}
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
-	}
+	toSerialize["namespace"] = o.Namespace
 	return toSerialize, nil
 }
 
@@ -150,7 +166,7 @@ type NullableCleanJobsSpec struct {
 	isSet bool
 }
 
-func (v NullableCleanJobsSpec) Get() *CleanJobsSpec {
+func (v *NullableCleanJobsSpec) Get() *CleanJobsSpec {
 	return v.value
 }
 
@@ -159,7 +175,7 @@ func (v *NullableCleanJobsSpec) Set(val *CleanJobsSpec) {
 	v.isSet = true
 }
 
-func (v NullableCleanJobsSpec) IsSet() bool {
+func (v *NullableCleanJobsSpec) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,24 +23,40 @@ var _ utils.MappedNullable = &Message1{}
 // Message1 Specify the message that you want to sent, refer to [Lark messaging](https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN#8b0f2a1b).
 type Message1 struct {
 	// content should be json encode string
-	Content *string `json:"content,omitempty"`
+	Content *string `json:"content"`
 	// msg_type can be text, post, image, interactive, share_chat, share_user, audio, media, file, sticker
-	MsgType *string `json:"msg_type,omitempty"`
+	MsgType *string `json:"msg_type"`
 }
 
 // NewMessage1With instantiates a new Message1 object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewMessage1With() *Message1 {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewMessage1With(content string, msgType string) *Message1 {
+	this := Message1{}
+	this.Content = &content
+	this.MsgType = &msgType
+	return &this
+}
+
+// NewMessage1WithDefault instantiates a new Message1 object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewMessage1WithDefault() *Message1 {
 	this := Message1{}
 	return &this
 }
 
-// NewMessage1 instantiates a new Message1 object
+// NewMessage1 is short for NewMessage1WithDefault which instantiates a new Message1 object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewMessage1() *Message1 {
+	return NewMessage1WithDefault()
+}
+
+// NewMessage1Empty instantiates a new Message1 object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewMessage1Empty() *Message1 {
 	this := Message1{}
 	return &this
 }
@@ -54,69 +71,65 @@ func NewMessage1List(ps ...*Message1) []Message1 {
 	return objs
 }
 
-// GetContent returns the Content field value if set, zero value otherwise.
+// Validate validates this Message1
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Message1) Validate() error {
+	if o.Content == nil {
+		return errors.New("Content in Message1 must be set")
+	}
+	if o.MsgType == nil {
+		return errors.New("MsgType in Message1 must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetContent returns the Content field value
 func (o *Message1) GetContent() string {
-	if o == nil || utils.IsNil(o.Content) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Content
 }
 
-// GetContentOk returns a tuple with the Content field value if set, nil otherwise
+// GetContentOk returns a tuple with the Content field value
 // and a boolean to check if the value has been set.
 func (o *Message1) GetContentOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Content) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Content, true
 }
 
-// HasContent returns a boolean if a field has been set.
-func (o *Message1) HasContent() bool {
-	if o != nil && !utils.IsNil(o.Content) {
-		return true
-	}
-
-	return false
-}
-
-// SetContent gets a reference to the given string and assigns it to the content field.
-// Content:  content should be json encode string
+// SetContent sets field value
 func (o *Message1) SetContent(v string) *Message1 {
 	o.Content = &v
 	return o
 }
 
-// GetMsgType returns the MsgType field value if set, zero value otherwise.
+// GetMsgType returns the MsgType field value
 func (o *Message1) GetMsgType() string {
-	if o == nil || utils.IsNil(o.MsgType) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MsgType
 }
 
-// GetMsgTypeOk returns a tuple with the MsgType field value if set, nil otherwise
+// GetMsgTypeOk returns a tuple with the MsgType field value
 // and a boolean to check if the value has been set.
 func (o *Message1) GetMsgTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.MsgType) {
+	if o == nil {
 		return nil, false
 	}
 	return o.MsgType, true
 }
 
-// HasMsgType returns a boolean if a field has been set.
-func (o *Message1) HasMsgType() bool {
-	if o != nil && !utils.IsNil(o.MsgType) {
-		return true
-	}
-
-	return false
-}
-
-// SetMsgType gets a reference to the given string and assigns it to the msgType field.
-// MsgType:  msg_type can be text, post, image, interactive, share_chat, share_user, audio, media, file, sticker
+// SetMsgType sets field value
 func (o *Message1) SetMsgType(v string) *Message1 {
 	o.MsgType = &v
 	return o
@@ -132,12 +145,8 @@ func (o Message1) MarshalJSON() ([]byte, error) {
 
 func (o Message1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Content) {
-		toSerialize["content"] = o.Content
-	}
-	if !utils.IsNil(o.MsgType) {
-		toSerialize["msg_type"] = o.MsgType
-	}
+	toSerialize["content"] = o.Content
+	toSerialize["msg_type"] = o.MsgType
 	return toSerialize, nil
 }
 
@@ -146,7 +155,7 @@ type NullableMessage1 struct {
 	isSet bool
 }
 
-func (v NullableMessage1) Get() *Message1 {
+func (v *NullableMessage1) Get() *Message1 {
 	return v.value
 }
 
@@ -155,7 +164,7 @@ func (v *NullableMessage1) Set(val *Message1) {
 	v.isSet = true
 }
 
-func (v NullableMessage1) IsSet() bool {
+func (v *NullableMessage1) IsSet() bool {
 	return v.isSet
 }
 

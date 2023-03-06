@@ -12,6 +12,7 @@ package apply_terraform_config
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &ProviderRef{}
 
 // ProviderRef providerRef specifies the reference to Provider
 type ProviderRef struct {
-	Name      *string `json:"name,omitempty"`
-	Namespace *string `json:"namespace,omitempty"`
+	Name      *string `json:"name"`
+	Namespace *string `json:"namespace"`
 }
 
 // NewProviderRefWith instantiates a new ProviderRef object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewProviderRefWith() *ProviderRef {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewProviderRefWith(name string, namespace string) *ProviderRef {
+	this := ProviderRef{}
+	this.Name = &name
+	this.Namespace = &namespace
+	return &this
+}
+
+// NewProviderRefWithDefault instantiates a new ProviderRef object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewProviderRefWithDefault() *ProviderRef {
 	this := ProviderRef{}
 	return &this
 }
 
-// NewProviderRef instantiates a new ProviderRef object
+// NewProviderRef is short for NewProviderRefWithDefault which instantiates a new ProviderRef object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewProviderRef() *ProviderRef {
+	return NewProviderRefWithDefault()
+}
+
+// NewProviderRefEmpty instantiates a new ProviderRef object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewProviderRefEmpty() *ProviderRef {
 	this := ProviderRef{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewProviderRefList(ps ...*ProviderRef) []ProviderRef {
 	return objs
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// Validate validates this ProviderRef
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ProviderRef) Validate() error {
+	if o.Name == nil {
+		return errors.New("Name in ProviderRef must be set")
+	}
+	if o.Namespace == nil {
+		return errors.New("Namespace in ProviderRef must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetName returns the Name field value
 func (o *ProviderRef) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *ProviderRef) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *ProviderRef) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
+// SetName sets field value
 func (o *ProviderRef) SetName(v string) *ProviderRef {
 	o.Name = &v
 	return o
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *ProviderRef) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Namespace) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *ProviderRef) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Namespace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *ProviderRef) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:
+// SetNamespace sets field value
 func (o *ProviderRef) SetNamespace(v string) *ProviderRef {
 	o.Namespace = &v
 	return o
@@ -130,12 +143,8 @@ func (o ProviderRef) MarshalJSON() ([]byte, error) {
 
 func (o ProviderRef) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
-	}
+	toSerialize["name"] = o.Name
+	toSerialize["namespace"] = o.Namespace
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableProviderRef struct {
 	isSet bool
 }
 
-func (v NullableProviderRef) Get() *ProviderRef {
+func (v *NullableProviderRef) Get() *ProviderRef {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableProviderRef) Set(val *ProviderRef) {
 	v.isSet = true
 }
 
-func (v NullableProviderRef) IsSet() bool {
+func (v *NullableProviderRef) IsSet() bool {
 	return v.isSet
 }
 

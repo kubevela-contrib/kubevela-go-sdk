@@ -29,18 +29,32 @@ type AnnotationsSpec struct {
 }
 
 // NewAnnotationsSpecWith instantiates a new AnnotationsSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewAnnotationsSpecWith() *AnnotationsSpec {
 	this := AnnotationsSpec{}
 	return &this
 }
 
-// NewAnnotationsSpec instantiates a new AnnotationsSpec object
+// NewAnnotationsSpecWithDefault instantiates a new AnnotationsSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewAnnotationsSpecWithDefault() *AnnotationsSpec {
+	this := AnnotationsSpec{}
+	return &this
+}
+
+// NewAnnotationsSpec is short for NewAnnotationsSpecWithDefault which instantiates a new AnnotationsSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewAnnotationsSpec() *AnnotationsSpec {
+	return NewAnnotationsSpecWithDefault()
+}
+
+// NewAnnotationsSpecEmpty instantiates a new AnnotationsSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewAnnotationsSpecEmpty() *AnnotationsSpec {
 	this := AnnotationsSpec{}
 	return &this
 }
@@ -53,6 +67,14 @@ func NewAnnotationsSpecList(ps ...*AnnotationsSpec) []AnnotationsSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this AnnotationsSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *AnnotationsTrait) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 func (o AnnotationsSpec) MarshalJSON() ([]byte, error) {
@@ -73,7 +95,7 @@ type NullableAnnotationsSpec struct {
 	isSet bool
 }
 
-func (v NullableAnnotationsSpec) Get() *AnnotationsSpec {
+func (v *NullableAnnotationsSpec) Get() *AnnotationsSpec {
 	return v.value
 }
 
@@ -82,7 +104,7 @@ func (v *NullableAnnotationsSpec) Set(val *AnnotationsSpec) {
 	v.isSet = true
 }
 
-func (v NullableAnnotationsSpec) IsSet() bool {
+func (v *NullableAnnotationsSpec) IsSet() bool {
 	return v.isSet
 }
 

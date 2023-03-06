@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,22 +22,37 @@ var _ utils.MappedNullable = &FeedCard{}
 
 // FeedCard struct for FeedCard
 type FeedCard struct {
-	Links []Link `json:"links,omitempty"`
+	Links []Link `json:"links"`
 }
 
 // NewFeedCardWith instantiates a new FeedCard object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewFeedCardWith() *FeedCard {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewFeedCardWith(links []Link) *FeedCard {
+	this := FeedCard{}
+	this.Links = links
+	return &this
+}
+
+// NewFeedCardWithDefault instantiates a new FeedCard object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewFeedCardWithDefault() *FeedCard {
 	this := FeedCard{}
 	return &this
 }
 
-// NewFeedCard instantiates a new FeedCard object
+// NewFeedCard is short for NewFeedCardWithDefault which instantiates a new FeedCard object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewFeedCard() *FeedCard {
+	return NewFeedCardWithDefault()
+}
+
+// NewFeedCardEmpty instantiates a new FeedCard object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewFeedCardEmpty() *FeedCard {
 	this := FeedCard{}
 	return &this
 }
@@ -51,35 +67,37 @@ func NewFeedCardList(ps ...*FeedCard) []FeedCard {
 	return objs
 }
 
-// GetLinks returns the Links field value if set, zero value otherwise.
+// Validate validates this FeedCard
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *FeedCard) Validate() error {
+	if o.Links == nil {
+		return errors.New("Links in FeedCard must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetLinks returns the Links field value
 func (o *FeedCard) GetLinks() []Link {
-	if o == nil || utils.IsNil(o.Links) {
+	if o == nil {
 		var ret []Link
 		return ret
 	}
+
 	return o.Links
 }
 
-// GetLinksOk returns a tuple with the Links field value if set, nil otherwise
+// GetLinksOk returns a tuple with the Links field value
 // and a boolean to check if the value has been set.
 func (o *FeedCard) GetLinksOk() ([]Link, bool) {
-	if o == nil || utils.IsNil(o.Links) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Links, true
 }
 
-// HasLinks returns a boolean if a field has been set.
-func (o *FeedCard) HasLinks() bool {
-	if o != nil && !utils.IsNil(o.Links) {
-		return true
-	}
-
-	return false
-}
-
-// SetLinks gets a reference to the given []Link and assigns it to the links field.
-// Links:
+// SetLinks sets field value
 func (o *FeedCard) SetLinks(v []Link) *FeedCard {
 	o.Links = v
 	return o
@@ -95,9 +113,7 @@ func (o FeedCard) MarshalJSON() ([]byte, error) {
 
 func (o FeedCard) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Links) {
-		toSerialize["links"] = o.Links
-	}
+	toSerialize["links"] = o.Links
 	return toSerialize, nil
 }
 
@@ -106,7 +122,7 @@ type NullableFeedCard struct {
 	isSet bool
 }
 
-func (v NullableFeedCard) Get() *FeedCard {
+func (v *NullableFeedCard) Get() *FeedCard {
 	return v.value
 }
 
@@ -115,7 +131,7 @@ func (v *NullableFeedCard) Set(val *FeedCard) {
 	v.isSet = true
 }
 
-func (v NullableFeedCard) IsSet() bool {
+func (v *NullableFeedCard) IsSet() bool {
 	return v.isSet
 }
 

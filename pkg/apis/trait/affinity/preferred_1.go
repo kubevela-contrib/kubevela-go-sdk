@@ -12,6 +12,7 @@ package affinity
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,24 +22,40 @@ var _ utils.MappedNullable = &Preferred1{}
 
 // Preferred1 struct for Preferred1
 type Preferred1 struct {
-	PodAffinityTerm *PodAffinityTerm `json:"podAffinityTerm,omitempty"`
+	PodAffinityTerm *PodAffinityTerm `json:"podAffinityTerm"`
 	// Specify weight associated with matching the corresponding podAffinityTerm
-	Weight *int32 `json:"weight,omitempty"`
+	Weight *int32 `json:"weight"`
 }
 
 // NewPreferred1With instantiates a new Preferred1 object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPreferred1With() *Preferred1 {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPreferred1With(podAffinityTerm PodAffinityTerm, weight int32) *Preferred1 {
+	this := Preferred1{}
+	this.PodAffinityTerm = &podAffinityTerm
+	this.Weight = &weight
+	return &this
+}
+
+// NewPreferred1WithDefault instantiates a new Preferred1 object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPreferred1WithDefault() *Preferred1 {
 	this := Preferred1{}
 	return &this
 }
 
-// NewPreferred1 instantiates a new Preferred1 object
+// NewPreferred1 is short for NewPreferred1WithDefault which instantiates a new Preferred1 object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPreferred1() *Preferred1 {
+	return NewPreferred1WithDefault()
+}
+
+// NewPreferred1Empty instantiates a new Preferred1 object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPreferred1Empty() *Preferred1 {
 	this := Preferred1{}
 	return &this
 }
@@ -53,69 +70,70 @@ func NewPreferred1List(ps ...*Preferred1) []Preferred1 {
 	return objs
 }
 
-// GetPodAffinityTerm returns the PodAffinityTerm field value if set, zero value otherwise.
+// Validate validates this Preferred1
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Preferred1) Validate() error {
+	if o.PodAffinityTerm == nil {
+		return errors.New("PodAffinityTerm in Preferred1 must be set")
+	}
+	if o.Weight == nil {
+		return errors.New("Weight in Preferred1 must be set")
+	}
+	// validate all nested properties
+	if o.PodAffinityTerm != nil {
+		if err := o.PodAffinityTerm.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetPodAffinityTerm returns the PodAffinityTerm field value
 func (o *Preferred1) GetPodAffinityTerm() PodAffinityTerm {
-	if o == nil || utils.IsNil(o.PodAffinityTerm) {
+	if o == nil {
 		var ret PodAffinityTerm
 		return ret
 	}
+
 	return *o.PodAffinityTerm
 }
 
-// GetPodAffinityTermOk returns a tuple with the PodAffinityTerm field value if set, nil otherwise
+// GetPodAffinityTermOk returns a tuple with the PodAffinityTerm field value
 // and a boolean to check if the value has been set.
 func (o *Preferred1) GetPodAffinityTermOk() (*PodAffinityTerm, bool) {
-	if o == nil || utils.IsNil(o.PodAffinityTerm) {
+	if o == nil {
 		return nil, false
 	}
 	return o.PodAffinityTerm, true
 }
 
-// HasPodAffinityTerm returns a boolean if a field has been set.
-func (o *Preferred1) HasPodAffinityTerm() bool {
-	if o != nil && !utils.IsNil(o.PodAffinityTerm) {
-		return true
-	}
-
-	return false
-}
-
-// SetPodAffinityTerm gets a reference to the given PodAffinityTerm and assigns it to the podAffinityTerm field.
-// PodAffinityTerm:
+// SetPodAffinityTerm sets field value
 func (o *Preferred1) SetPodAffinityTerm(v PodAffinityTerm) *Preferred1 {
 	o.PodAffinityTerm = &v
 	return o
 }
 
-// GetWeight returns the Weight field value if set, zero value otherwise.
+// GetWeight returns the Weight field value
 func (o *Preferred1) GetWeight() int32 {
-	if o == nil || utils.IsNil(o.Weight) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Weight
 }
 
-// GetWeightOk returns a tuple with the Weight field value if set, nil otherwise
+// GetWeightOk returns a tuple with the Weight field value
 // and a boolean to check if the value has been set.
 func (o *Preferred1) GetWeightOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Weight) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Weight, true
 }
 
-// HasWeight returns a boolean if a field has been set.
-func (o *Preferred1) HasWeight() bool {
-	if o != nil && !utils.IsNil(o.Weight) {
-		return true
-	}
-
-	return false
-}
-
-// SetWeight gets a reference to the given int32 and assigns it to the weight field.
-// Weight:  Specify weight associated with matching the corresponding podAffinityTerm
+// SetWeight sets field value
 func (o *Preferred1) SetWeight(v int32) *Preferred1 {
 	o.Weight = &v
 	return o
@@ -131,12 +149,8 @@ func (o Preferred1) MarshalJSON() ([]byte, error) {
 
 func (o Preferred1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.PodAffinityTerm) {
-		toSerialize["podAffinityTerm"] = o.PodAffinityTerm
-	}
-	if !utils.IsNil(o.Weight) {
-		toSerialize["weight"] = o.Weight
-	}
+	toSerialize["podAffinityTerm"] = o.PodAffinityTerm
+	toSerialize["weight"] = o.Weight
 	return toSerialize, nil
 }
 
@@ -145,7 +159,7 @@ type NullablePreferred1 struct {
 	isSet bool
 }
 
-func (v NullablePreferred1) Get() *Preferred1 {
+func (v *NullablePreferred1) Get() *Preferred1 {
 	return v.value
 }
 
@@ -154,7 +168,7 @@ func (v *NullablePreferred1) Set(val *Preferred1) {
 	v.isSet = true
 }
 
-func (v NullablePreferred1) IsSet() bool {
+func (v *NullablePreferred1) IsSet() bool {
 	return v.isSet
 }
 

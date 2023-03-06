@@ -12,6 +12,7 @@ package service_binding
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -27,22 +28,37 @@ var _ utils.MappedNullable = &ServiceBindingSpec{}
 // ServiceBindingSpec struct for ServiceBindingSpec
 type ServiceBindingSpec struct {
 	// The mapping of environment variables to secret
-	EnvMappings *map[string]KeySecret `json:"envMappings,omitempty"`
+	EnvMappings map[string]KeySecret `json:"envMappings"`
 }
 
 // NewServiceBindingSpecWith instantiates a new ServiceBindingSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewServiceBindingSpecWith() *ServiceBindingSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewServiceBindingSpecWith(envMappings map[string]KeySecret) *ServiceBindingSpec {
+	this := ServiceBindingSpec{}
+	this.EnvMappings = envMappings
+	return &this
+}
+
+// NewServiceBindingSpecWithDefault instantiates a new ServiceBindingSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewServiceBindingSpecWithDefault() *ServiceBindingSpec {
 	this := ServiceBindingSpec{}
 	return &this
 }
 
-// NewServiceBindingSpec instantiates a new ServiceBindingSpec object
+// NewServiceBindingSpec is short for NewServiceBindingSpecWithDefault which instantiates a new ServiceBindingSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewServiceBindingSpec() *ServiceBindingSpec {
+	return NewServiceBindingSpecWithDefault()
+}
+
+// NewServiceBindingSpecEmpty instantiates a new ServiceBindingSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewServiceBindingSpecEmpty() *ServiceBindingSpec {
 	this := ServiceBindingSpec{}
 	return &this
 }
@@ -57,37 +73,39 @@ func NewServiceBindingSpecList(ps ...*ServiceBindingSpec) []ServiceBindingSpec {
 	return objs
 }
 
-// GetEnvMappings returns the EnvMappings field value if set, zero value otherwise.
+// Validate validates this ServiceBindingSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ServiceBindingTrait) Validate() error {
+	if o.Properties.EnvMappings == nil {
+		return errors.New("EnvMappings in ServiceBindingSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetEnvMappings returns the EnvMappings field value
 func (o *ServiceBindingTrait) GetEnvMappings() map[string]KeySecret {
-	if o == nil || utils.IsNil(o.Properties.EnvMappings) {
+	if o == nil {
 		var ret map[string]KeySecret
 		return ret
 	}
-	return *o.Properties.EnvMappings
+
+	return o.Properties.EnvMappings
 }
 
-// GetEnvMappingsOk returns a tuple with the EnvMappings field value if set, nil otherwise
+// GetEnvMappingsOk returns a tuple with the EnvMappings field value
 // and a boolean to check if the value has been set.
-func (o *ServiceBindingTrait) GetEnvMappingsOk() (*map[string]KeySecret, bool) {
-	if o == nil || utils.IsNil(o.Properties.EnvMappings) {
+func (o *ServiceBindingTrait) GetEnvMappingsOk() (map[string]KeySecret, bool) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.EnvMappings, true
 }
 
-// HasEnvMappings returns a boolean if a field has been set.
-func (o *ServiceBindingTrait) HasEnvMappings() bool {
-	if o != nil && !utils.IsNil(o.Properties.EnvMappings) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnvMappings gets a reference to the given map[string]KeySecret and assigns it to the envMappings field.
-// EnvMappings:  The mapping of environment variables to secret
+// SetEnvMappings sets field value
 func (o *ServiceBindingTrait) SetEnvMappings(v map[string]KeySecret) *ServiceBindingTrait {
-	o.Properties.EnvMappings = &v
+	o.Properties.EnvMappings = v
 	return o
 }
 
@@ -101,9 +119,7 @@ func (o ServiceBindingSpec) MarshalJSON() ([]byte, error) {
 
 func (o ServiceBindingSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.EnvMappings) {
-		toSerialize["envMappings"] = o.EnvMappings
-	}
+	toSerialize["envMappings"] = o.EnvMappings
 	return toSerialize, nil
 }
 
@@ -112,7 +128,7 @@ type NullableServiceBindingSpec struct {
 	isSet bool
 }
 
-func (v NullableServiceBindingSpec) Get() *ServiceBindingSpec {
+func (v *NullableServiceBindingSpec) Get() *ServiceBindingSpec {
 	return v.value
 }
 
@@ -121,7 +137,7 @@ func (v *NullableServiceBindingSpec) Set(val *ServiceBindingSpec) {
 	v.isSet = true
 }
 
-func (v NullableServiceBindingSpec) IsSet() bool {
+func (v *NullableServiceBindingSpec) IsSet() bool {
 	return v.isSet
 }
 

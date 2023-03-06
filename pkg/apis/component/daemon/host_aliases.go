@@ -12,6 +12,7 @@ package daemon
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &HostAliases{}
 
 // HostAliases struct for HostAliases
 type HostAliases struct {
-	Hostnames []string `json:"hostnames,omitempty"`
-	Ip        *string  `json:"ip,omitempty"`
+	Hostnames []string `json:"hostnames"`
+	Ip        *string  `json:"ip"`
 }
 
 // NewHostAliasesWith instantiates a new HostAliases object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewHostAliasesWith() *HostAliases {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewHostAliasesWith(hostnames []string, ip string) *HostAliases {
+	this := HostAliases{}
+	this.Hostnames = hostnames
+	this.Ip = &ip
+	return &this
+}
+
+// NewHostAliasesWithDefault instantiates a new HostAliases object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewHostAliasesWithDefault() *HostAliases {
 	this := HostAliases{}
 	return &this
 }
 
-// NewHostAliases instantiates a new HostAliases object
+// NewHostAliases is short for NewHostAliasesWithDefault which instantiates a new HostAliases object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewHostAliases() *HostAliases {
+	return NewHostAliasesWithDefault()
+}
+
+// NewHostAliasesEmpty instantiates a new HostAliases object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewHostAliasesEmpty() *HostAliases {
 	this := HostAliases{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewHostAliasesList(ps ...*HostAliases) []HostAliases {
 	return objs
 }
 
-// GetHostnames returns the Hostnames field value if set, zero value otherwise.
+// Validate validates this HostAliases
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *HostAliases) Validate() error {
+	if o.Hostnames == nil {
+		return errors.New("Hostnames in HostAliases must be set")
+	}
+	if o.Ip == nil {
+		return errors.New("Ip in HostAliases must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetHostnames returns the Hostnames field value
 func (o *HostAliases) GetHostnames() []string {
-	if o == nil || utils.IsNil(o.Hostnames) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Hostnames
 }
 
-// GetHostnamesOk returns a tuple with the Hostnames field value if set, nil otherwise
+// GetHostnamesOk returns a tuple with the Hostnames field value
 // and a boolean to check if the value has been set.
 func (o *HostAliases) GetHostnamesOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Hostnames) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Hostnames, true
 }
 
-// HasHostnames returns a boolean if a field has been set.
-func (o *HostAliases) HasHostnames() bool {
-	if o != nil && !utils.IsNil(o.Hostnames) {
-		return true
-	}
-
-	return false
-}
-
-// SetHostnames gets a reference to the given []string and assigns it to the hostnames field.
-// Hostnames:
+// SetHostnames sets field value
 func (o *HostAliases) SetHostnames(v []string) *HostAliases {
 	o.Hostnames = v
 	return o
 }
 
-// GetIp returns the Ip field value if set, zero value otherwise.
+// GetIp returns the Ip field value
 func (o *HostAliases) GetIp() string {
-	if o == nil || utils.IsNil(o.Ip) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Ip
 }
 
-// GetIpOk returns a tuple with the Ip field value if set, nil otherwise
+// GetIpOk returns a tuple with the Ip field value
 // and a boolean to check if the value has been set.
 func (o *HostAliases) GetIpOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Ip) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Ip, true
 }
 
-// HasIp returns a boolean if a field has been set.
-func (o *HostAliases) HasIp() bool {
-	if o != nil && !utils.IsNil(o.Ip) {
-		return true
-	}
-
-	return false
-}
-
-// SetIp gets a reference to the given string and assigns it to the ip field.
-// Ip:
+// SetIp sets field value
 func (o *HostAliases) SetIp(v string) *HostAliases {
 	o.Ip = &v
 	return o
@@ -130,12 +143,8 @@ func (o HostAliases) MarshalJSON() ([]byte, error) {
 
 func (o HostAliases) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Hostnames) {
-		toSerialize["hostnames"] = o.Hostnames
-	}
-	if !utils.IsNil(o.Ip) {
-		toSerialize["ip"] = o.Ip
-	}
+	toSerialize["hostnames"] = o.Hostnames
+	toSerialize["ip"] = o.Ip
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableHostAliases struct {
 	isSet bool
 }
 
-func (v NullableHostAliases) Get() *HostAliases {
+func (v *NullableHostAliases) Get() *HostAliases {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableHostAliases) Set(val *HostAliases) {
 	v.isSet = true
 }
 
-func (v NullableHostAliases) IsSet() bool {
+func (v *NullableHostAliases) IsSet() bool {
 	return v.isSet
 }
 

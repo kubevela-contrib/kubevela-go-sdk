@@ -12,6 +12,7 @@ package sidecar
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &Volumes{}
 
 // Volumes struct for Volumes
 type Volumes struct {
-	Name *string `json:"name,omitempty"`
-	Path *string `json:"path,omitempty"`
+	Name *string `json:"name"`
+	Path *string `json:"path"`
 }
 
 // NewVolumesWith instantiates a new Volumes object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewVolumesWith() *Volumes {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewVolumesWith(name string, path string) *Volumes {
+	this := Volumes{}
+	this.Name = &name
+	this.Path = &path
+	return &this
+}
+
+// NewVolumesWithDefault instantiates a new Volumes object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewVolumesWithDefault() *Volumes {
 	this := Volumes{}
 	return &this
 }
 
-// NewVolumes instantiates a new Volumes object
+// NewVolumes is short for NewVolumesWithDefault which instantiates a new Volumes object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewVolumes() *Volumes {
+	return NewVolumesWithDefault()
+}
+
+// NewVolumesEmpty instantiates a new Volumes object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewVolumesEmpty() *Volumes {
 	this := Volumes{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewVolumesList(ps ...*Volumes) []Volumes {
 	return objs
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// Validate validates this Volumes
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Volumes) Validate() error {
+	if o.Name == nil {
+		return errors.New("Name in Volumes must be set")
+	}
+	if o.Path == nil {
+		return errors.New("Path in Volumes must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetName returns the Name field value
 func (o *Volumes) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *Volumes) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *Volumes) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
+// SetName sets field value
 func (o *Volumes) SetName(v string) *Volumes {
 	o.Name = &v
 	return o
 }
 
-// GetPath returns the Path field value if set, zero value otherwise.
+// GetPath returns the Path field value
 func (o *Volumes) GetPath() string {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Path
 }
 
-// GetPathOk returns a tuple with the Path field value if set, nil otherwise
+// GetPathOk returns a tuple with the Path field value
 // and a boolean to check if the value has been set.
 func (o *Volumes) GetPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Path, true
 }
 
-// HasPath returns a boolean if a field has been set.
-func (o *Volumes) HasPath() bool {
-	if o != nil && !utils.IsNil(o.Path) {
-		return true
-	}
-
-	return false
-}
-
-// SetPath gets a reference to the given string and assigns it to the path field.
-// Path:
+// SetPath sets field value
 func (o *Volumes) SetPath(v string) *Volumes {
 	o.Path = &v
 	return o
@@ -130,12 +143,8 @@ func (o Volumes) MarshalJSON() ([]byte, error) {
 
 func (o Volumes) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Path) {
-		toSerialize["path"] = o.Path
-	}
+	toSerialize["name"] = o.Name
+	toSerialize["path"] = o.Path
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableVolumes struct {
 	isSet bool
 }
 
-func (v NullableVolumes) Get() *Volumes {
+func (v *NullableVolumes) Get() *Volumes {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableVolumes) Set(val *Volumes) {
 	v.isSet = true
 }
 
-func (v NullableVolumes) IsSet() bool {
+func (v *NullableVolumes) IsSet() bool {
 	return v.isSet
 }
 

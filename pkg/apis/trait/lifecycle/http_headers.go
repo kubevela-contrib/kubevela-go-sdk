@@ -12,6 +12,7 @@ package lifecycle
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &HttpHeaders{}
 
 // HttpHeaders struct for HttpHeaders
 type HttpHeaders struct {
-	Name  *string `json:"name,omitempty"`
-	Value *string `json:"value,omitempty"`
+	Name  *string `json:"name"`
+	Value *string `json:"value"`
 }
 
 // NewHttpHeadersWith instantiates a new HttpHeaders object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewHttpHeadersWith() *HttpHeaders {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewHttpHeadersWith(name string, value string) *HttpHeaders {
+	this := HttpHeaders{}
+	this.Name = &name
+	this.Value = &value
+	return &this
+}
+
+// NewHttpHeadersWithDefault instantiates a new HttpHeaders object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewHttpHeadersWithDefault() *HttpHeaders {
 	this := HttpHeaders{}
 	return &this
 }
 
-// NewHttpHeaders instantiates a new HttpHeaders object
+// NewHttpHeaders is short for NewHttpHeadersWithDefault which instantiates a new HttpHeaders object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewHttpHeaders() *HttpHeaders {
+	return NewHttpHeadersWithDefault()
+}
+
+// NewHttpHeadersEmpty instantiates a new HttpHeaders object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewHttpHeadersEmpty() *HttpHeaders {
 	this := HttpHeaders{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewHttpHeadersList(ps ...*HttpHeaders) []HttpHeaders {
 	return objs
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// Validate validates this HttpHeaders
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *HttpHeaders) Validate() error {
+	if o.Name == nil {
+		return errors.New("Name in HttpHeaders must be set")
+	}
+	if o.Value == nil {
+		return errors.New("Value in HttpHeaders must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetName returns the Name field value
 func (o *HttpHeaders) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *HttpHeaders) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *HttpHeaders) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
+// SetName sets field value
 func (o *HttpHeaders) SetName(v string) *HttpHeaders {
 	o.Name = &v
 	return o
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
+// GetValue returns the Value field value
 func (o *HttpHeaders) GetValue() string {
-	if o == nil || utils.IsNil(o.Value) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Value
 }
 
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// GetValueOk returns a tuple with the Value field value
 // and a boolean to check if the value has been set.
 func (o *HttpHeaders) GetValueOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Value) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Value, true
 }
 
-// HasValue returns a boolean if a field has been set.
-func (o *HttpHeaders) HasValue() bool {
-	if o != nil && !utils.IsNil(o.Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetValue gets a reference to the given string and assigns it to the value field.
-// Value:
+// SetValue sets field value
 func (o *HttpHeaders) SetValue(v string) *HttpHeaders {
 	o.Value = &v
 	return o
@@ -130,12 +143,8 @@ func (o HttpHeaders) MarshalJSON() ([]byte, error) {
 
 func (o HttpHeaders) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Value) {
-		toSerialize["value"] = o.Value
-	}
+	toSerialize["name"] = o.Name
+	toSerialize["value"] = o.Value
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableHttpHeaders struct {
 	isSet bool
 }
 
-func (v NullableHttpHeaders) Get() *HttpHeaders {
+func (v *NullableHttpHeaders) Get() *HttpHeaders {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableHttpHeaders) Set(val *HttpHeaders) {
 	v.isSet = true
 }
 
-func (v NullableHttpHeaders) IsSet() bool {
+func (v *NullableHttpHeaders) IsSet() bool {
 	return v.isSet
 }
 

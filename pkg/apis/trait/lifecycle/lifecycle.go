@@ -31,18 +31,32 @@ type LifecycleSpec struct {
 }
 
 // NewLifecycleSpecWith instantiates a new LifecycleSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewLifecycleSpecWith() *LifecycleSpec {
 	this := LifecycleSpec{}
 	return &this
 }
 
-// NewLifecycleSpec instantiates a new LifecycleSpec object
+// NewLifecycleSpecWithDefault instantiates a new LifecycleSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewLifecycleSpecWithDefault() *LifecycleSpec {
+	this := LifecycleSpec{}
+	return &this
+}
+
+// NewLifecycleSpec is short for NewLifecycleSpecWithDefault which instantiates a new LifecycleSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewLifecycleSpec() *LifecycleSpec {
+	return NewLifecycleSpecWithDefault()
+}
+
+// NewLifecycleSpecEmpty instantiates a new LifecycleSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewLifecycleSpecEmpty() *LifecycleSpec {
 	this := LifecycleSpec{}
 	return &this
 }
@@ -55,6 +69,24 @@ func NewLifecycleSpecList(ps ...*LifecycleSpec) []LifecycleSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this LifecycleSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *LifecycleTrait) Validate() error {
+	// validate all nested properties
+	if o.Properties.PostStart != nil {
+		if err := o.Properties.PostStart.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.PreStop != nil {
+		if err := o.Properties.PreStop.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetPostStart returns the PostStart field value if set, zero value otherwise.
@@ -149,7 +181,7 @@ type NullableLifecycleSpec struct {
 	isSet bool
 }
 
-func (v NullableLifecycleSpec) Get() *LifecycleSpec {
+func (v *NullableLifecycleSpec) Get() *LifecycleSpec {
 	return v.value
 }
 
@@ -158,7 +190,7 @@ func (v *NullableLifecycleSpec) Set(val *LifecycleSpec) {
 	v.isSet = true
 }
 
-func (v NullableLifecycleSpec) IsSet() bool {
+func (v *NullableLifecycleSpec) IsSet() bool {
 	return v.isSet
 }
 

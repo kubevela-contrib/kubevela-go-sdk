@@ -12,6 +12,7 @@ package cron_task
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,22 +23,37 @@ var _ utils.MappedNullable = &Exec{}
 // Exec Instructions for assessing container health by executing a command. Either this attribute or the httpGet attribute or the tcpSocket attribute MUST be specified. This attribute is mutually exclusive with both the httpGet attribute and the tcpSocket attribute.
 type Exec struct {
 	// A command to be executed inside the container to assess its health. Each space delimited token of the command is a separate array element. Commands exiting 0 are considered to be successful probes, whilst all other exit codes are considered failures.
-	Command []string `json:"command,omitempty"`
+	Command []string `json:"command"`
 }
 
 // NewExecWith instantiates a new Exec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewExecWith() *Exec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewExecWith(command []string) *Exec {
+	this := Exec{}
+	this.Command = command
+	return &this
+}
+
+// NewExecWithDefault instantiates a new Exec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewExecWithDefault() *Exec {
 	this := Exec{}
 	return &this
 }
 
-// NewExec instantiates a new Exec object
+// NewExec is short for NewExecWithDefault which instantiates a new Exec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewExec() *Exec {
+	return NewExecWithDefault()
+}
+
+// NewExecEmpty instantiates a new Exec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewExecEmpty() *Exec {
 	this := Exec{}
 	return &this
 }
@@ -52,35 +68,37 @@ func NewExecList(ps ...*Exec) []Exec {
 	return objs
 }
 
-// GetCommand returns the Command field value if set, zero value otherwise.
+// Validate validates this Exec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Exec) Validate() error {
+	if o.Command == nil {
+		return errors.New("Command in Exec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetCommand returns the Command field value
 func (o *Exec) GetCommand() []string {
-	if o == nil || utils.IsNil(o.Command) {
+	if o == nil {
 		var ret []string
 		return ret
 	}
+
 	return o.Command
 }
 
-// GetCommandOk returns a tuple with the Command field value if set, nil otherwise
+// GetCommandOk returns a tuple with the Command field value
 // and a boolean to check if the value has been set.
 func (o *Exec) GetCommandOk() ([]string, bool) {
-	if o == nil || utils.IsNil(o.Command) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Command, true
 }
 
-// HasCommand returns a boolean if a field has been set.
-func (o *Exec) HasCommand() bool {
-	if o != nil && !utils.IsNil(o.Command) {
-		return true
-	}
-
-	return false
-}
-
-// SetCommand gets a reference to the given []string and assigns it to the command field.
-// Command:  A command to be executed inside the container to assess its health. Each space delimited token of the command is a separate array element. Commands exiting 0 are considered to be successful probes, whilst all other exit codes are considered failures.
+// SetCommand sets field value
 func (o *Exec) SetCommand(v []string) *Exec {
 	o.Command = v
 	return o
@@ -96,9 +114,7 @@ func (o Exec) MarshalJSON() ([]byte, error) {
 
 func (o Exec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Command) {
-		toSerialize["command"] = o.Command
-	}
+	toSerialize["command"] = o.Command
 	return toSerialize, nil
 }
 
@@ -107,7 +123,7 @@ type NullableExec struct {
 	isSet bool
 }
 
-func (v NullableExec) Get() *Exec {
+func (v *NullableExec) Get() *Exec {
 	return v.value
 }
 
@@ -116,7 +132,7 @@ func (v *NullableExec) Set(val *Exec) {
 	v.isSet = true
 }
 
-func (v NullableExec) IsSet() bool {
+func (v *NullableExec) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package hpa
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,16 +23,26 @@ var _ utils.MappedNullable = &Cpu{}
 // Cpu struct for Cpu
 type Cpu struct {
 	// Specify resource metrics in terms of percentage(\"Utilization\") or direct value(\"AverageValue\")
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type"`
 	// Specify the value of CPU utilization or averageValue
-	Value *int32 `json:"value,omitempty"`
+	Value *int32 `json:"value"`
 }
 
 // NewCpuWith instantiates a new Cpu object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewCpuWith() *Cpu {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewCpuWith(type_ string, value int32) *Cpu {
+	this := Cpu{}
+	this.Type = &type_
+	this.Value = &value
+	return &this
+}
+
+// NewCpuWithDefault instantiates a new Cpu object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewCpuWithDefault() *Cpu {
 	this := Cpu{}
 	var type_ string = "Utilization"
 	this.Type = &type_
@@ -40,15 +51,17 @@ func NewCpuWith() *Cpu {
 	return &this
 }
 
-// NewCpu instantiates a new Cpu object
+// NewCpu is short for NewCpuWithDefault which instantiates a new Cpu object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewCpu() *Cpu {
+	return NewCpuWithDefault()
+}
+
+// NewCpuEmpty instantiates a new Cpu object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewCpuEmpty() *Cpu {
 	this := Cpu{}
-	var type_ string = "Utilization"
-	this.Type = &type_
-	var value int32 = 50
-	this.Value = &value
 	return &this
 }
 
@@ -62,69 +75,65 @@ func NewCpuList(ps ...*Cpu) []Cpu {
 	return objs
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// Validate validates this Cpu
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Cpu) Validate() error {
+	if o.Type == nil {
+		return errors.New("Type in Cpu must be set")
+	}
+	if o.Value == nil {
+		return errors.New("Value in Cpu must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetType returns the Type field value
 func (o *Cpu) GetType() string {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *Cpu) GetTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *Cpu) HasType() bool {
-	if o != nil && !utils.IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the type_ field.
-// Type:  Specify resource metrics in terms of percentage(\"Utilization\") or direct value(\"AverageValue\")
+// SetType sets field value
 func (o *Cpu) SetType(v string) *Cpu {
 	o.Type = &v
 	return o
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
+// GetValue returns the Value field value
 func (o *Cpu) GetValue() int32 {
-	if o == nil || utils.IsNil(o.Value) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Value
 }
 
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// GetValueOk returns a tuple with the Value field value
 // and a boolean to check if the value has been set.
 func (o *Cpu) GetValueOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Value) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Value, true
 }
 
-// HasValue returns a boolean if a field has been set.
-func (o *Cpu) HasValue() bool {
-	if o != nil && !utils.IsNil(o.Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetValue gets a reference to the given int32 and assigns it to the value field.
-// Value:  Specify the value of CPU utilization or averageValue
+// SetValue sets field value
 func (o *Cpu) SetValue(v int32) *Cpu {
 	o.Value = &v
 	return o
@@ -140,12 +149,8 @@ func (o Cpu) MarshalJSON() ([]byte, error) {
 
 func (o Cpu) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
-	if !utils.IsNil(o.Value) {
-		toSerialize["value"] = o.Value
-	}
+	toSerialize["type"] = o.Type
+	toSerialize["value"] = o.Value
 	return toSerialize, nil
 }
 
@@ -154,7 +159,7 @@ type NullableCpu struct {
 	isSet bool
 }
 
-func (v NullableCpu) Get() *Cpu {
+func (v *NullableCpu) Get() *Cpu {
 	return v.value
 }
 
@@ -163,7 +168,7 @@ func (v *NullableCpu) Set(val *Cpu) {
 	v.isSet = true
 }
 
-func (v NullableCpu) IsSet() bool {
+func (v *NullableCpu) IsSet() bool {
 	return v.isSet
 }
 

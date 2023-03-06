@@ -12,7 +12,6 @@ package nocalhost
 
 import (
 	"encoding/json"
-
 	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
@@ -28,6 +27,15 @@ func StringAsImage(v *string) Image {
 	return Image{
 		String: v,
 	}
+}
+
+// Validate validates this Image
+func (o *Image) Validate() error {
+	if o.String != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in Image")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -86,7 +94,7 @@ type NullableImage struct {
 	isSet bool
 }
 
-func (v NullableImage) Get() *Image {
+func (v *NullableImage) Get() *Image {
 	return v.value
 }
 
@@ -95,7 +103,7 @@ func (v *NullableImage) Set(val *Image) {
 	v.isSet = true
 }
 
-func (v NullableImage) IsSet() bool {
+func (v *NullableImage) IsSet() bool {
 	return v.isSet
 }
 

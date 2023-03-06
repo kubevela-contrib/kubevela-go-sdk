@@ -12,6 +12,7 @@ package k8s_update_strategy
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -23,27 +24,40 @@ var _ utils.MappedNullable = &Strategy{}
 type Strategy struct {
 	RollingStrategy *RollingStrategy `json:"rollingStrategy,omitempty"`
 	// Specify the strategy type
-	Type *string `json:"type,omitempty"`
+	Type *string `json:"type"`
 }
 
 // NewStrategyWith instantiates a new Strategy object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewStrategyWith() *Strategy {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewStrategyWith(type_ string) *Strategy {
+	this := Strategy{}
+	this.Type = &type_
+	return &this
+}
+
+// NewStrategyWithDefault instantiates a new Strategy object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewStrategyWithDefault() *Strategy {
 	this := Strategy{}
 	var type_ string = "RollingUpdate"
 	this.Type = &type_
 	return &this
 }
 
-// NewStrategy instantiates a new Strategy object
+// NewStrategy is short for NewStrategyWithDefault which instantiates a new Strategy object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewStrategy() *Strategy {
+	return NewStrategyWithDefault()
+}
+
+// NewStrategyEmpty instantiates a new Strategy object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewStrategyEmpty() *Strategy {
 	this := Strategy{}
-	var type_ string = "RollingUpdate"
-	this.Type = &type_
 	return &this
 }
 
@@ -55,6 +69,22 @@ func NewStrategyList(ps ...*Strategy) []Strategy {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Strategy
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Strategy) Validate() error {
+	if o.Type == nil {
+		return errors.New("Type in Strategy must be set")
+	}
+	// validate all nested properties
+	if o.RollingStrategy != nil {
+		if err := o.RollingStrategy.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetRollingStrategy returns the RollingStrategy field value if set, zero value otherwise.
@@ -91,35 +121,26 @@ func (o *Strategy) SetRollingStrategy(v RollingStrategy) *Strategy {
 	return o
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *Strategy) GetType() string {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *Strategy) GetTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *Strategy) HasType() bool {
-	if o != nil && !utils.IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the type_ field.
-// Type:  Specify the strategy type
+// SetType sets field value
 func (o *Strategy) SetType(v string) *Strategy {
 	o.Type = &v
 	return o
@@ -138,9 +159,7 @@ func (o Strategy) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.RollingStrategy) {
 		toSerialize["rollingStrategy"] = o.RollingStrategy
 	}
-	if !utils.IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["type"] = o.Type
 	return toSerialize, nil
 }
 
@@ -149,7 +168,7 @@ type NullableStrategy struct {
 	isSet bool
 }
 
-func (v NullableStrategy) Get() *Strategy {
+func (v *NullableStrategy) Get() *Strategy {
 	return v.value
 }
 
@@ -158,7 +177,7 @@ func (v *NullableStrategy) Set(val *Strategy) {
 	v.isSet = true
 }
 
-func (v NullableStrategy) IsSet() bool {
+func (v *NullableStrategy) IsSet() bool {
 	return v.isSet
 }
 

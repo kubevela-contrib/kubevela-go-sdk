@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
+	cron_task "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/component/cron-task"
 	. "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/component/webservice"
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/client"
 )
@@ -15,11 +16,12 @@ func main() {
 		SetComponents(
 			Webservice("nginx").
 				SetEnv(NewEnvList(
-					NewEnv().SetName("test").SetValue("test"),
+					NewEnvWithDefault().SetName("test").SetValue("test"),
 				)).
 				SetImage("nginx:latest").
 				SetCpu("500m"),
 			//SetImagePullSecrets([]string{"test"}),
+			cron_task.CronTask("test"),
 		)
 
 	clt, err := client.NewDefault()

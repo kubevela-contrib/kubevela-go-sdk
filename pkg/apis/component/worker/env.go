@@ -12,6 +12,7 @@ package worker
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,25 +23,40 @@ var _ utils.MappedNullable = &Env{}
 // Env struct for Env
 type Env struct {
 	// Environment variable name
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 	// The value of the environment variable
 	Value     *string    `json:"value,omitempty"`
 	ValueFrom *ValueFrom `json:"valueFrom,omitempty"`
 }
 
 // NewEnvWith instantiates a new Env object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewEnvWith() *Env {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewEnvWith(name string) *Env {
+	this := Env{}
+	this.Name = &name
+	return &this
+}
+
+// NewEnvWithDefault instantiates a new Env object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewEnvWithDefault() *Env {
 	this := Env{}
 	return &this
 }
 
-// NewEnv instantiates a new Env object
+// NewEnv is short for NewEnvWithDefault which instantiates a new Env object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewEnv() *Env {
+	return NewEnvWithDefault()
+}
+
+// NewEnvEmpty instantiates a new Env object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewEnvEmpty() *Env {
 	this := Env{}
 	return &this
 }
@@ -55,35 +71,42 @@ func NewEnvList(ps ...*Env) []Env {
 	return objs
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// Validate validates this Env
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Env) Validate() error {
+	if o.Name == nil {
+		return errors.New("Name in Env must be set")
+	}
+	// validate all nested properties
+	if o.ValueFrom != nil {
+		if err := o.ValueFrom.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetName returns the Name field value
 func (o *Env) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *Env) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *Env) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Environment variable name
+// SetName sets field value
 func (o *Env) SetName(v string) *Env {
 	o.Name = &v
 	return o
@@ -167,9 +190,7 @@ func (o Env) MarshalJSON() ([]byte, error) {
 
 func (o Env) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
+	toSerialize["name"] = o.Name
 	if !utils.IsNil(o.Value) {
 		toSerialize["value"] = o.Value
 	}
@@ -184,7 +205,7 @@ type NullableEnv struct {
 	isSet bool
 }
 
-func (v NullableEnv) Get() *Env {
+func (v *NullableEnv) Get() *Env {
 	return v.value
 }
 
@@ -193,7 +214,7 @@ func (v *NullableEnv) Set(val *Env) {
 	v.isSet = true
 }
 
-func (v NullableEnv) IsSet() bool {
+func (v *NullableEnv) IsSet() bool {
 	return v.isSet
 }
 

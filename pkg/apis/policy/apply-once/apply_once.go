@@ -12,6 +12,7 @@ package apply_once
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -27,29 +28,42 @@ var _ utils.MappedNullable = &ApplyOnceSpec{}
 // ApplyOnceSpec struct for ApplyOnceSpec
 type ApplyOnceSpec struct {
 	// Whether to enable apply-once for the whole application
-	Enable *bool `json:"enable,omitempty"`
+	Enable *bool `json:"enable"`
 	// Specify the rules for configuring apply-once policy in resource level
 	Rules []ApplyOncePolicyRule `json:"rules,omitempty"`
 }
 
 // NewApplyOnceSpecWith instantiates a new ApplyOnceSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewApplyOnceSpecWith() *ApplyOnceSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewApplyOnceSpecWith(enable bool) *ApplyOnceSpec {
+	this := ApplyOnceSpec{}
+	this.Enable = &enable
+	return &this
+}
+
+// NewApplyOnceSpecWithDefault instantiates a new ApplyOnceSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewApplyOnceSpecWithDefault() *ApplyOnceSpec {
 	this := ApplyOnceSpec{}
 	var enable bool = false
 	this.Enable = &enable
 	return &this
 }
 
-// NewApplyOnceSpec instantiates a new ApplyOnceSpec object
+// NewApplyOnceSpec is short for NewApplyOnceSpecWithDefault which instantiates a new ApplyOnceSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewApplyOnceSpec() *ApplyOnceSpec {
+	return NewApplyOnceSpecWithDefault()
+}
+
+// NewApplyOnceSpecEmpty instantiates a new ApplyOnceSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewApplyOnceSpecEmpty() *ApplyOnceSpec {
 	this := ApplyOnceSpec{}
-	var enable bool = false
-	this.Enable = &enable
 	return &this
 }
 
@@ -63,35 +77,37 @@ func NewApplyOnceSpecList(ps ...*ApplyOnceSpec) []ApplyOnceSpec {
 	return objs
 }
 
-// GetEnable returns the Enable field value if set, zero value otherwise.
+// Validate validates this ApplyOnceSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ApplyOncePolicy) Validate() error {
+	if o.Properties.Enable == nil {
+		return errors.New("Enable in ApplyOnceSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetEnable returns the Enable field value
 func (o *ApplyOncePolicy) GetEnable() bool {
-	if o == nil || utils.IsNil(o.Properties.Enable) {
+	if o == nil {
 		var ret bool
 		return ret
 	}
+
 	return *o.Properties.Enable
 }
 
-// GetEnableOk returns a tuple with the Enable field value if set, nil otherwise
+// GetEnableOk returns a tuple with the Enable field value
 // and a boolean to check if the value has been set.
 func (o *ApplyOncePolicy) GetEnableOk() (*bool, bool) {
-	if o == nil || utils.IsNil(o.Properties.Enable) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Enable, true
 }
 
-// HasEnable returns a boolean if a field has been set.
-func (o *ApplyOncePolicy) HasEnable() bool {
-	if o != nil && !utils.IsNil(o.Properties.Enable) {
-		return true
-	}
-
-	return false
-}
-
-// SetEnable gets a reference to the given bool and assigns it to the enable field.
-// Enable:  Whether to enable apply-once for the whole application
+// SetEnable sets field value
 func (o *ApplyOncePolicy) SetEnable(v bool) *ApplyOncePolicy {
 	o.Properties.Enable = &v
 	return o
@@ -141,9 +157,7 @@ func (o ApplyOnceSpec) MarshalJSON() ([]byte, error) {
 
 func (o ApplyOnceSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Enable) {
-		toSerialize["enable"] = o.Enable
-	}
+	toSerialize["enable"] = o.Enable
 	if !utils.IsNil(o.Rules) {
 		toSerialize["rules"] = o.Rules
 	}
@@ -155,7 +169,7 @@ type NullableApplyOnceSpec struct {
 	isSet bool
 }
 
-func (v NullableApplyOnceSpec) Get() *ApplyOnceSpec {
+func (v *NullableApplyOnceSpec) Get() *ApplyOnceSpec {
 	return v.value
 }
 
@@ -164,7 +178,7 @@ func (v *NullableApplyOnceSpec) Set(val *ApplyOnceSpec) {
 	v.isSet = true
 }
 
-func (v NullableApplyOnceSpec) IsSet() bool {
+func (v *NullableApplyOnceSpec) IsSet() bool {
 	return v.isSet
 }
 

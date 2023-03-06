@@ -12,6 +12,7 @@ package garbage_collect
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,29 +23,43 @@ var _ utils.MappedNullable = &GarbageCollectPolicyRule{}
 // GarbageCollectPolicyRule struct for GarbageCollectPolicyRule
 type GarbageCollectPolicyRule struct {
 	// Specify how to select the targets of the rule
-	Selector []ResourcePolicyRuleSelector `json:"selector,omitempty"`
+	Selector []ResourcePolicyRuleSelector `json:"selector"`
 	// Specify the strategy for target resource to recycle
-	Strategy *string `json:"strategy,omitempty"`
+	Strategy *string `json:"strategy"`
 }
 
 // NewGarbageCollectPolicyRuleWith instantiates a new GarbageCollectPolicyRule object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewGarbageCollectPolicyRuleWith() *GarbageCollectPolicyRule {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewGarbageCollectPolicyRuleWith(selector []ResourcePolicyRuleSelector, strategy string) *GarbageCollectPolicyRule {
+	this := GarbageCollectPolicyRule{}
+	this.Selector = selector
+	this.Strategy = &strategy
+	return &this
+}
+
+// NewGarbageCollectPolicyRuleWithDefault instantiates a new GarbageCollectPolicyRule object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewGarbageCollectPolicyRuleWithDefault() *GarbageCollectPolicyRule {
 	this := GarbageCollectPolicyRule{}
 	var strategy string = "onAppUpdate"
 	this.Strategy = &strategy
 	return &this
 }
 
-// NewGarbageCollectPolicyRule instantiates a new GarbageCollectPolicyRule object
+// NewGarbageCollectPolicyRule is short for NewGarbageCollectPolicyRuleWithDefault which instantiates a new GarbageCollectPolicyRule object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewGarbageCollectPolicyRule() *GarbageCollectPolicyRule {
+	return NewGarbageCollectPolicyRuleWithDefault()
+}
+
+// NewGarbageCollectPolicyRuleEmpty instantiates a new GarbageCollectPolicyRule object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewGarbageCollectPolicyRuleEmpty() *GarbageCollectPolicyRule {
 	this := GarbageCollectPolicyRule{}
-	var strategy string = "onAppUpdate"
-	this.Strategy = &strategy
 	return &this
 }
 
@@ -58,69 +73,65 @@ func NewGarbageCollectPolicyRuleList(ps ...*GarbageCollectPolicyRule) []GarbageC
 	return objs
 }
 
-// GetSelector returns the Selector field value if set, zero value otherwise.
+// Validate validates this GarbageCollectPolicyRule
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *GarbageCollectPolicyRule) Validate() error {
+	if o.Selector == nil {
+		return errors.New("Selector in GarbageCollectPolicyRule must be set")
+	}
+	if o.Strategy == nil {
+		return errors.New("Strategy in GarbageCollectPolicyRule must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetSelector returns the Selector field value
 func (o *GarbageCollectPolicyRule) GetSelector() []ResourcePolicyRuleSelector {
-	if o == nil || utils.IsNil(o.Selector) {
+	if o == nil {
 		var ret []ResourcePolicyRuleSelector
 		return ret
 	}
+
 	return o.Selector
 }
 
-// GetSelectorOk returns a tuple with the Selector field value if set, nil otherwise
+// GetSelectorOk returns a tuple with the Selector field value
 // and a boolean to check if the value has been set.
 func (o *GarbageCollectPolicyRule) GetSelectorOk() ([]ResourcePolicyRuleSelector, bool) {
-	if o == nil || utils.IsNil(o.Selector) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Selector, true
 }
 
-// HasSelector returns a boolean if a field has been set.
-func (o *GarbageCollectPolicyRule) HasSelector() bool {
-	if o != nil && !utils.IsNil(o.Selector) {
-		return true
-	}
-
-	return false
-}
-
-// SetSelector gets a reference to the given []ResourcePolicyRuleSelector and assigns it to the selector field.
-// Selector:  Specify how to select the targets of the rule
+// SetSelector sets field value
 func (o *GarbageCollectPolicyRule) SetSelector(v []ResourcePolicyRuleSelector) *GarbageCollectPolicyRule {
 	o.Selector = v
 	return o
 }
 
-// GetStrategy returns the Strategy field value if set, zero value otherwise.
+// GetStrategy returns the Strategy field value
 func (o *GarbageCollectPolicyRule) GetStrategy() string {
-	if o == nil || utils.IsNil(o.Strategy) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Strategy
 }
 
-// GetStrategyOk returns a tuple with the Strategy field value if set, nil otherwise
+// GetStrategyOk returns a tuple with the Strategy field value
 // and a boolean to check if the value has been set.
 func (o *GarbageCollectPolicyRule) GetStrategyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Strategy) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Strategy, true
 }
 
-// HasStrategy returns a boolean if a field has been set.
-func (o *GarbageCollectPolicyRule) HasStrategy() bool {
-	if o != nil && !utils.IsNil(o.Strategy) {
-		return true
-	}
-
-	return false
-}
-
-// SetStrategy gets a reference to the given string and assigns it to the strategy field.
-// Strategy:  Specify the strategy for target resource to recycle
+// SetStrategy sets field value
 func (o *GarbageCollectPolicyRule) SetStrategy(v string) *GarbageCollectPolicyRule {
 	o.Strategy = &v
 	return o
@@ -136,12 +147,8 @@ func (o GarbageCollectPolicyRule) MarshalJSON() ([]byte, error) {
 
 func (o GarbageCollectPolicyRule) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Selector) {
-		toSerialize["selector"] = o.Selector
-	}
-	if !utils.IsNil(o.Strategy) {
-		toSerialize["strategy"] = o.Strategy
-	}
+	toSerialize["selector"] = o.Selector
+	toSerialize["strategy"] = o.Strategy
 	return toSerialize, nil
 }
 
@@ -150,7 +157,7 @@ type NullableGarbageCollectPolicyRule struct {
 	isSet bool
 }
 
-func (v NullableGarbageCollectPolicyRule) Get() *GarbageCollectPolicyRule {
+func (v *NullableGarbageCollectPolicyRule) Get() *GarbageCollectPolicyRule {
 	return v.value
 }
 
@@ -159,7 +166,7 @@ func (v *NullableGarbageCollectPolicyRule) Set(val *GarbageCollectPolicyRule) {
 	v.isSet = true
 }
 
-func (v NullableGarbageCollectPolicyRule) IsSet() bool {
+func (v *NullableGarbageCollectPolicyRule) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,7 +12,6 @@ package webhook
 
 import (
 	"encoding/json"
-
 	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
@@ -36,6 +35,19 @@ func UrlOneOf1AsUrl(v *UrlOneOf1) Url {
 	return Url{
 		UrlOneOf1: v,
 	}
+}
+
+// Validate validates this Url
+func (o *Url) Validate() error {
+	if o.UrlOneOf != nil {
+		return nil
+	}
+
+	if o.UrlOneOf1 != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in Url")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -116,7 +128,7 @@ type NullableUrl struct {
 	isSet bool
 }
 
-func (v NullableUrl) Get() *Url {
+func (v *NullableUrl) Get() *Url {
 	return v.value
 }
 
@@ -125,7 +137,7 @@ func (v *NullableUrl) Set(val *Url) {
 	v.isSet = true
 }
 
-func (v NullableUrl) IsSet() bool {
+func (v *NullableUrl) IsSet() bool {
 	return v.isSet
 }
 

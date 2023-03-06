@@ -12,6 +12,8 @@ package k8s_objects
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -26,22 +28,37 @@ var _ utils.MappedNullable = &K8sObjectsSpec{}
 
 // K8sObjectsSpec struct for K8sObjectsSpec
 type K8sObjectsSpec struct {
-	Objects []map[string]interface{} `json:"objects,omitempty"`
+	Objects []map[string]interface{} `json:"objects"`
 }
 
 // NewK8sObjectsSpecWith instantiates a new K8sObjectsSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewK8sObjectsSpecWith() *K8sObjectsSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewK8sObjectsSpecWith(objects []map[string]interface{}) *K8sObjectsSpec {
+	this := K8sObjectsSpec{}
+	this.Objects = objects
+	return &this
+}
+
+// NewK8sObjectsSpecWithDefault instantiates a new K8sObjectsSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewK8sObjectsSpecWithDefault() *K8sObjectsSpec {
 	this := K8sObjectsSpec{}
 	return &this
 }
 
-// NewK8sObjectsSpec instantiates a new K8sObjectsSpec object
+// NewK8sObjectsSpec is short for NewK8sObjectsSpecWithDefault which instantiates a new K8sObjectsSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewK8sObjectsSpec() *K8sObjectsSpec {
+	return NewK8sObjectsSpecWithDefault()
+}
+
+// NewK8sObjectsSpecEmpty instantiates a new K8sObjectsSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewK8sObjectsSpecEmpty() *K8sObjectsSpec {
 	this := K8sObjectsSpec{}
 	return &this
 }
@@ -56,35 +73,43 @@ func NewK8sObjectsSpecList(ps ...*K8sObjectsSpec) []K8sObjectsSpec {
 	return objs
 }
 
-// GetObjects returns the Objects field value if set, zero value otherwise.
+// Validate validates this K8sObjectsSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *K8sObjectsComponent) Validate() error {
+	if o.Properties.Objects == nil {
+		return errors.New("Objects in K8sObjectsSpec must be set")
+	}
+	// validate all nested properties
+
+	for i, v := range o.Base.Traits {
+		if err := v.Validate(); err != nil {
+			return fmt.Errorf("traits[%d] %s in %s component is invalid: %w", i, v.DefType(), K8sObjectsType, err)
+		}
+	}
+	return nil
+}
+
+// GetObjects returns the Objects field value
 func (o *K8sObjectsComponent) GetObjects() []map[string]interface{} {
-	if o == nil || utils.IsNil(o.Properties.Objects) {
+	if o == nil {
 		var ret []map[string]interface{}
 		return ret
 	}
+
 	return o.Properties.Objects
 }
 
-// GetObjectsOk returns a tuple with the Objects field value if set, nil otherwise
+// GetObjectsOk returns a tuple with the Objects field value
 // and a boolean to check if the value has been set.
 func (o *K8sObjectsComponent) GetObjectsOk() ([]map[string]interface{}, bool) {
-	if o == nil || utils.IsNil(o.Properties.Objects) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Objects, true
 }
 
-// HasObjects returns a boolean if a field has been set.
-func (o *K8sObjectsComponent) HasObjects() bool {
-	if o != nil && !utils.IsNil(o.Properties.Objects) {
-		return true
-	}
-
-	return false
-}
-
-// SetObjects gets a reference to the given []map[string]interface{} and assigns it to the objects field.
-// Objects:
+// SetObjects sets field value
 func (o *K8sObjectsComponent) SetObjects(v []map[string]interface{}) *K8sObjectsComponent {
 	o.Properties.Objects = v
 	return o
@@ -100,9 +125,7 @@ func (o K8sObjectsSpec) MarshalJSON() ([]byte, error) {
 
 func (o K8sObjectsSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Objects) {
-		toSerialize["objects"] = o.Objects
-	}
+	toSerialize["objects"] = o.Objects
 	return toSerialize, nil
 }
 
@@ -111,7 +134,7 @@ type NullableK8sObjectsSpec struct {
 	isSet bool
 }
 
-func (v NullableK8sObjectsSpec) Get() *K8sObjectsSpec {
+func (v *NullableK8sObjectsSpec) Get() *K8sObjectsSpec {
 	return v.value
 }
 
@@ -120,7 +143,7 @@ func (v *NullableK8sObjectsSpec) Set(val *K8sObjectsSpec) {
 	v.isSet = true
 }
 
-func (v NullableK8sObjectsSpec) IsSet() bool {
+func (v *NullableK8sObjectsSpec) IsSet() bool {
 	return v.isSet
 }
 
@@ -231,6 +254,10 @@ func (k *K8sObjectsComponent) GetTrait(typ string) apis.Trait {
 		}
 	}
 	return nil
+}
+
+func (k *K8sObjectsComponent) GetAllTraits() []apis.Trait {
+	return k.Base.Traits
 }
 
 func (k *K8sObjectsComponent) ComponentName() string {

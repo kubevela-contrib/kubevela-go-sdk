@@ -26,18 +26,32 @@ type ValueFrom struct {
 }
 
 // NewValueFromWith instantiates a new ValueFrom object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewValueFromWith() *ValueFrom {
 	this := ValueFrom{}
 	return &this
 }
 
-// NewValueFrom instantiates a new ValueFrom object
+// NewValueFromWithDefault instantiates a new ValueFrom object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewValueFromWithDefault() *ValueFrom {
+	this := ValueFrom{}
+	return &this
+}
+
+// NewValueFrom is short for NewValueFromWithDefault which instantiates a new ValueFrom object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewValueFrom() *ValueFrom {
+	return NewValueFromWithDefault()
+}
+
+// NewValueFromEmpty instantiates a new ValueFrom object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewValueFromEmpty() *ValueFrom {
 	this := ValueFrom{}
 	return &this
 }
@@ -50,6 +64,24 @@ func NewValueFromList(ps ...*ValueFrom) []ValueFrom {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this ValueFrom
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ValueFrom) Validate() error {
+	// validate all nested properties
+	if o.ConfigMapKeyRef != nil {
+		if err := o.ConfigMapKeyRef.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.SecretKeyRef != nil {
+		if err := o.SecretKeyRef.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetConfigMapKeyRef returns the ConfigMapKeyRef field value if set, zero value otherwise.
@@ -144,7 +176,7 @@ type NullableValueFrom struct {
 	isSet bool
 }
 
-func (v NullableValueFrom) Get() *ValueFrom {
+func (v *NullableValueFrom) Get() *ValueFrom {
 	return v.value
 }
 
@@ -153,7 +185,7 @@ func (v *NullableValueFrom) Set(val *ValueFrom) {
 	v.isSet = true
 }
 
-func (v NullableValueFrom) IsSet() bool {
+func (v *NullableValueFrom) IsSet() bool {
 	return v.isSet
 }
 

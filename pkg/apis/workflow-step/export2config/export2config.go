@@ -12,6 +12,7 @@ package export2config
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -28,33 +29,48 @@ var _ utils.MappedNullable = &Export2configSpec{}
 // Export2configSpec struct for Export2configSpec
 type Export2configSpec struct {
 	// Specify the cluster of the config map
-	Cluster *string `json:"cluster,omitempty"`
+	Cluster *string `json:"cluster"`
 	// Specify the name of the config map
-	ConfigName *string `json:"configName,omitempty"`
+	ConfigName *string `json:"configName"`
 	// Specify the data of config map
-	Data map[string]interface{} `json:"data,omitempty"`
+	Data map[string]interface{} `json:"data"`
 	// Specify the namespace of the config map
 	Namespace *string `json:"namespace,omitempty"`
 }
 
 // NewExport2configSpecWith instantiates a new Export2configSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewExport2configSpecWith() *Export2configSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewExport2configSpecWith(cluster string, configName string, data map[string]interface{}) *Export2configSpec {
+	this := Export2configSpec{}
+	this.Cluster = &cluster
+	this.ConfigName = &configName
+	this.Data = data
+	return &this
+}
+
+// NewExport2configSpecWithDefault instantiates a new Export2configSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewExport2configSpecWithDefault() *Export2configSpec {
 	this := Export2configSpec{}
 	var cluster string = ""
 	this.Cluster = &cluster
 	return &this
 }
 
-// NewExport2configSpec instantiates a new Export2configSpec object
+// NewExport2configSpec is short for NewExport2configSpecWithDefault which instantiates a new Export2configSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewExport2configSpec() *Export2configSpec {
+	return NewExport2configSpecWithDefault()
+}
+
+// NewExport2configSpecEmpty instantiates a new Export2configSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewExport2configSpecEmpty() *Export2configSpec {
 	this := Export2configSpec{}
-	var cluster string = ""
-	this.Cluster = &cluster
 	return &this
 }
 
@@ -68,103 +84,93 @@ func NewExport2configSpecList(ps ...*Export2configSpec) []Export2configSpec {
 	return objs
 }
 
-// GetCluster returns the Cluster field value if set, zero value otherwise.
+// Validate validates this Export2configSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Export2configWorkflowStep) Validate() error {
+	if o.Properties.Cluster == nil {
+		return errors.New("Cluster in Export2configSpec must be set")
+	}
+	if o.Properties.ConfigName == nil {
+		return errors.New("ConfigName in Export2configSpec must be set")
+	}
+	if o.Properties.Data == nil {
+		return errors.New("Data in Export2configSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetCluster returns the Cluster field value
 func (o *Export2configWorkflowStep) GetCluster() string {
-	if o == nil || utils.IsNil(o.Properties.Cluster) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Cluster
 }
 
-// GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
+// GetClusterOk returns a tuple with the Cluster field value
 // and a boolean to check if the value has been set.
 func (o *Export2configWorkflowStep) GetClusterOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Cluster) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Cluster, true
 }
 
-// HasCluster returns a boolean if a field has been set.
-func (o *Export2configWorkflowStep) HasCluster() bool {
-	if o != nil && !utils.IsNil(o.Properties.Cluster) {
-		return true
-	}
-
-	return false
-}
-
-// SetCluster gets a reference to the given string and assigns it to the cluster field.
-// Cluster:  Specify the cluster of the config map
+// SetCluster sets field value
 func (o *Export2configWorkflowStep) SetCluster(v string) *Export2configWorkflowStep {
 	o.Properties.Cluster = &v
 	return o
 }
 
-// GetConfigName returns the ConfigName field value if set, zero value otherwise.
+// GetConfigName returns the ConfigName field value
 func (o *Export2configWorkflowStep) GetConfigName() string {
-	if o == nil || utils.IsNil(o.Properties.ConfigName) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.ConfigName
 }
 
-// GetConfigNameOk returns a tuple with the ConfigName field value if set, nil otherwise
+// GetConfigNameOk returns a tuple with the ConfigName field value
 // and a boolean to check if the value has been set.
 func (o *Export2configWorkflowStep) GetConfigNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.ConfigName) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.ConfigName, true
 }
 
-// HasConfigName returns a boolean if a field has been set.
-func (o *Export2configWorkflowStep) HasConfigName() bool {
-	if o != nil && !utils.IsNil(o.Properties.ConfigName) {
-		return true
-	}
-
-	return false
-}
-
-// SetConfigName gets a reference to the given string and assigns it to the configName field.
-// ConfigName:  Specify the name of the config map
+// SetConfigName sets field value
 func (o *Export2configWorkflowStep) SetConfigName(v string) *Export2configWorkflowStep {
 	o.Properties.ConfigName = &v
 	return o
 }
 
-// GetData returns the Data field value if set, zero value otherwise.
+// GetData returns the Data field value
 func (o *Export2configWorkflowStep) GetData() map[string]interface{} {
-	if o == nil || utils.IsNil(o.Properties.Data) {
+	if o == nil {
 		var ret map[string]interface{}
 		return ret
 	}
+
 	return o.Properties.Data
 }
 
-// GetDataOk returns a tuple with the Data field value if set, nil otherwise
+// GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
 func (o *Export2configWorkflowStep) GetDataOk() (map[string]interface{}, bool) {
-	if o == nil || utils.IsNil(o.Properties.Data) {
+	if o == nil {
 		return map[string]interface{}{}, false
 	}
 	return o.Properties.Data, true
 }
 
-// HasData returns a boolean if a field has been set.
-func (o *Export2configWorkflowStep) HasData() bool {
-	if o != nil && !utils.IsNil(o.Properties.Data) {
-		return true
-	}
-
-	return false
-}
-
-// SetData gets a reference to the given map[string]interface{} and assigns it to the data field.
-// Data:  Specify the data of config map
+// SetData sets field value
 func (o *Export2configWorkflowStep) SetData(v map[string]interface{}) *Export2configWorkflowStep {
 	o.Properties.Data = v
 	return o
@@ -214,15 +220,9 @@ func (o Export2configSpec) MarshalJSON() ([]byte, error) {
 
 func (o Export2configSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Cluster) {
-		toSerialize["cluster"] = o.Cluster
-	}
-	if !utils.IsNil(o.ConfigName) {
-		toSerialize["configName"] = o.ConfigName
-	}
-	if !utils.IsNil(o.Data) {
-		toSerialize["data"] = o.Data
-	}
+	toSerialize["cluster"] = o.Cluster
+	toSerialize["configName"] = o.ConfigName
+	toSerialize["data"] = o.Data
 	if !utils.IsNil(o.Namespace) {
 		toSerialize["namespace"] = o.Namespace
 	}
@@ -234,7 +234,7 @@ type NullableExport2configSpec struct {
 	isSet bool
 }
 
-func (v NullableExport2configSpec) Get() *Export2configSpec {
+func (v *NullableExport2configSpec) Get() *Export2configSpec {
 	return v.value
 }
 
@@ -243,7 +243,7 @@ func (v *NullableExport2configSpec) Set(val *Export2configSpec) {
 	v.isSet = true
 }
 
-func (v NullableExport2configSpec) IsSet() bool {
+func (v *NullableExport2configSpec) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package startup_probe
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -28,29 +29,44 @@ type HttpGet struct {
 	// The endpoint, relative to the port, to which the HTTP GET request should be directed.
 	Path *string `json:"path,omitempty"`
 	// The port numer to access on the host or container.
-	Port *int32 `json:"port,omitempty"`
+	Port *int32 `json:"port"`
 	// The Scheme to use for connecting to the host.
 	Scheme *string `json:"scheme,omitempty"`
 }
 
 // NewHttpGetWith instantiates a new HttpGet object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewHttpGetWith() *HttpGet {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewHttpGetWith(port int32) *HttpGet {
+	this := HttpGet{}
+	this.Port = &port
+	var scheme string = "HTTP"
+	this.Scheme = &scheme
+	return &this
+}
+
+// NewHttpGetWithDefault instantiates a new HttpGet object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewHttpGetWithDefault() *HttpGet {
 	this := HttpGet{}
 	var scheme string = "HTTP"
 	this.Scheme = &scheme
 	return &this
 }
 
-// NewHttpGet instantiates a new HttpGet object
+// NewHttpGet is short for NewHttpGetWithDefault which instantiates a new HttpGet object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewHttpGet() *HttpGet {
+	return NewHttpGetWithDefault()
+}
+
+// NewHttpGetEmpty instantiates a new HttpGet object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewHttpGetEmpty() *HttpGet {
 	this := HttpGet{}
-	var scheme string = "HTTP"
-	this.Scheme = &scheme
 	return &this
 }
 
@@ -62,6 +78,17 @@ func NewHttpGetList(ps ...*HttpGet) []HttpGet {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this HttpGet
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *HttpGet) Validate() error {
+	if o.Port == nil {
+		return errors.New("Port in HttpGet must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetHost returns the Host field value if set, zero value otherwise.
@@ -166,35 +193,26 @@ func (o *HttpGet) SetPath(v string) *HttpGet {
 	return o
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
+// GetPort returns the Port field value
 func (o *HttpGet) GetPort() int32 {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Port
 }
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
 func (o *HttpGet) GetPortOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Port, true
 }
 
-// HasPort returns a boolean if a field has been set.
-func (o *HttpGet) HasPort() bool {
-	if o != nil && !utils.IsNil(o.Port) {
-		return true
-	}
-
-	return false
-}
-
-// SetPort gets a reference to the given int32 and assigns it to the port field.
-// Port:  The port numer to access on the host or container.
+// SetPort sets field value
 func (o *HttpGet) SetPort(v int32) *HttpGet {
 	o.Port = &v
 	return o
@@ -253,9 +271,7 @@ func (o HttpGet) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Path) {
 		toSerialize["path"] = o.Path
 	}
-	if !utils.IsNil(o.Port) {
-		toSerialize["port"] = o.Port
-	}
+	toSerialize["port"] = o.Port
 	if !utils.IsNil(o.Scheme) {
 		toSerialize["scheme"] = o.Scheme
 	}
@@ -267,7 +283,7 @@ type NullableHttpGet struct {
 	isSet bool
 }
 
-func (v NullableHttpGet) Get() *HttpGet {
+func (v *NullableHttpGet) Get() *HttpGet {
 	return v.value
 }
 
@@ -276,7 +292,7 @@ func (v *NullableHttpGet) Set(val *HttpGet) {
 	v.isSet = true
 }
 
-func (v NullableHttpGet) IsSet() bool {
+func (v *NullableHttpGet) IsSet() bool {
 	return v.isSet
 }
 

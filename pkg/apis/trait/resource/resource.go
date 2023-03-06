@@ -35,9 +35,9 @@ type ResourceSpec struct {
 }
 
 // NewResourceSpecWith instantiates a new ResourceSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewResourceSpecWith() *ResourceSpec {
 	this := ResourceSpec{}
 	var cpu float32 = 1
@@ -47,15 +47,29 @@ func NewResourceSpecWith() *ResourceSpec {
 	return &this
 }
 
-// NewResourceSpec instantiates a new ResourceSpec object
+// NewResourceSpecWithDefault instantiates a new ResourceSpec object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewResourceSpec() *ResourceSpec {
+func NewResourceSpecWithDefault() *ResourceSpec {
 	this := ResourceSpec{}
 	var cpu float32 = 1
 	this.Cpu = &cpu
 	var memory string = "2048Mi"
 	this.Memory = &memory
+	return &this
+}
+
+// NewResourceSpec is short for NewResourceSpecWithDefault which instantiates a new ResourceSpec object.
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewResourceSpec() *ResourceSpec {
+	return NewResourceSpecWithDefault()
+}
+
+// NewResourceSpecEmpty instantiates a new ResourceSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewResourceSpecEmpty() *ResourceSpec {
+	this := ResourceSpec{}
 	return &this
 }
 
@@ -67,6 +81,24 @@ func NewResourceSpecList(ps ...*ResourceSpec) []ResourceSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this ResourceSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ResourceTrait) Validate() error {
+	// validate all nested properties
+	if o.Properties.Limits != nil {
+		if err := o.Properties.Limits.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.Requests != nil {
+		if err := o.Properties.Requests.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetCpu returns the Cpu field value if set, zero value otherwise.
@@ -235,7 +267,7 @@ type NullableResourceSpec struct {
 	isSet bool
 }
 
-func (v NullableResourceSpec) Get() *ResourceSpec {
+func (v *NullableResourceSpec) Get() *ResourceSpec {
 	return v.value
 }
 
@@ -244,7 +276,7 @@ func (v *NullableResourceSpec) Set(val *ResourceSpec) {
 	v.isSet = true
 }
 
-func (v NullableResourceSpec) IsSet() bool {
+func (v *NullableResourceSpec) IsSet() bool {
 	return v.isSet
 }
 

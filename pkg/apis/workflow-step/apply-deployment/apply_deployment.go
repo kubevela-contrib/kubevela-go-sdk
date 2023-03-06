@@ -12,6 +12,7 @@ package apply_deployment
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -27,17 +28,28 @@ var _ utils.MappedNullable = &ApplyDeploymentSpec{}
 
 // ApplyDeploymentSpec struct for ApplyDeploymentSpec
 type ApplyDeploymentSpec struct {
-	Cluster  *string  `json:"cluster,omitempty"`
+	Cluster  *string  `json:"cluster"`
 	Cmd      []string `json:"cmd,omitempty"`
-	Image    *string  `json:"image,omitempty"`
-	Replicas *int32   `json:"replicas,omitempty"`
+	Image    *string  `json:"image"`
+	Replicas *int32   `json:"replicas"`
 }
 
 // NewApplyDeploymentSpecWith instantiates a new ApplyDeploymentSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewApplyDeploymentSpecWith() *ApplyDeploymentSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewApplyDeploymentSpecWith(cluster string, image string, replicas int32) *ApplyDeploymentSpec {
+	this := ApplyDeploymentSpec{}
+	this.Cluster = &cluster
+	this.Image = &image
+	this.Replicas = &replicas
+	return &this
+}
+
+// NewApplyDeploymentSpecWithDefault instantiates a new ApplyDeploymentSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewApplyDeploymentSpecWithDefault() *ApplyDeploymentSpec {
 	this := ApplyDeploymentSpec{}
 	var cluster string = ""
 	this.Cluster = &cluster
@@ -46,15 +58,17 @@ func NewApplyDeploymentSpecWith() *ApplyDeploymentSpec {
 	return &this
 }
 
-// NewApplyDeploymentSpec instantiates a new ApplyDeploymentSpec object
+// NewApplyDeploymentSpec is short for NewApplyDeploymentSpecWithDefault which instantiates a new ApplyDeploymentSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewApplyDeploymentSpec() *ApplyDeploymentSpec {
+	return NewApplyDeploymentSpecWithDefault()
+}
+
+// NewApplyDeploymentSpecEmpty instantiates a new ApplyDeploymentSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewApplyDeploymentSpecEmpty() *ApplyDeploymentSpec {
 	this := ApplyDeploymentSpec{}
-	var cluster string = ""
-	this.Cluster = &cluster
-	var replicas int32 = 1
-	this.Replicas = &replicas
 	return &this
 }
 
@@ -68,35 +82,43 @@ func NewApplyDeploymentSpecList(ps ...*ApplyDeploymentSpec) []ApplyDeploymentSpe
 	return objs
 }
 
-// GetCluster returns the Cluster field value if set, zero value otherwise.
+// Validate validates this ApplyDeploymentSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ApplyDeploymentWorkflowStep) Validate() error {
+	if o.Properties.Cluster == nil {
+		return errors.New("Cluster in ApplyDeploymentSpec must be set")
+	}
+	if o.Properties.Image == nil {
+		return errors.New("Image in ApplyDeploymentSpec must be set")
+	}
+	if o.Properties.Replicas == nil {
+		return errors.New("Replicas in ApplyDeploymentSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetCluster returns the Cluster field value
 func (o *ApplyDeploymentWorkflowStep) GetCluster() string {
-	if o == nil || utils.IsNil(o.Properties.Cluster) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Cluster
 }
 
-// GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
+// GetClusterOk returns a tuple with the Cluster field value
 // and a boolean to check if the value has been set.
 func (o *ApplyDeploymentWorkflowStep) GetClusterOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Cluster) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Cluster, true
 }
 
-// HasCluster returns a boolean if a field has been set.
-func (o *ApplyDeploymentWorkflowStep) HasCluster() bool {
-	if o != nil && !utils.IsNil(o.Properties.Cluster) {
-		return true
-	}
-
-	return false
-}
-
-// SetCluster gets a reference to the given string and assigns it to the cluster field.
-// Cluster:
+// SetCluster sets field value
 func (o *ApplyDeploymentWorkflowStep) SetCluster(v string) *ApplyDeploymentWorkflowStep {
 	o.Properties.Cluster = &v
 	return o
@@ -136,69 +158,51 @@ func (o *ApplyDeploymentWorkflowStep) SetCmd(v []string) *ApplyDeploymentWorkflo
 	return o
 }
 
-// GetImage returns the Image field value if set, zero value otherwise.
+// GetImage returns the Image field value
 func (o *ApplyDeploymentWorkflowStep) GetImage() string {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Image
 }
 
-// GetImageOk returns a tuple with the Image field value if set, nil otherwise
+// GetImageOk returns a tuple with the Image field value
 // and a boolean to check if the value has been set.
 func (o *ApplyDeploymentWorkflowStep) GetImageOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Image, true
 }
 
-// HasImage returns a boolean if a field has been set.
-func (o *ApplyDeploymentWorkflowStep) HasImage() bool {
-	if o != nil && !utils.IsNil(o.Properties.Image) {
-		return true
-	}
-
-	return false
-}
-
-// SetImage gets a reference to the given string and assigns it to the image field.
-// Image:
+// SetImage sets field value
 func (o *ApplyDeploymentWorkflowStep) SetImage(v string) *ApplyDeploymentWorkflowStep {
 	o.Properties.Image = &v
 	return o
 }
 
-// GetReplicas returns the Replicas field value if set, zero value otherwise.
+// GetReplicas returns the Replicas field value
 func (o *ApplyDeploymentWorkflowStep) GetReplicas() int32 {
-	if o == nil || utils.IsNil(o.Properties.Replicas) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Properties.Replicas
 }
 
-// GetReplicasOk returns a tuple with the Replicas field value if set, nil otherwise
+// GetReplicasOk returns a tuple with the Replicas field value
 // and a boolean to check if the value has been set.
 func (o *ApplyDeploymentWorkflowStep) GetReplicasOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Properties.Replicas) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Replicas, true
 }
 
-// HasReplicas returns a boolean if a field has been set.
-func (o *ApplyDeploymentWorkflowStep) HasReplicas() bool {
-	if o != nil && !utils.IsNil(o.Properties.Replicas) {
-		return true
-	}
-
-	return false
-}
-
-// SetReplicas gets a reference to the given int32 and assigns it to the replicas field.
-// Replicas:
+// SetReplicas sets field value
 func (o *ApplyDeploymentWorkflowStep) SetReplicas(v int32) *ApplyDeploymentWorkflowStep {
 	o.Properties.Replicas = &v
 	return o
@@ -214,18 +218,12 @@ func (o ApplyDeploymentSpec) MarshalJSON() ([]byte, error) {
 
 func (o ApplyDeploymentSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Cluster) {
-		toSerialize["cluster"] = o.Cluster
-	}
+	toSerialize["cluster"] = o.Cluster
 	if !utils.IsNil(o.Cmd) {
 		toSerialize["cmd"] = o.Cmd
 	}
-	if !utils.IsNil(o.Image) {
-		toSerialize["image"] = o.Image
-	}
-	if !utils.IsNil(o.Replicas) {
-		toSerialize["replicas"] = o.Replicas
-	}
+	toSerialize["image"] = o.Image
+	toSerialize["replicas"] = o.Replicas
 	return toSerialize, nil
 }
 
@@ -234,7 +232,7 @@ type NullableApplyDeploymentSpec struct {
 	isSet bool
 }
 
-func (v NullableApplyDeploymentSpec) Get() *ApplyDeploymentSpec {
+func (v *NullableApplyDeploymentSpec) Get() *ApplyDeploymentSpec {
 	return v.value
 }
 
@@ -243,7 +241,7 @@ func (v *NullableApplyDeploymentSpec) Set(val *ApplyDeploymentSpec) {
 	v.isSet = true
 }
 
-func (v NullableApplyDeploymentSpec) IsSet() bool {
+func (v *NullableApplyDeploymentSpec) IsSet() bool {
 	return v.isSet
 }
 

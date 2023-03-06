@@ -12,6 +12,7 @@ package apply_terraform_config
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,23 +23,37 @@ var _ utils.MappedNullable = &SourceOneOf{}
 // SourceOneOf struct for SourceOneOf
 type SourceOneOf struct {
 	// directly specify the hcl of the terraform configuration
-	Hcl string `json:"hcl"`
+	Hcl *string `json:"hcl"`
 }
 
 // NewSourceOneOfWith instantiates a new SourceOneOf object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewSourceOneOfWith(hcl string) *SourceOneOf {
 	this := SourceOneOf{}
-	this.Hcl = hcl
+	this.Hcl = &hcl
 	return &this
 }
 
-// NewSourceOneOf instantiates a new SourceOneOf object
+// NewSourceOneOfWithDefault instantiates a new SourceOneOf object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSourceOneOfWithDefault() *SourceOneOf {
+	this := SourceOneOf{}
+	return &this
+}
+
+// NewSourceOneOf is short for NewSourceOneOfWithDefault which instantiates a new SourceOneOf object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSourceOneOf() *SourceOneOf {
+	return NewSourceOneOfWithDefault()
+}
+
+// NewSourceOneOfEmpty instantiates a new SourceOneOf object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSourceOneOfEmpty() *SourceOneOf {
 	this := SourceOneOf{}
 	return &this
 }
@@ -53,6 +68,17 @@ func NewSourceOneOfList(ps ...*SourceOneOf) []SourceOneOf {
 	return objs
 }
 
+// Validate validates this SourceOneOf
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *SourceOneOf) Validate() error {
+	if o.Hcl == nil {
+		return errors.New("Hcl in SourceOneOf must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
 // GetHcl returns the Hcl field value
 func (o *SourceOneOf) GetHcl() string {
 	if o == nil {
@@ -60,7 +86,7 @@ func (o *SourceOneOf) GetHcl() string {
 		return ret
 	}
 
-	return o.Hcl
+	return *o.Hcl
 }
 
 // GetHclOk returns a tuple with the Hcl field value
@@ -69,12 +95,12 @@ func (o *SourceOneOf) GetHclOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Hcl, true
+	return o.Hcl, true
 }
 
 // SetHcl sets field value
 func (o *SourceOneOf) SetHcl(v string) *SourceOneOf {
-	o.Hcl = v
+	o.Hcl = &v
 	return o
 }
 
@@ -97,7 +123,7 @@ type NullableSourceOneOf struct {
 	isSet bool
 }
 
-func (v NullableSourceOneOf) Get() *SourceOneOf {
+func (v *NullableSourceOneOf) Get() *SourceOneOf {
 	return v.value
 }
 
@@ -106,7 +132,7 @@ func (v *NullableSourceOneOf) Set(val *SourceOneOf) {
 	v.isSet = true
 }
 
-func (v NullableSourceOneOf) IsSet() bool {
+func (v *NullableSourceOneOf) IsSet() bool {
 	return v.isSet
 }
 

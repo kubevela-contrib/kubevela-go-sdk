@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,23 +23,37 @@ var _ utils.MappedNullable = &UrlOneOf{}
 // UrlOneOf struct for UrlOneOf
 type UrlOneOf struct {
 	// the url address content in string
-	Value string `json:"value"`
+	Value *string `json:"value"`
 }
 
 // NewUrlOneOfWith instantiates a new UrlOneOf object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewUrlOneOfWith(value string) *UrlOneOf {
 	this := UrlOneOf{}
-	this.Value = value
+	this.Value = &value
 	return &this
 }
 
-// NewUrlOneOf instantiates a new UrlOneOf object
+// NewUrlOneOfWithDefault instantiates a new UrlOneOf object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewUrlOneOfWithDefault() *UrlOneOf {
+	this := UrlOneOf{}
+	return &this
+}
+
+// NewUrlOneOf is short for NewUrlOneOfWithDefault which instantiates a new UrlOneOf object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewUrlOneOf() *UrlOneOf {
+	return NewUrlOneOfWithDefault()
+}
+
+// NewUrlOneOfEmpty instantiates a new UrlOneOf object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewUrlOneOfEmpty() *UrlOneOf {
 	this := UrlOneOf{}
 	return &this
 }
@@ -53,6 +68,17 @@ func NewUrlOneOfList(ps ...*UrlOneOf) []UrlOneOf {
 	return objs
 }
 
+// Validate validates this UrlOneOf
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *UrlOneOf) Validate() error {
+	if o.Value == nil {
+		return errors.New("Value in UrlOneOf must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
 // GetValue returns the Value field value
 func (o *UrlOneOf) GetValue() string {
 	if o == nil {
@@ -60,7 +86,7 @@ func (o *UrlOneOf) GetValue() string {
 		return ret
 	}
 
-	return o.Value
+	return *o.Value
 }
 
 // GetValueOk returns a tuple with the Value field value
@@ -69,12 +95,12 @@ func (o *UrlOneOf) GetValueOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Value, true
+	return o.Value, true
 }
 
 // SetValue sets field value
 func (o *UrlOneOf) SetValue(v string) *UrlOneOf {
-	o.Value = v
+	o.Value = &v
 	return o
 }
 
@@ -97,7 +123,7 @@ type NullableUrlOneOf struct {
 	isSet bool
 }
 
-func (v NullableUrlOneOf) Get() *UrlOneOf {
+func (v *NullableUrlOneOf) Get() *UrlOneOf {
 	return v.value
 }
 
@@ -106,7 +132,7 @@ func (v *NullableUrlOneOf) Set(val *UrlOneOf) {
 	v.isSet = true
 }
 
-func (v NullableUrlOneOf) IsSet() bool {
+func (v *NullableUrlOneOf) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package webhook
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -29,22 +30,37 @@ var _ utils.MappedNullable = &WebhookSpec{}
 type WebhookSpec struct {
 	// Specify the data you want to send
 	Data map[string]interface{} `json:"data,omitempty"`
-	Url  *Url                   `json:"url,omitempty"`
+	Url  *Url                   `json:"url"`
 }
 
 // NewWebhookSpecWith instantiates a new WebhookSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewWebhookSpecWith() *WebhookSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewWebhookSpecWith(url Url) *WebhookSpec {
+	this := WebhookSpec{}
+	this.Url = &url
+	return &this
+}
+
+// NewWebhookSpecWithDefault instantiates a new WebhookSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewWebhookSpecWithDefault() *WebhookSpec {
 	this := WebhookSpec{}
 	return &this
 }
 
-// NewWebhookSpec instantiates a new WebhookSpec object
+// NewWebhookSpec is short for NewWebhookSpecWithDefault which instantiates a new WebhookSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewWebhookSpec() *WebhookSpec {
+	return NewWebhookSpecWithDefault()
+}
+
+// NewWebhookSpecEmpty instantiates a new WebhookSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewWebhookSpecEmpty() *WebhookSpec {
 	this := WebhookSpec{}
 	return &this
 }
@@ -57,6 +73,22 @@ func NewWebhookSpecList(ps ...*WebhookSpec) []WebhookSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this WebhookSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *WebhookWorkflowStep) Validate() error {
+	if o.Properties.Url == nil {
+		return errors.New("Url in WebhookSpec must be set")
+	}
+	// validate all nested properties
+	if o.Properties.Url != nil {
+		if err := o.Properties.Url.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
@@ -93,35 +125,26 @@ func (o *WebhookWorkflowStep) SetData(v map[string]interface{}) *WebhookWorkflow
 	return o
 }
 
-// GetUrl returns the Url field value if set, zero value otherwise.
+// GetUrl returns the Url field value
 func (o *WebhookWorkflowStep) GetUrl() Url {
-	if o == nil || utils.IsNil(o.Properties.Url) {
+	if o == nil {
 		var ret Url
 		return ret
 	}
+
 	return *o.Properties.Url
 }
 
-// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
+// GetUrlOk returns a tuple with the Url field value
 // and a boolean to check if the value has been set.
 func (o *WebhookWorkflowStep) GetUrlOk() (*Url, bool) {
-	if o == nil || utils.IsNil(o.Properties.Url) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Url, true
 }
 
-// HasUrl returns a boolean if a field has been set.
-func (o *WebhookWorkflowStep) HasUrl() bool {
-	if o != nil && !utils.IsNil(o.Properties.Url) {
-		return true
-	}
-
-	return false
-}
-
-// SetUrl gets a reference to the given Url and assigns it to the url field.
-// Url:
+// SetUrl sets field value
 func (o *WebhookWorkflowStep) SetUrl(v Url) *WebhookWorkflowStep {
 	o.Properties.Url = &v
 	return o
@@ -140,9 +163,7 @@ func (o WebhookSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Data) {
 		toSerialize["data"] = o.Data
 	}
-	if !utils.IsNil(o.Url) {
-		toSerialize["url"] = o.Url
-	}
+	toSerialize["url"] = o.Url
 	return toSerialize, nil
 }
 
@@ -151,7 +172,7 @@ type NullableWebhookSpec struct {
 	isSet bool
 }
 
-func (v NullableWebhookSpec) Get() *WebhookSpec {
+func (v *NullableWebhookSpec) Get() *WebhookSpec {
 	return v.value
 }
 
@@ -160,7 +181,7 @@ func (v *NullableWebhookSpec) Set(val *WebhookSpec) {
 	v.isSet = true
 }
 
-func (v NullableWebhookSpec) IsSet() bool {
+func (v *NullableWebhookSpec) IsSet() bool {
 	return v.isSet
 }
 

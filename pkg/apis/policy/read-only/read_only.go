@@ -31,18 +31,32 @@ type ReadOnlySpec struct {
 }
 
 // NewReadOnlySpecWith instantiates a new ReadOnlySpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewReadOnlySpecWith() *ReadOnlySpec {
 	this := ReadOnlySpec{}
 	return &this
 }
 
-// NewReadOnlySpec instantiates a new ReadOnlySpec object
+// NewReadOnlySpecWithDefault instantiates a new ReadOnlySpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewReadOnlySpecWithDefault() *ReadOnlySpec {
+	this := ReadOnlySpec{}
+	return &this
+}
+
+// NewReadOnlySpec is short for NewReadOnlySpecWithDefault which instantiates a new ReadOnlySpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewReadOnlySpec() *ReadOnlySpec {
+	return NewReadOnlySpecWithDefault()
+}
+
+// NewReadOnlySpecEmpty instantiates a new ReadOnlySpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewReadOnlySpecEmpty() *ReadOnlySpec {
 	this := ReadOnlySpec{}
 	return &this
 }
@@ -55,6 +69,14 @@ func NewReadOnlySpecList(ps ...*ReadOnlySpec) []ReadOnlySpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this ReadOnlySpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ReadOnlyPolicy) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetRules returns the Rules field value if set, zero value otherwise.
@@ -112,7 +134,7 @@ type NullableReadOnlySpec struct {
 	isSet bool
 }
 
-func (v NullableReadOnlySpec) Get() *ReadOnlySpec {
+func (v *NullableReadOnlySpec) Get() *ReadOnlySpec {
 	return v.value
 }
 
@@ -121,7 +143,7 @@ func (v *NullableReadOnlySpec) Set(val *ReadOnlySpec) {
 	v.isSet = true
 }
 
-func (v NullableReadOnlySpec) IsSet() bool {
+func (v *NullableReadOnlySpec) IsSet() bool {
 	return v.isSet
 }
 

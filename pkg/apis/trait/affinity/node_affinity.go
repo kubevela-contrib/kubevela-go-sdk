@@ -27,18 +27,32 @@ type NodeAffinity struct {
 }
 
 // NewNodeAffinityWith instantiates a new NodeAffinity object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewNodeAffinityWith() *NodeAffinity {
 	this := NodeAffinity{}
 	return &this
 }
 
-// NewNodeAffinity instantiates a new NodeAffinity object
+// NewNodeAffinityWithDefault instantiates a new NodeAffinity object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewNodeAffinityWithDefault() *NodeAffinity {
+	this := NodeAffinity{}
+	return &this
+}
+
+// NewNodeAffinity is short for NewNodeAffinityWithDefault which instantiates a new NodeAffinity object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewNodeAffinity() *NodeAffinity {
+	return NewNodeAffinityWithDefault()
+}
+
+// NewNodeAffinityEmpty instantiates a new NodeAffinity object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewNodeAffinityEmpty() *NodeAffinity {
 	this := NodeAffinity{}
 	return &this
 }
@@ -51,6 +65,19 @@ func NewNodeAffinityList(ps ...*NodeAffinity) []NodeAffinity {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this NodeAffinity
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *NodeAffinity) Validate() error {
+	// validate all nested properties
+	if o.Required != nil {
+		if err := o.Required.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetPreferred returns the Preferred field value if set, zero value otherwise.
@@ -145,7 +172,7 @@ type NullableNodeAffinity struct {
 	isSet bool
 }
 
-func (v NullableNodeAffinity) Get() *NodeAffinity {
+func (v *NullableNodeAffinity) Get() *NodeAffinity {
 	return v.value
 }
 
@@ -154,7 +181,7 @@ func (v *NullableNodeAffinity) Set(val *NodeAffinity) {
 	v.isSet = true
 }
 
-func (v NullableNodeAffinity) IsSet() bool {
+func (v *NullableNodeAffinity) IsSet() bool {
 	return v.isSet
 }
 

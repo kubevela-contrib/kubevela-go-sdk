@@ -12,7 +12,6 @@ package apply_terraform_config
 
 import (
 	"encoding/json"
-
 	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
@@ -36,6 +35,19 @@ func SourceOneOf1AsSource(v *SourceOneOf1) Source {
 	return Source{
 		SourceOneOf1: v,
 	}
+}
+
+// Validate validates this Source
+func (o *Source) Validate() error {
+	if o.SourceOneOf != nil {
+		return nil
+	}
+
+	if o.SourceOneOf1 != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in Source")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -116,7 +128,7 @@ type NullableSource struct {
 	isSet bool
 }
 
-func (v NullableSource) Get() *Source {
+func (v *NullableSource) Get() *Source {
 	return v.value
 }
 
@@ -125,7 +137,7 @@ func (v *NullableSource) Set(val *Source) {
 	v.isSet = true
 }
 
-func (v NullableSource) IsSet() bool {
+func (v *NullableSource) IsSet() bool {
 	return v.isSet
 }
 

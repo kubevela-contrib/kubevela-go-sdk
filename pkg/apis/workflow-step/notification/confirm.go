@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,26 +22,44 @@ var _ utils.MappedNullable = &Confirm{}
 
 // Confirm struct for Confirm
 type Confirm struct {
-	Confirm *TextType `json:"confirm,omitempty"`
-	Deny    *TextType `json:"deny,omitempty"`
+	Confirm *TextType `json:"confirm"`
+	Deny    *TextType `json:"deny"`
 	Style   *string   `json:"style,omitempty"`
-	Text    *TextType `json:"text,omitempty"`
-	Title   *TextType `json:"title,omitempty"`
+	Text    *TextType `json:"text"`
+	Title   *TextType `json:"title"`
 }
 
 // NewConfirmWith instantiates a new Confirm object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewConfirmWith() *Confirm {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewConfirmWith(confirm TextType, deny TextType, text TextType, title TextType) *Confirm {
+	this := Confirm{}
+	this.Confirm = &confirm
+	this.Deny = &deny
+	this.Text = &text
+	this.Title = &title
+	return &this
+}
+
+// NewConfirmWithDefault instantiates a new Confirm object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewConfirmWithDefault() *Confirm {
 	this := Confirm{}
 	return &this
 }
 
-// NewConfirm instantiates a new Confirm object
+// NewConfirm is short for NewConfirmWithDefault which instantiates a new Confirm object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewConfirm() *Confirm {
+	return NewConfirmWithDefault()
+}
+
+// NewConfirmEmpty instantiates a new Confirm object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewConfirmEmpty() *Confirm {
 	this := Confirm{}
 	return &this
 }
@@ -55,69 +74,91 @@ func NewConfirmList(ps ...*Confirm) []Confirm {
 	return objs
 }
 
-// GetConfirm returns the Confirm field value if set, zero value otherwise.
+// Validate validates this Confirm
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Confirm) Validate() error {
+	if o.Confirm == nil {
+		return errors.New("Confirm in Confirm must be set")
+	}
+	if o.Deny == nil {
+		return errors.New("Deny in Confirm must be set")
+	}
+	if o.Text == nil {
+		return errors.New("Text in Confirm must be set")
+	}
+	if o.Title == nil {
+		return errors.New("Title in Confirm must be set")
+	}
+	// validate all nested properties
+	if o.Confirm != nil {
+		if err := o.Confirm.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Deny != nil {
+		if err := o.Deny.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Text != nil {
+		if err := o.Text.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Title != nil {
+		if err := o.Title.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetConfirm returns the Confirm field value
 func (o *Confirm) GetConfirm() TextType {
-	if o == nil || utils.IsNil(o.Confirm) {
+	if o == nil {
 		var ret TextType
 		return ret
 	}
+
 	return *o.Confirm
 }
 
-// GetConfirmOk returns a tuple with the Confirm field value if set, nil otherwise
+// GetConfirmOk returns a tuple with the Confirm field value
 // and a boolean to check if the value has been set.
 func (o *Confirm) GetConfirmOk() (*TextType, bool) {
-	if o == nil || utils.IsNil(o.Confirm) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Confirm, true
 }
 
-// HasConfirm returns a boolean if a field has been set.
-func (o *Confirm) HasConfirm() bool {
-	if o != nil && !utils.IsNil(o.Confirm) {
-		return true
-	}
-
-	return false
-}
-
-// SetConfirm gets a reference to the given TextType and assigns it to the confirm field.
-// Confirm:
+// SetConfirm sets field value
 func (o *Confirm) SetConfirm(v TextType) *Confirm {
 	o.Confirm = &v
 	return o
 }
 
-// GetDeny returns the Deny field value if set, zero value otherwise.
+// GetDeny returns the Deny field value
 func (o *Confirm) GetDeny() TextType {
-	if o == nil || utils.IsNil(o.Deny) {
+	if o == nil {
 		var ret TextType
 		return ret
 	}
+
 	return *o.Deny
 }
 
-// GetDenyOk returns a tuple with the Deny field value if set, nil otherwise
+// GetDenyOk returns a tuple with the Deny field value
 // and a boolean to check if the value has been set.
 func (o *Confirm) GetDenyOk() (*TextType, bool) {
-	if o == nil || utils.IsNil(o.Deny) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Deny, true
 }
 
-// HasDeny returns a boolean if a field has been set.
-func (o *Confirm) HasDeny() bool {
-	if o != nil && !utils.IsNil(o.Deny) {
-		return true
-	}
-
-	return false
-}
-
-// SetDeny gets a reference to the given TextType and assigns it to the deny field.
-// Deny:
+// SetDeny sets field value
 func (o *Confirm) SetDeny(v TextType) *Confirm {
 	o.Deny = &v
 	return o
@@ -157,69 +198,51 @@ func (o *Confirm) SetStyle(v string) *Confirm {
 	return o
 }
 
-// GetText returns the Text field value if set, zero value otherwise.
+// GetText returns the Text field value
 func (o *Confirm) GetText() TextType {
-	if o == nil || utils.IsNil(o.Text) {
+	if o == nil {
 		var ret TextType
 		return ret
 	}
+
 	return *o.Text
 }
 
-// GetTextOk returns a tuple with the Text field value if set, nil otherwise
+// GetTextOk returns a tuple with the Text field value
 // and a boolean to check if the value has been set.
 func (o *Confirm) GetTextOk() (*TextType, bool) {
-	if o == nil || utils.IsNil(o.Text) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Text, true
 }
 
-// HasText returns a boolean if a field has been set.
-func (o *Confirm) HasText() bool {
-	if o != nil && !utils.IsNil(o.Text) {
-		return true
-	}
-
-	return false
-}
-
-// SetText gets a reference to the given TextType and assigns it to the text field.
-// Text:
+// SetText sets field value
 func (o *Confirm) SetText(v TextType) *Confirm {
 	o.Text = &v
 	return o
 }
 
-// GetTitle returns the Title field value if set, zero value otherwise.
+// GetTitle returns the Title field value
 func (o *Confirm) GetTitle() TextType {
-	if o == nil || utils.IsNil(o.Title) {
+	if o == nil {
 		var ret TextType
 		return ret
 	}
+
 	return *o.Title
 }
 
-// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
+// GetTitleOk returns a tuple with the Title field value
 // and a boolean to check if the value has been set.
 func (o *Confirm) GetTitleOk() (*TextType, bool) {
-	if o == nil || utils.IsNil(o.Title) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Title, true
 }
 
-// HasTitle returns a boolean if a field has been set.
-func (o *Confirm) HasTitle() bool {
-	if o != nil && !utils.IsNil(o.Title) {
-		return true
-	}
-
-	return false
-}
-
-// SetTitle gets a reference to the given TextType and assigns it to the title field.
-// Title:
+// SetTitle sets field value
 func (o *Confirm) SetTitle(v TextType) *Confirm {
 	o.Title = &v
 	return o
@@ -235,21 +258,13 @@ func (o Confirm) MarshalJSON() ([]byte, error) {
 
 func (o Confirm) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Confirm) {
-		toSerialize["confirm"] = o.Confirm
-	}
-	if !utils.IsNil(o.Deny) {
-		toSerialize["deny"] = o.Deny
-	}
+	toSerialize["confirm"] = o.Confirm
+	toSerialize["deny"] = o.Deny
 	if !utils.IsNil(o.Style) {
 		toSerialize["style"] = o.Style
 	}
-	if !utils.IsNil(o.Text) {
-		toSerialize["text"] = o.Text
-	}
-	if !utils.IsNil(o.Title) {
-		toSerialize["title"] = o.Title
-	}
+	toSerialize["text"] = o.Text
+	toSerialize["title"] = o.Title
 	return toSerialize, nil
 }
 
@@ -258,7 +273,7 @@ type NullableConfirm struct {
 	isSet bool
 }
 
-func (v NullableConfirm) Get() *Confirm {
+func (v *NullableConfirm) Get() *Confirm {
 	return v.value
 }
 
@@ -267,7 +282,7 @@ func (v *NullableConfirm) Set(val *Confirm) {
 	v.isSet = true
 }
 
-func (v NullableConfirm) IsSet() bool {
+func (v *NullableConfirm) IsSet() bool {
 	return v.isSet
 }
 

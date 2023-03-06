@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -39,24 +40,39 @@ type Elements struct {
 	Placeholder          *TextType             `json:"placeholder,omitempty"`
 	Style                *string               `json:"style,omitempty"`
 	Text                 *TextType             `json:"text,omitempty"`
-	Type                 *string               `json:"type,omitempty"`
+	Type                 *string               `json:"type"`
 	Url                  *string               `json:"url,omitempty"`
 	Value                *string               `json:"value,omitempty"`
 }
 
 // NewElementsWith instantiates a new Elements object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewElementsWith() *Elements {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewElementsWith(type_ string) *Elements {
+	this := Elements{}
+	this.Type = &type_
+	return &this
+}
+
+// NewElementsWithDefault instantiates a new Elements object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewElementsWithDefault() *Elements {
 	this := Elements{}
 	return &this
 }
 
-// NewElements instantiates a new Elements object
+// NewElements is short for NewElementsWithDefault which instantiates a new Elements object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewElements() *Elements {
+	return NewElementsWithDefault()
+}
+
+// NewElementsEmpty instantiates a new Elements object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewElementsEmpty() *Elements {
 	this := Elements{}
 	return &this
 }
@@ -69,6 +85,37 @@ func NewElementsList(ps ...*Elements) []Elements {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Elements
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Elements) Validate() error {
+	if o.Type == nil {
+		return errors.New("Type in Elements must be set")
+	}
+	// validate all nested properties
+	if o.Confirm != nil {
+		if err := o.Confirm.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.DispatchActionConfig != nil {
+		if err := o.DispatchActionConfig.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Placeholder != nil {
+		if err := o.Placeholder.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Text != nil {
+		if err := o.Text.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetActionId returns the ActionId field value if set, zero value otherwise.
@@ -683,35 +730,26 @@ func (o *Elements) SetText(v TextType) *Elements {
 	return o
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value
 func (o *Elements) GetType() string {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *Elements) GetTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Type) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *Elements) HasType() bool {
-	if o != nil && !utils.IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the type_ field.
-// Type:
+// SetType sets field value
 func (o *Elements) SetType(v string) *Elements {
 	o.Type = &v
 	return o
@@ -849,9 +887,7 @@ func (o Elements) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Text) {
 		toSerialize["text"] = o.Text
 	}
-	if !utils.IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["type"] = o.Type
 	if !utils.IsNil(o.Url) {
 		toSerialize["url"] = o.Url
 	}
@@ -866,7 +902,7 @@ type NullableElements struct {
 	isSet bool
 }
 
-func (v NullableElements) Get() *Elements {
+func (v *NullableElements) Get() *Elements {
 	return v.value
 }
 
@@ -875,7 +911,7 @@ func (v *NullableElements) Set(val *Elements) {
 	v.isSet = true
 }
 
-func (v NullableElements) IsSet() bool {
+func (v *NullableElements) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package resource
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,16 +23,26 @@ var _ utils.MappedNullable = &Limits{}
 // Limits Specify the resources in limits
 type Limits struct {
 	// Specify the amount of cpu for limits
-	Cpu *float32 `json:"cpu,omitempty"`
+	Cpu *float32 `json:"cpu"`
 	// Specify the amount of memory for limits
-	Memory *string `json:"memory,omitempty"`
+	Memory *string `json:"memory"`
 }
 
 // NewLimitsWith instantiates a new Limits object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewLimitsWith() *Limits {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewLimitsWith(cpu float32, memory string) *Limits {
+	this := Limits{}
+	this.Cpu = &cpu
+	this.Memory = &memory
+	return &this
+}
+
+// NewLimitsWithDefault instantiates a new Limits object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewLimitsWithDefault() *Limits {
 	this := Limits{}
 	var cpu float32 = 1
 	this.Cpu = &cpu
@@ -40,15 +51,17 @@ func NewLimitsWith() *Limits {
 	return &this
 }
 
-// NewLimits instantiates a new Limits object
+// NewLimits is short for NewLimitsWithDefault which instantiates a new Limits object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewLimits() *Limits {
+	return NewLimitsWithDefault()
+}
+
+// NewLimitsEmpty instantiates a new Limits object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewLimitsEmpty() *Limits {
 	this := Limits{}
-	var cpu float32 = 1
-	this.Cpu = &cpu
-	var memory string = "2048Mi"
-	this.Memory = &memory
 	return &this
 }
 
@@ -62,69 +75,65 @@ func NewLimitsList(ps ...*Limits) []Limits {
 	return objs
 }
 
-// GetCpu returns the Cpu field value if set, zero value otherwise.
+// Validate validates this Limits
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Limits) Validate() error {
+	if o.Cpu == nil {
+		return errors.New("Cpu in Limits must be set")
+	}
+	if o.Memory == nil {
+		return errors.New("Memory in Limits must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetCpu returns the Cpu field value
 func (o *Limits) GetCpu() float32 {
-	if o == nil || utils.IsNil(o.Cpu) {
+	if o == nil {
 		var ret float32
 		return ret
 	}
+
 	return *o.Cpu
 }
 
-// GetCpuOk returns a tuple with the Cpu field value if set, nil otherwise
+// GetCpuOk returns a tuple with the Cpu field value
 // and a boolean to check if the value has been set.
 func (o *Limits) GetCpuOk() (*float32, bool) {
-	if o == nil || utils.IsNil(o.Cpu) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Cpu, true
 }
 
-// HasCpu returns a boolean if a field has been set.
-func (o *Limits) HasCpu() bool {
-	if o != nil && !utils.IsNil(o.Cpu) {
-		return true
-	}
-
-	return false
-}
-
-// SetCpu gets a reference to the given float32 and assigns it to the cpu field.
-// Cpu:  Specify the amount of cpu for limits
+// SetCpu sets field value
 func (o *Limits) SetCpu(v float32) *Limits {
 	o.Cpu = &v
 	return o
 }
 
-// GetMemory returns the Memory field value if set, zero value otherwise.
+// GetMemory returns the Memory field value
 func (o *Limits) GetMemory() string {
-	if o == nil || utils.IsNil(o.Memory) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Memory
 }
 
-// GetMemoryOk returns a tuple with the Memory field value if set, nil otherwise
+// GetMemoryOk returns a tuple with the Memory field value
 // and a boolean to check if the value has been set.
 func (o *Limits) GetMemoryOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Memory) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Memory, true
 }
 
-// HasMemory returns a boolean if a field has been set.
-func (o *Limits) HasMemory() bool {
-	if o != nil && !utils.IsNil(o.Memory) {
-		return true
-	}
-
-	return false
-}
-
-// SetMemory gets a reference to the given string and assigns it to the memory field.
-// Memory:  Specify the amount of memory for limits
+// SetMemory sets field value
 func (o *Limits) SetMemory(v string) *Limits {
 	o.Memory = &v
 	return o
@@ -140,12 +149,8 @@ func (o Limits) MarshalJSON() ([]byte, error) {
 
 func (o Limits) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Cpu) {
-		toSerialize["cpu"] = o.Cpu
-	}
-	if !utils.IsNil(o.Memory) {
-		toSerialize["memory"] = o.Memory
-	}
+	toSerialize["cpu"] = o.Cpu
+	toSerialize["memory"] = o.Memory
 	return toSerialize, nil
 }
 
@@ -154,7 +159,7 @@ type NullableLimits struct {
 	isSet bool
 }
 
-func (v NullableLimits) Get() *Limits {
+func (v *NullableLimits) Get() *Limits {
 	return v.value
 }
 
@@ -163,7 +168,7 @@ func (v *NullableLimits) Set(val *Limits) {
 	v.isSet = true
 }
 
-func (v NullableLimits) IsSet() bool {
+func (v *NullableLimits) IsSet() bool {
 	return v.isSet
 }
 

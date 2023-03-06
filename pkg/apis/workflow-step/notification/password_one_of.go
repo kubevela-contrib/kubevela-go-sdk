@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,23 +23,37 @@ var _ utils.MappedNullable = &PasswordOneOf{}
 // PasswordOneOf struct for PasswordOneOf
 type PasswordOneOf struct {
 	// the password content in string
-	Value string `json:"value"`
+	Value *string `json:"value"`
 }
 
 // NewPasswordOneOfWith instantiates a new PasswordOneOf object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewPasswordOneOfWith(value string) *PasswordOneOf {
 	this := PasswordOneOf{}
-	this.Value = value
+	this.Value = &value
 	return &this
 }
 
-// NewPasswordOneOf instantiates a new PasswordOneOf object
+// NewPasswordOneOfWithDefault instantiates a new PasswordOneOf object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPasswordOneOfWithDefault() *PasswordOneOf {
+	this := PasswordOneOf{}
+	return &this
+}
+
+// NewPasswordOneOf is short for NewPasswordOneOfWithDefault which instantiates a new PasswordOneOf object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPasswordOneOf() *PasswordOneOf {
+	return NewPasswordOneOfWithDefault()
+}
+
+// NewPasswordOneOfEmpty instantiates a new PasswordOneOf object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPasswordOneOfEmpty() *PasswordOneOf {
 	this := PasswordOneOf{}
 	return &this
 }
@@ -53,6 +68,17 @@ func NewPasswordOneOfList(ps ...*PasswordOneOf) []PasswordOneOf {
 	return objs
 }
 
+// Validate validates this PasswordOneOf
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PasswordOneOf) Validate() error {
+	if o.Value == nil {
+		return errors.New("Value in PasswordOneOf must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
 // GetValue returns the Value field value
 func (o *PasswordOneOf) GetValue() string {
 	if o == nil {
@@ -60,7 +86,7 @@ func (o *PasswordOneOf) GetValue() string {
 		return ret
 	}
 
-	return o.Value
+	return *o.Value
 }
 
 // GetValueOk returns a tuple with the Value field value
@@ -69,12 +95,12 @@ func (o *PasswordOneOf) GetValueOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Value, true
+	return o.Value, true
 }
 
 // SetValue sets field value
 func (o *PasswordOneOf) SetValue(v string) *PasswordOneOf {
-	o.Value = v
+	o.Value = &v
 	return o
 }
 
@@ -97,7 +123,7 @@ type NullablePasswordOneOf struct {
 	isSet bool
 }
 
-func (v NullablePasswordOneOf) Get() *PasswordOneOf {
+func (v *NullablePasswordOneOf) Get() *PasswordOneOf {
 	return v.value
 }
 
@@ -106,7 +132,7 @@ func (v *NullablePasswordOneOf) Set(val *PasswordOneOf) {
 	v.isSet = true
 }
 
-func (v NullablePasswordOneOf) IsSet() bool {
+func (v *NullablePasswordOneOf) IsSet() bool {
 	return v.isSet
 }
 

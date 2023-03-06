@@ -12,6 +12,7 @@ package init_container
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,24 +23,40 @@ var _ utils.MappedNullable = &ExtraVolumeMounts{}
 // ExtraVolumeMounts struct for ExtraVolumeMounts
 type ExtraVolumeMounts struct {
 	// The mountPath for mount in the init container
-	MountPath *string `json:"mountPath,omitempty"`
+	MountPath *string `json:"mountPath"`
 	// The name of the volume to be mounted
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 }
 
 // NewExtraVolumeMountsWith instantiates a new ExtraVolumeMounts object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewExtraVolumeMountsWith() *ExtraVolumeMounts {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewExtraVolumeMountsWith(mountPath string, name string) *ExtraVolumeMounts {
+	this := ExtraVolumeMounts{}
+	this.MountPath = &mountPath
+	this.Name = &name
+	return &this
+}
+
+// NewExtraVolumeMountsWithDefault instantiates a new ExtraVolumeMounts object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewExtraVolumeMountsWithDefault() *ExtraVolumeMounts {
 	this := ExtraVolumeMounts{}
 	return &this
 }
 
-// NewExtraVolumeMounts instantiates a new ExtraVolumeMounts object
+// NewExtraVolumeMounts is short for NewExtraVolumeMountsWithDefault which instantiates a new ExtraVolumeMounts object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewExtraVolumeMounts() *ExtraVolumeMounts {
+	return NewExtraVolumeMountsWithDefault()
+}
+
+// NewExtraVolumeMountsEmpty instantiates a new ExtraVolumeMounts object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewExtraVolumeMountsEmpty() *ExtraVolumeMounts {
 	this := ExtraVolumeMounts{}
 	return &this
 }
@@ -54,69 +71,65 @@ func NewExtraVolumeMountsList(ps ...*ExtraVolumeMounts) []ExtraVolumeMounts {
 	return objs
 }
 
-// GetMountPath returns the MountPath field value if set, zero value otherwise.
+// Validate validates this ExtraVolumeMounts
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ExtraVolumeMounts) Validate() error {
+	if o.MountPath == nil {
+		return errors.New("MountPath in ExtraVolumeMounts must be set")
+	}
+	if o.Name == nil {
+		return errors.New("Name in ExtraVolumeMounts must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetMountPath returns the MountPath field value
 func (o *ExtraVolumeMounts) GetMountPath() string {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MountPath
 }
 
-// GetMountPathOk returns a tuple with the MountPath field value if set, nil otherwise
+// GetMountPathOk returns a tuple with the MountPath field value
 // and a boolean to check if the value has been set.
 func (o *ExtraVolumeMounts) GetMountPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		return nil, false
 	}
 	return o.MountPath, true
 }
 
-// HasMountPath returns a boolean if a field has been set.
-func (o *ExtraVolumeMounts) HasMountPath() bool {
-	if o != nil && !utils.IsNil(o.MountPath) {
-		return true
-	}
-
-	return false
-}
-
-// SetMountPath gets a reference to the given string and assigns it to the mountPath field.
-// MountPath:  The mountPath for mount in the init container
+// SetMountPath sets field value
 func (o *ExtraVolumeMounts) SetMountPath(v string) *ExtraVolumeMounts {
 	o.MountPath = &v
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *ExtraVolumeMounts) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *ExtraVolumeMounts) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *ExtraVolumeMounts) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  The name of the volume to be mounted
+// SetName sets field value
 func (o *ExtraVolumeMounts) SetName(v string) *ExtraVolumeMounts {
 	o.Name = &v
 	return o
@@ -132,12 +145,8 @@ func (o ExtraVolumeMounts) MarshalJSON() ([]byte, error) {
 
 func (o ExtraVolumeMounts) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.MountPath) {
-		toSerialize["mountPath"] = o.MountPath
-	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
+	toSerialize["mountPath"] = o.MountPath
+	toSerialize["name"] = o.Name
 	return toSerialize, nil
 }
 
@@ -146,7 +155,7 @@ type NullableExtraVolumeMounts struct {
 	isSet bool
 }
 
-func (v NullableExtraVolumeMounts) Get() *ExtraVolumeMounts {
+func (v *NullableExtraVolumeMounts) Get() *ExtraVolumeMounts {
 	return v.value
 }
 
@@ -155,7 +164,7 @@ func (v *NullableExtraVolumeMounts) Set(val *ExtraVolumeMounts) {
 	v.isSet = true
 }
 
-func (v NullableExtraVolumeMounts) IsSet() bool {
+func (v *NullableExtraVolumeMounts) IsSet() bool {
 	return v.isSet
 }
 

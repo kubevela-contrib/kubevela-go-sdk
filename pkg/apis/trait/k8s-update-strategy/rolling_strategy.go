@@ -12,6 +12,7 @@ package k8s_update_strategy
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,16 +22,27 @@ var _ utils.MappedNullable = &RollingStrategy{}
 
 // RollingStrategy Specify the parameters of rollong update strategy
 type RollingStrategy struct {
-	MaxSurge       *string `json:"maxSurge,omitempty"`
-	MaxUnavailable *string `json:"maxUnavailable,omitempty"`
-	Partition      *int32  `json:"partition,omitempty"`
+	MaxSurge       *string `json:"maxSurge"`
+	MaxUnavailable *string `json:"maxUnavailable"`
+	Partition      *int32  `json:"partition"`
 }
 
 // NewRollingStrategyWith instantiates a new RollingStrategy object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewRollingStrategyWith() *RollingStrategy {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewRollingStrategyWith(maxSurge string, maxUnavailable string, partition int32) *RollingStrategy {
+	this := RollingStrategy{}
+	this.MaxSurge = &maxSurge
+	this.MaxUnavailable = &maxUnavailable
+	this.Partition = &partition
+	return &this
+}
+
+// NewRollingStrategyWithDefault instantiates a new RollingStrategy object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewRollingStrategyWithDefault() *RollingStrategy {
 	this := RollingStrategy{}
 	var maxSurge string = "25%"
 	this.MaxSurge = &maxSurge
@@ -41,17 +53,17 @@ func NewRollingStrategyWith() *RollingStrategy {
 	return &this
 }
 
-// NewRollingStrategy instantiates a new RollingStrategy object
+// NewRollingStrategy is short for NewRollingStrategyWithDefault which instantiates a new RollingStrategy object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewRollingStrategy() *RollingStrategy {
+	return NewRollingStrategyWithDefault()
+}
+
+// NewRollingStrategyEmpty instantiates a new RollingStrategy object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewRollingStrategyEmpty() *RollingStrategy {
 	this := RollingStrategy{}
-	var maxSurge string = "25%"
-	this.MaxSurge = &maxSurge
-	var maxUnavailable string = "25%"
-	this.MaxUnavailable = &maxUnavailable
-	var partition int32 = 0
-	this.Partition = &partition
 	return &this
 }
 
@@ -65,103 +77,93 @@ func NewRollingStrategyList(ps ...*RollingStrategy) []RollingStrategy {
 	return objs
 }
 
-// GetMaxSurge returns the MaxSurge field value if set, zero value otherwise.
+// Validate validates this RollingStrategy
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *RollingStrategy) Validate() error {
+	if o.MaxSurge == nil {
+		return errors.New("MaxSurge in RollingStrategy must be set")
+	}
+	if o.MaxUnavailable == nil {
+		return errors.New("MaxUnavailable in RollingStrategy must be set")
+	}
+	if o.Partition == nil {
+		return errors.New("Partition in RollingStrategy must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetMaxSurge returns the MaxSurge field value
 func (o *RollingStrategy) GetMaxSurge() string {
-	if o == nil || utils.IsNil(o.MaxSurge) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MaxSurge
 }
 
-// GetMaxSurgeOk returns a tuple with the MaxSurge field value if set, nil otherwise
+// GetMaxSurgeOk returns a tuple with the MaxSurge field value
 // and a boolean to check if the value has been set.
 func (o *RollingStrategy) GetMaxSurgeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.MaxSurge) {
+	if o == nil {
 		return nil, false
 	}
 	return o.MaxSurge, true
 }
 
-// HasMaxSurge returns a boolean if a field has been set.
-func (o *RollingStrategy) HasMaxSurge() bool {
-	if o != nil && !utils.IsNil(o.MaxSurge) {
-		return true
-	}
-
-	return false
-}
-
-// SetMaxSurge gets a reference to the given string and assigns it to the maxSurge field.
-// MaxSurge:
+// SetMaxSurge sets field value
 func (o *RollingStrategy) SetMaxSurge(v string) *RollingStrategy {
 	o.MaxSurge = &v
 	return o
 }
 
-// GetMaxUnavailable returns the MaxUnavailable field value if set, zero value otherwise.
+// GetMaxUnavailable returns the MaxUnavailable field value
 func (o *RollingStrategy) GetMaxUnavailable() string {
-	if o == nil || utils.IsNil(o.MaxUnavailable) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MaxUnavailable
 }
 
-// GetMaxUnavailableOk returns a tuple with the MaxUnavailable field value if set, nil otherwise
+// GetMaxUnavailableOk returns a tuple with the MaxUnavailable field value
 // and a boolean to check if the value has been set.
 func (o *RollingStrategy) GetMaxUnavailableOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.MaxUnavailable) {
+	if o == nil {
 		return nil, false
 	}
 	return o.MaxUnavailable, true
 }
 
-// HasMaxUnavailable returns a boolean if a field has been set.
-func (o *RollingStrategy) HasMaxUnavailable() bool {
-	if o != nil && !utils.IsNil(o.MaxUnavailable) {
-		return true
-	}
-
-	return false
-}
-
-// SetMaxUnavailable gets a reference to the given string and assigns it to the maxUnavailable field.
-// MaxUnavailable:
+// SetMaxUnavailable sets field value
 func (o *RollingStrategy) SetMaxUnavailable(v string) *RollingStrategy {
 	o.MaxUnavailable = &v
 	return o
 }
 
-// GetPartition returns the Partition field value if set, zero value otherwise.
+// GetPartition returns the Partition field value
 func (o *RollingStrategy) GetPartition() int32 {
-	if o == nil || utils.IsNil(o.Partition) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Partition
 }
 
-// GetPartitionOk returns a tuple with the Partition field value if set, nil otherwise
+// GetPartitionOk returns a tuple with the Partition field value
 // and a boolean to check if the value has been set.
 func (o *RollingStrategy) GetPartitionOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Partition) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Partition, true
 }
 
-// HasPartition returns a boolean if a field has been set.
-func (o *RollingStrategy) HasPartition() bool {
-	if o != nil && !utils.IsNil(o.Partition) {
-		return true
-	}
-
-	return false
-}
-
-// SetPartition gets a reference to the given int32 and assigns it to the partition field.
-// Partition:
+// SetPartition sets field value
 func (o *RollingStrategy) SetPartition(v int32) *RollingStrategy {
 	o.Partition = &v
 	return o
@@ -177,15 +179,9 @@ func (o RollingStrategy) MarshalJSON() ([]byte, error) {
 
 func (o RollingStrategy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.MaxSurge) {
-		toSerialize["maxSurge"] = o.MaxSurge
-	}
-	if !utils.IsNil(o.MaxUnavailable) {
-		toSerialize["maxUnavailable"] = o.MaxUnavailable
-	}
-	if !utils.IsNil(o.Partition) {
-		toSerialize["partition"] = o.Partition
-	}
+	toSerialize["maxSurge"] = o.MaxSurge
+	toSerialize["maxUnavailable"] = o.MaxUnavailable
+	toSerialize["partition"] = o.Partition
 	return toSerialize, nil
 }
 
@@ -194,7 +190,7 @@ type NullableRollingStrategy struct {
 	isSet bool
 }
 
-func (v NullableRollingStrategy) Get() *RollingStrategy {
+func (v *NullableRollingStrategy) Get() *RollingStrategy {
 	return v.value
 }
 
@@ -203,7 +199,7 @@ func (v *NullableRollingStrategy) Set(val *RollingStrategy) {
 	v.isSet = true
 }
 
-func (v NullableRollingStrategy) IsSet() bool {
+func (v *NullableRollingStrategy) IsSet() bool {
 	return v.isSet
 }
 

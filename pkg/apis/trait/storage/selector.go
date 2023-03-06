@@ -21,23 +21,37 @@ var _ utils.MappedNullable = &Selector{}
 
 // Selector struct for Selector
 type Selector struct {
-	MatchExpressions *MatchExpressions  `json:"matchExpressions,omitempty"`
-	MatchLabels      *map[string]string `json:"matchLabels,omitempty"`
+	MatchExpressions *MatchExpressions `json:"matchExpressions,omitempty"`
+	MatchLabels      map[string]string `json:"matchLabels,omitempty"`
 }
 
 // NewSelectorWith instantiates a new Selector object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewSelectorWith() *Selector {
 	this := Selector{}
 	return &this
 }
 
-// NewSelector instantiates a new Selector object
+// NewSelectorWithDefault instantiates a new Selector object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSelectorWithDefault() *Selector {
+	this := Selector{}
+	return &this
+}
+
+// NewSelector is short for NewSelectorWithDefault which instantiates a new Selector object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSelector() *Selector {
+	return NewSelectorWithDefault()
+}
+
+// NewSelectorEmpty instantiates a new Selector object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSelectorEmpty() *Selector {
 	this := Selector{}
 	return &this
 }
@@ -50,6 +64,19 @@ func NewSelectorList(ps ...*Selector) []Selector {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Selector
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Selector) Validate() error {
+	// validate all nested properties
+	if o.MatchExpressions != nil {
+		if err := o.MatchExpressions.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetMatchExpressions returns the MatchExpressions field value if set, zero value otherwise.
@@ -92,12 +119,12 @@ func (o *Selector) GetMatchLabels() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.MatchLabels
+	return o.MatchLabels
 }
 
 // GetMatchLabelsOk returns a tuple with the MatchLabels field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Selector) GetMatchLabelsOk() (*map[string]string, bool) {
+func (o *Selector) GetMatchLabelsOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.MatchLabels) {
 		return nil, false
 	}
@@ -116,7 +143,7 @@ func (o *Selector) HasMatchLabels() bool {
 // SetMatchLabels gets a reference to the given map[string]string and assigns it to the matchLabels field.
 // MatchLabels:
 func (o *Selector) SetMatchLabels(v map[string]string) *Selector {
-	o.MatchLabels = &v
+	o.MatchLabels = v
 	return o
 }
 
@@ -144,7 +171,7 @@ type NullableSelector struct {
 	isSet bool
 }
 
-func (v NullableSelector) Get() *Selector {
+func (v *NullableSelector) Get() *Selector {
 	return v.value
 }
 
@@ -153,7 +180,7 @@ func (v *NullableSelector) Set(val *Selector) {
 	v.isSet = true
 }
 
-func (v NullableSelector) IsSet() bool {
+func (v *NullableSelector) IsSet() bool {
 	return v.isSet
 }
 

@@ -31,18 +31,32 @@ type SharedResourceSpec struct {
 }
 
 // NewSharedResourceSpecWith instantiates a new SharedResourceSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewSharedResourceSpecWith() *SharedResourceSpec {
 	this := SharedResourceSpec{}
 	return &this
 }
 
-// NewSharedResourceSpec instantiates a new SharedResourceSpec object
+// NewSharedResourceSpecWithDefault instantiates a new SharedResourceSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSharedResourceSpecWithDefault() *SharedResourceSpec {
+	this := SharedResourceSpec{}
+	return &this
+}
+
+// NewSharedResourceSpec is short for NewSharedResourceSpecWithDefault which instantiates a new SharedResourceSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSharedResourceSpec() *SharedResourceSpec {
+	return NewSharedResourceSpecWithDefault()
+}
+
+// NewSharedResourceSpecEmpty instantiates a new SharedResourceSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSharedResourceSpecEmpty() *SharedResourceSpec {
 	this := SharedResourceSpec{}
 	return &this
 }
@@ -55,6 +69,14 @@ func NewSharedResourceSpecList(ps ...*SharedResourceSpec) []SharedResourceSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this SharedResourceSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *SharedResourcePolicy) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetRules returns the Rules field value if set, zero value otherwise.
@@ -112,7 +134,7 @@ type NullableSharedResourceSpec struct {
 	isSet bool
 }
 
-func (v NullableSharedResourceSpec) Get() *SharedResourceSpec {
+func (v *NullableSharedResourceSpec) Get() *SharedResourceSpec {
 	return v.value
 }
 
@@ -121,7 +143,7 @@ func (v *NullableSharedResourceSpec) Set(val *SharedResourceSpec) {
 	v.isSet = true
 }
 
-func (v NullableSharedResourceSpec) IsSet() bool {
+func (v *NullableSharedResourceSpec) IsSet() bool {
 	return v.isSet
 }
 

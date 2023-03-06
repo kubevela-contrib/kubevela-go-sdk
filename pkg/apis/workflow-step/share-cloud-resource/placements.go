@@ -26,18 +26,32 @@ type Placements struct {
 }
 
 // NewPlacementsWith instantiates a new Placements object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewPlacementsWith() *Placements {
 	this := Placements{}
 	return &this
 }
 
-// NewPlacements instantiates a new Placements object
+// NewPlacementsWithDefault instantiates a new Placements object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPlacementsWithDefault() *Placements {
+	this := Placements{}
+	return &this
+}
+
+// NewPlacements is short for NewPlacementsWithDefault which instantiates a new Placements object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPlacements() *Placements {
+	return NewPlacementsWithDefault()
+}
+
+// NewPlacementsEmpty instantiates a new Placements object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPlacementsEmpty() *Placements {
 	this := Placements{}
 	return &this
 }
@@ -50,6 +64,14 @@ func NewPlacementsList(ps ...*Placements) []Placements {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Placements
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Placements) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetCluster returns the Cluster field value if set, zero value otherwise.
@@ -144,7 +166,7 @@ type NullablePlacements struct {
 	isSet bool
 }
 
-func (v NullablePlacements) Get() *Placements {
+func (v *NullablePlacements) Get() *Placements {
 	return v.value
 }
 
@@ -153,7 +175,7 @@ func (v *NullablePlacements) Set(val *Placements) {
 	v.isSet = true
 }
 
-func (v NullablePlacements) IsSet() bool {
+func (v *NullablePlacements) IsSet() bool {
 	return v.isSet
 }
 

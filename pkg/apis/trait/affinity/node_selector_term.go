@@ -26,18 +26,32 @@ type NodeSelectorTerm struct {
 }
 
 // NewNodeSelectorTermWith instantiates a new NodeSelectorTerm object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewNodeSelectorTermWith() *NodeSelectorTerm {
 	this := NodeSelectorTerm{}
 	return &this
 }
 
-// NewNodeSelectorTerm instantiates a new NodeSelectorTerm object
+// NewNodeSelectorTermWithDefault instantiates a new NodeSelectorTerm object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewNodeSelectorTermWithDefault() *NodeSelectorTerm {
+	this := NodeSelectorTerm{}
+	return &this
+}
+
+// NewNodeSelectorTerm is short for NewNodeSelectorTermWithDefault which instantiates a new NodeSelectorTerm object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewNodeSelectorTerm() *NodeSelectorTerm {
+	return NewNodeSelectorTermWithDefault()
+}
+
+// NewNodeSelectorTermEmpty instantiates a new NodeSelectorTerm object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewNodeSelectorTermEmpty() *NodeSelectorTerm {
 	this := NodeSelectorTerm{}
 	return &this
 }
@@ -50,6 +64,14 @@ func NewNodeSelectorTermList(ps ...*NodeSelectorTerm) []NodeSelectorTerm {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this NodeSelectorTerm
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *NodeSelectorTerm) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetMatchExpressions returns the MatchExpressions field value if set, zero value otherwise.
@@ -144,7 +166,7 @@ type NullableNodeSelectorTerm struct {
 	isSet bool
 }
 
-func (v NullableNodeSelectorTerm) Get() *NodeSelectorTerm {
+func (v *NullableNodeSelectorTerm) Get() *NodeSelectorTerm {
 	return v.value
 }
 
@@ -153,7 +175,7 @@ func (v *NullableNodeSelectorTerm) Set(val *NodeSelectorTerm) {
 	v.isSet = true
 }
 
-func (v NullableNodeSelectorTerm) IsSet() bool {
+func (v *NullableNodeSelectorTerm) IsSet() bool {
 	return v.isSet
 }
 

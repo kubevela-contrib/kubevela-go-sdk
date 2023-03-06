@@ -25,18 +25,32 @@ type Debug struct {
 }
 
 // NewDebugWith instantiates a new Debug object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewDebugWith() *Debug {
 	this := Debug{}
 	return &this
 }
 
-// NewDebug instantiates a new Debug object
+// NewDebugWithDefault instantiates a new Debug object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewDebugWithDefault() *Debug {
+	this := Debug{}
+	return &this
+}
+
+// NewDebug is short for NewDebugWithDefault which instantiates a new Debug object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewDebug() *Debug {
+	return NewDebugWithDefault()
+}
+
+// NewDebugEmpty instantiates a new Debug object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewDebugEmpty() *Debug {
 	this := Debug{}
 	return &this
 }
@@ -49,6 +63,14 @@ func NewDebugList(ps ...*Debug) []Debug {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Debug
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Debug) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetRemoteDebugPort returns the RemoteDebugPort field value if set, zero value otherwise.
@@ -106,7 +128,7 @@ type NullableDebug struct {
 	isSet bool
 }
 
-func (v NullableDebug) Get() *Debug {
+func (v *NullableDebug) Get() *Debug {
 	return v.value
 }
 
@@ -115,7 +137,7 @@ func (v *NullableDebug) Set(val *Debug) {
 	v.isSet = true
 }
 
-func (v NullableDebug) IsSet() bool {
+func (v *NullableDebug) IsSet() bool {
 	return v.isSet
 }
 

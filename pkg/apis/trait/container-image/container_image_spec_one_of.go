@@ -12,6 +12,7 @@ package container_image
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -26,19 +27,33 @@ type ContainerImageSpecOneOf struct {
 }
 
 // NewContainerImageSpecOneOfWith instantiates a new ContainerImageSpecOneOf object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewContainerImageSpecOneOfWith(containers []PatchParams) *ContainerImageSpecOneOf {
 	this := ContainerImageSpecOneOf{}
 	this.Containers = containers
 	return &this
 }
 
-// NewContainerImageSpecOneOf instantiates a new ContainerImageSpecOneOf object
+// NewContainerImageSpecOneOfWithDefault instantiates a new ContainerImageSpecOneOf object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewContainerImageSpecOneOfWithDefault() *ContainerImageSpecOneOf {
+	this := ContainerImageSpecOneOf{}
+	return &this
+}
+
+// NewContainerImageSpecOneOf is short for NewContainerImageSpecOneOfWithDefault which instantiates a new ContainerImageSpecOneOf object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewContainerImageSpecOneOf() *ContainerImageSpecOneOf {
+	return NewContainerImageSpecOneOfWithDefault()
+}
+
+// NewContainerImageSpecOneOfEmpty instantiates a new ContainerImageSpecOneOf object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewContainerImageSpecOneOfEmpty() *ContainerImageSpecOneOf {
 	this := ContainerImageSpecOneOf{}
 	return &this
 }
@@ -51,6 +66,17 @@ func NewContainerImageSpecOneOfList(ps ...*ContainerImageSpecOneOf) []ContainerI
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this ContainerImageSpecOneOf
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *ContainerImageSpecOneOf) Validate() error {
+	if o.Containers == nil {
+		return errors.New("Containers in ContainerImageSpecOneOf must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetContainers returns the Containers field value
@@ -97,7 +123,7 @@ type NullableContainerImageSpecOneOf struct {
 	isSet bool
 }
 
-func (v NullableContainerImageSpecOneOf) Get() *ContainerImageSpecOneOf {
+func (v *NullableContainerImageSpecOneOf) Get() *ContainerImageSpecOneOf {
 	return v.value
 }
 
@@ -106,7 +132,7 @@ func (v *NullableContainerImageSpecOneOf) Set(val *ContainerImageSpecOneOf) {
 	v.isSet = true
 }
 
-func (v NullableContainerImageSpecOneOf) IsSet() bool {
+func (v *NullableContainerImageSpecOneOf) IsSet() bool {
 	return v.isSet
 }
 

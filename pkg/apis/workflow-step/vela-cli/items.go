@@ -12,6 +12,7 @@ package vela_cli
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,29 +22,44 @@ var _ utils.MappedNullable = &Items{}
 
 // Items struct for Items
 type Items struct {
-	Key  *string `json:"key,omitempty"`
-	Mode *int32  `json:"mode,omitempty"`
-	Path *string `json:"path,omitempty"`
+	Key  *string `json:"key"`
+	Mode *int32  `json:"mode"`
+	Path *string `json:"path"`
 }
 
 // NewItemsWith instantiates a new Items object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewItemsWith() *Items {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewItemsWith(key string, mode int32, path string) *Items {
+	this := Items{}
+	this.Key = &key
+	this.Mode = &mode
+	this.Path = &path
+	return &this
+}
+
+// NewItemsWithDefault instantiates a new Items object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewItemsWithDefault() *Items {
 	this := Items{}
 	var mode int32 = 511
 	this.Mode = &mode
 	return &this
 }
 
-// NewItems instantiates a new Items object
+// NewItems is short for NewItemsWithDefault which instantiates a new Items object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewItems() *Items {
+	return NewItemsWithDefault()
+}
+
+// NewItemsEmpty instantiates a new Items object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewItemsEmpty() *Items {
 	this := Items{}
-	var mode int32 = 511
-	this.Mode = &mode
 	return &this
 }
 
@@ -57,103 +73,93 @@ func NewItemsList(ps ...*Items) []Items {
 	return objs
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
+// Validate validates this Items
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Items) Validate() error {
+	if o.Key == nil {
+		return errors.New("Key in Items must be set")
+	}
+	if o.Mode == nil {
+		return errors.New("Mode in Items must be set")
+	}
+	if o.Path == nil {
+		return errors.New("Path in Items must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetKey returns the Key field value
 func (o *Items) GetKey() string {
-	if o == nil || utils.IsNil(o.Key) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Key
 }
 
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// GetKeyOk returns a tuple with the Key field value
 // and a boolean to check if the value has been set.
 func (o *Items) GetKeyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Key) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Key, true
 }
 
-// HasKey returns a boolean if a field has been set.
-func (o *Items) HasKey() bool {
-	if o != nil && !utils.IsNil(o.Key) {
-		return true
-	}
-
-	return false
-}
-
-// SetKey gets a reference to the given string and assigns it to the key field.
-// Key:
+// SetKey sets field value
 func (o *Items) SetKey(v string) *Items {
 	o.Key = &v
 	return o
 }
 
-// GetMode returns the Mode field value if set, zero value otherwise.
+// GetMode returns the Mode field value
 func (o *Items) GetMode() int32 {
-	if o == nil || utils.IsNil(o.Mode) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Mode
 }
 
-// GetModeOk returns a tuple with the Mode field value if set, nil otherwise
+// GetModeOk returns a tuple with the Mode field value
 // and a boolean to check if the value has been set.
 func (o *Items) GetModeOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Mode) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Mode, true
 }
 
-// HasMode returns a boolean if a field has been set.
-func (o *Items) HasMode() bool {
-	if o != nil && !utils.IsNil(o.Mode) {
-		return true
-	}
-
-	return false
-}
-
-// SetMode gets a reference to the given int32 and assigns it to the mode field.
-// Mode:
+// SetMode sets field value
 func (o *Items) SetMode(v int32) *Items {
 	o.Mode = &v
 	return o
 }
 
-// GetPath returns the Path field value if set, zero value otherwise.
+// GetPath returns the Path field value
 func (o *Items) GetPath() string {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Path
 }
 
-// GetPathOk returns a tuple with the Path field value if set, nil otherwise
+// GetPathOk returns a tuple with the Path field value
 // and a boolean to check if the value has been set.
 func (o *Items) GetPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Path) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Path, true
 }
 
-// HasPath returns a boolean if a field has been set.
-func (o *Items) HasPath() bool {
-	if o != nil && !utils.IsNil(o.Path) {
-		return true
-	}
-
-	return false
-}
-
-// SetPath gets a reference to the given string and assigns it to the path field.
-// Path:
+// SetPath sets field value
 func (o *Items) SetPath(v string) *Items {
 	o.Path = &v
 	return o
@@ -169,15 +175,9 @@ func (o Items) MarshalJSON() ([]byte, error) {
 
 func (o Items) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Key) {
-		toSerialize["key"] = o.Key
-	}
-	if !utils.IsNil(o.Mode) {
-		toSerialize["mode"] = o.Mode
-	}
-	if !utils.IsNil(o.Path) {
-		toSerialize["path"] = o.Path
-	}
+	toSerialize["key"] = o.Key
+	toSerialize["mode"] = o.Mode
+	toSerialize["path"] = o.Path
 	return toSerialize, nil
 }
 
@@ -186,7 +186,7 @@ type NullableItems struct {
 	isSet bool
 }
 
-func (v NullableItems) Get() *Items {
+func (v *NullableItems) Get() *Items {
 	return v.value
 }
 
@@ -195,7 +195,7 @@ func (v *NullableItems) Set(val *Items) {
 	v.isSet = true
 }
 
-func (v NullableItems) IsSet() bool {
+func (v *NullableItems) IsSet() bool {
 	return v.isSet
 }
 

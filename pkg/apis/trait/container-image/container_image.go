@@ -12,11 +12,10 @@ package container_image
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
-
-	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
 	sdkcommon "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/common"
@@ -41,6 +40,19 @@ func PatchParamsAsContainerImageSpec(v *PatchParams) ContainerImageSpec {
 	return ContainerImageSpec{
 		PatchParams: v,
 	}
+}
+
+// Validate validates this ContainerImageSpec
+func (o *ContainerImageTrait) Validate() error {
+	if o.Properties.ContainerImageSpecOneOf != nil {
+		return nil
+	}
+
+	if o.Properties.PatchParams != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in ContainerImageSpec")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -121,7 +133,7 @@ type NullableContainerImageSpec struct {
 	isSet bool
 }
 
-func (v NullableContainerImageSpec) Get() *ContainerImageSpec {
+func (v *NullableContainerImageSpec) Get() *ContainerImageSpec {
 	return v.value
 }
 
@@ -130,7 +142,7 @@ func (v *NullableContainerImageSpec) Set(val *ContainerImageSpec) {
 	v.isSet = true
 }
 
-func (v NullableContainerImageSpec) IsSet() bool {
+func (v *NullableContainerImageSpec) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,7 +12,6 @@ package notification
 
 import (
 	"encoding/json"
-
 	"fmt"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
@@ -36,6 +35,19 @@ func UrlOneOf1AsUrl2(v *UrlOneOf1) Url2 {
 	return Url2{
 		UrlOneOf1: v,
 	}
+}
+
+// Validate validates this Url2
+func (o *Url2) Validate() error {
+	if o.UrlOneOf != nil {
+		return nil
+	}
+
+	if o.UrlOneOf1 != nil {
+		return nil
+	}
+
+	return fmt.Errorf("No oneOf schemas were matched in Url2")
 }
 
 // Unmarshal JSON data into one of the pointers in the struct
@@ -116,7 +128,7 @@ type NullableUrl2 struct {
 	isSet bool
 }
 
-func (v NullableUrl2) Get() *Url2 {
+func (v *NullableUrl2) Get() *Url2 {
 	return v.value
 }
 
@@ -125,7 +137,7 @@ func (v *NullableUrl2) Set(val *Url2) {
 	v.isSet = true
 }
 
-func (v NullableUrl2) IsSet() bool {
+func (v *NullableUrl2) IsSet() bool {
 	return v.isSet
 }
 

@@ -239,6 +239,31 @@ func (a *ApplicationBuilder) Build() v1beta1.Application {
 	return res
 }
 
+func (a *ApplicationBuilder) Validate() error {
+	if a.name == "" {
+		return errors.New("name is required")
+	}
+	if a.namespace == "" {
+		return errors.New("namespace is required")
+	}
+	for _, c := range a.components {
+		if err := c.Validate(); err != nil {
+			return err
+		}
+	}
+	for _, s := range a.steps {
+		if err := s.Validate(); err != nil {
+			return err
+		}
+	}
+	for _, p := range a.policies {
+		if err := p.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (a *ApplicationBuilder) ToYAML() (string, error) {
 	app := a.Build()
 	marshal, err := yaml.Marshal(app)

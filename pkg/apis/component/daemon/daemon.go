@@ -12,6 +12,8 @@ package daemon
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -26,27 +28,27 @@ var _ utils.MappedNullable = &DaemonSpec{}
 
 // DaemonSpec struct for DaemonSpec
 type DaemonSpec struct {
-	AddRevisionLabel *bool `json:"addRevisionLabel,omitempty"`
+	AddRevisionLabel *bool `json:"addRevisionLabel"`
 	// Specify the annotations in the workload
-	Annotations *map[string]string `json:"annotations,omitempty"`
+	Annotations map[string]string `json:"annotations,omitempty"`
 	// Commands to run in the container
 	Cmd []string `json:"cmd,omitempty"`
 	// Number of CPU units for the service, like `0.5` (0.5 CPU core), `1` (1 CPU core)
 	Cpu *string `json:"cpu,omitempty"`
 	// Define arguments by using environment variables
 	Env        []Env   `json:"env,omitempty"`
-	ExposeType *string `json:"exposeType,omitempty"`
+	ExposeType *string `json:"exposeType"`
 	// Specify the hostAliases to add
 	HostAliases []HostAliases `json:"hostAliases,omitempty"`
 	// Which image would you like to use for your service +short=i
-	Image *string `json:"image,omitempty"`
+	Image *string `json:"image"`
 	// Specify image pull policy for your service
 	ImagePullPolicy *string `json:"imagePullPolicy,omitempty"`
 	// Specify image pull secrets for your service
 	ImagePullSecrets []string `json:"imagePullSecrets,omitempty"`
 	// Specify the labels in the workload
-	Labels        *map[string]string `json:"labels,omitempty"`
-	LivenessProbe *HealthProbe       `json:"livenessProbe,omitempty"`
+	Labels        map[string]string `json:"labels,omitempty"`
+	LivenessProbe *HealthProbe      `json:"livenessProbe,omitempty"`
 	// Specifies the attributes of the memory resource required for the container.
 	Memory *string `json:"memory,omitempty"`
 	Port   *int32  `json:"port,omitempty"`
@@ -59,10 +61,21 @@ type DaemonSpec struct {
 }
 
 // NewDaemonSpecWith instantiates a new DaemonSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewDaemonSpecWith() *DaemonSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewDaemonSpecWith(addRevisionLabel bool, exposeType string, image string) *DaemonSpec {
+	this := DaemonSpec{}
+	this.AddRevisionLabel = &addRevisionLabel
+	this.ExposeType = &exposeType
+	this.Image = &image
+	return &this
+}
+
+// NewDaemonSpecWithDefault instantiates a new DaemonSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewDaemonSpecWithDefault() *DaemonSpec {
 	this := DaemonSpec{}
 	var addRevisionLabel bool = false
 	this.AddRevisionLabel = &addRevisionLabel
@@ -71,15 +84,17 @@ func NewDaemonSpecWith() *DaemonSpec {
 	return &this
 }
 
-// NewDaemonSpec instantiates a new DaemonSpec object
+// NewDaemonSpec is short for NewDaemonSpecWithDefault which instantiates a new DaemonSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewDaemonSpec() *DaemonSpec {
+	return NewDaemonSpecWithDefault()
+}
+
+// NewDaemonSpecEmpty instantiates a new DaemonSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewDaemonSpecEmpty() *DaemonSpec {
 	this := DaemonSpec{}
-	var addRevisionLabel bool = false
-	this.AddRevisionLabel = &addRevisionLabel
-	var exposeType string = "ClusterIP"
-	this.ExposeType = &exposeType
 	return &this
 }
 
@@ -93,35 +108,64 @@ func NewDaemonSpecList(ps ...*DaemonSpec) []DaemonSpec {
 	return objs
 }
 
-// GetAddRevisionLabel returns the AddRevisionLabel field value if set, zero value otherwise.
+// Validate validates this DaemonSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *DaemonComponent) Validate() error {
+	if o.Properties.AddRevisionLabel == nil {
+		return errors.New("AddRevisionLabel in DaemonSpec must be set")
+	}
+	if o.Properties.ExposeType == nil {
+		return errors.New("ExposeType in DaemonSpec must be set")
+	}
+	if o.Properties.Image == nil {
+		return errors.New("Image in DaemonSpec must be set")
+	}
+	// validate all nested properties
+	if o.Properties.LivenessProbe != nil {
+		if err := o.Properties.LivenessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.ReadinessProbe != nil {
+		if err := o.Properties.ReadinessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.VolumeMounts != nil {
+		if err := o.Properties.VolumeMounts.Validate(); err != nil {
+			return err
+		}
+	}
+
+	for i, v := range o.Base.Traits {
+		if err := v.Validate(); err != nil {
+			return fmt.Errorf("traits[%d] %s in %s component is invalid: %w", i, v.DefType(), DaemonType, err)
+		}
+	}
+	return nil
+}
+
+// GetAddRevisionLabel returns the AddRevisionLabel field value
 func (o *DaemonComponent) GetAddRevisionLabel() bool {
-	if o == nil || utils.IsNil(o.Properties.AddRevisionLabel) {
+	if o == nil {
 		var ret bool
 		return ret
 	}
+
 	return *o.Properties.AddRevisionLabel
 }
 
-// GetAddRevisionLabelOk returns a tuple with the AddRevisionLabel field value if set, nil otherwise
+// GetAddRevisionLabelOk returns a tuple with the AddRevisionLabel field value
 // and a boolean to check if the value has been set.
 func (o *DaemonComponent) GetAddRevisionLabelOk() (*bool, bool) {
-	if o == nil || utils.IsNil(o.Properties.AddRevisionLabel) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.AddRevisionLabel, true
 }
 
-// HasAddRevisionLabel returns a boolean if a field has been set.
-func (o *DaemonComponent) HasAddRevisionLabel() bool {
-	if o != nil && !utils.IsNil(o.Properties.AddRevisionLabel) {
-		return true
-	}
-
-	return false
-}
-
-// SetAddRevisionLabel gets a reference to the given bool and assigns it to the addRevisionLabel field.
-// AddRevisionLabel:
+// SetAddRevisionLabel sets field value
 func (o *DaemonComponent) SetAddRevisionLabel(v bool) *DaemonComponent {
 	o.Properties.AddRevisionLabel = &v
 	return o
@@ -133,12 +177,12 @@ func (o *DaemonComponent) GetAnnotations() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.Properties.Annotations
+	return o.Properties.Annotations
 }
 
 // GetAnnotationsOk returns a tuple with the Annotations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DaemonComponent) GetAnnotationsOk() (*map[string]string, bool) {
+func (o *DaemonComponent) GetAnnotationsOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.Properties.Annotations) {
 		return nil, false
 	}
@@ -157,7 +201,7 @@ func (o *DaemonComponent) HasAnnotations() bool {
 // SetAnnotations gets a reference to the given map[string]string and assigns it to the annotations field.
 // Annotations:  Specify the annotations in the workload
 func (o *DaemonComponent) SetAnnotations(v map[string]string) *DaemonComponent {
-	o.Properties.Annotations = &v
+	o.Properties.Annotations = v
 	return o
 }
 
@@ -263,35 +307,26 @@ func (o *DaemonComponent) SetEnv(v []Env) *DaemonComponent {
 	return o
 }
 
-// GetExposeType returns the ExposeType field value if set, zero value otherwise.
+// GetExposeType returns the ExposeType field value
 func (o *DaemonComponent) GetExposeType() string {
-	if o == nil || utils.IsNil(o.Properties.ExposeType) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.ExposeType
 }
 
-// GetExposeTypeOk returns a tuple with the ExposeType field value if set, nil otherwise
+// GetExposeTypeOk returns a tuple with the ExposeType field value
 // and a boolean to check if the value has been set.
 func (o *DaemonComponent) GetExposeTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.ExposeType) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.ExposeType, true
 }
 
-// HasExposeType returns a boolean if a field has been set.
-func (o *DaemonComponent) HasExposeType() bool {
-	if o != nil && !utils.IsNil(o.Properties.ExposeType) {
-		return true
-	}
-
-	return false
-}
-
-// SetExposeType gets a reference to the given string and assigns it to the exposeType field.
-// ExposeType:
+// SetExposeType sets field value
 func (o *DaemonComponent) SetExposeType(v string) *DaemonComponent {
 	o.Properties.ExposeType = &v
 	return o
@@ -331,35 +366,26 @@ func (o *DaemonComponent) SetHostAliases(v []HostAliases) *DaemonComponent {
 	return o
 }
 
-// GetImage returns the Image field value if set, zero value otherwise.
+// GetImage returns the Image field value
 func (o *DaemonComponent) GetImage() string {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Image
 }
 
-// GetImageOk returns a tuple with the Image field value if set, nil otherwise
+// GetImageOk returns a tuple with the Image field value
 // and a boolean to check if the value has been set.
 func (o *DaemonComponent) GetImageOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Image, true
 }
 
-// HasImage returns a boolean if a field has been set.
-func (o *DaemonComponent) HasImage() bool {
-	if o != nil && !utils.IsNil(o.Properties.Image) {
-		return true
-	}
-
-	return false
-}
-
-// SetImage gets a reference to the given string and assigns it to the image field.
-// Image:  Which image would you like to use for your service +short=i
+// SetImage sets field value
 func (o *DaemonComponent) SetImage(v string) *DaemonComponent {
 	o.Properties.Image = &v
 	return o
@@ -439,12 +465,12 @@ func (o *DaemonComponent) GetLabels() map[string]string {
 		var ret map[string]string
 		return ret
 	}
-	return *o.Properties.Labels
+	return o.Properties.Labels
 }
 
 // GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DaemonComponent) GetLabelsOk() (*map[string]string, bool) {
+func (o *DaemonComponent) GetLabelsOk() (map[string]string, bool) {
 	if o == nil || utils.IsNil(o.Properties.Labels) {
 		return nil, false
 	}
@@ -463,7 +489,7 @@ func (o *DaemonComponent) HasLabels() bool {
 // SetLabels gets a reference to the given map[string]string and assigns it to the labels field.
 // Labels:  Specify the labels in the workload
 func (o *DaemonComponent) SetLabels(v map[string]string) *DaemonComponent {
-	o.Properties.Labels = &v
+	o.Properties.Labels = v
 	return o
 }
 
@@ -715,9 +741,7 @@ func (o DaemonSpec) MarshalJSON() ([]byte, error) {
 
 func (o DaemonSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.AddRevisionLabel) {
-		toSerialize["addRevisionLabel"] = o.AddRevisionLabel
-	}
+	toSerialize["addRevisionLabel"] = o.AddRevisionLabel
 	if !utils.IsNil(o.Annotations) {
 		toSerialize["annotations"] = o.Annotations
 	}
@@ -730,15 +754,11 @@ func (o DaemonSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Env) {
 		toSerialize["env"] = o.Env
 	}
-	if !utils.IsNil(o.ExposeType) {
-		toSerialize["exposeType"] = o.ExposeType
-	}
+	toSerialize["exposeType"] = o.ExposeType
 	if !utils.IsNil(o.HostAliases) {
 		toSerialize["hostAliases"] = o.HostAliases
 	}
-	if !utils.IsNil(o.Image) {
-		toSerialize["image"] = o.Image
-	}
+	toSerialize["image"] = o.Image
 	if !utils.IsNil(o.ImagePullPolicy) {
 		toSerialize["imagePullPolicy"] = o.ImagePullPolicy
 	}
@@ -777,7 +797,7 @@ type NullableDaemonSpec struct {
 	isSet bool
 }
 
-func (v NullableDaemonSpec) Get() *DaemonSpec {
+func (v *NullableDaemonSpec) Get() *DaemonSpec {
 	return v.value
 }
 
@@ -786,7 +806,7 @@ func (v *NullableDaemonSpec) Set(val *DaemonSpec) {
 	v.isSet = true
 }
 
-func (v NullableDaemonSpec) IsSet() bool {
+func (v *NullableDaemonSpec) IsSet() bool {
 	return v.isSet
 }
 
@@ -897,6 +917,10 @@ func (d *DaemonComponent) GetTrait(typ string) apis.Trait {
 		}
 	}
 	return nil
+}
+
+func (d *DaemonComponent) GetAllTraits() []apis.Trait {
+	return d.Base.Traits
 }
 
 func (d *DaemonComponent) ComponentName() string {

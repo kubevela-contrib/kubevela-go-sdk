@@ -28,18 +28,32 @@ type PodAntiAffinity struct {
 }
 
 // NewPodAntiAffinityWith instantiates a new PodAntiAffinity object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewPodAntiAffinityWith() *PodAntiAffinity {
 	this := PodAntiAffinity{}
 	return &this
 }
 
-// NewPodAntiAffinity instantiates a new PodAntiAffinity object
+// NewPodAntiAffinityWithDefault instantiates a new PodAntiAffinity object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPodAntiAffinityWithDefault() *PodAntiAffinity {
+	this := PodAntiAffinity{}
+	return &this
+}
+
+// NewPodAntiAffinity is short for NewPodAntiAffinityWithDefault which instantiates a new PodAntiAffinity object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPodAntiAffinity() *PodAntiAffinity {
+	return NewPodAntiAffinityWithDefault()
+}
+
+// NewPodAntiAffinityEmpty instantiates a new PodAntiAffinity object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPodAntiAffinityEmpty() *PodAntiAffinity {
 	this := PodAntiAffinity{}
 	return &this
 }
@@ -52,6 +66,14 @@ func NewPodAntiAffinityList(ps ...*PodAntiAffinity) []PodAntiAffinity {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this PodAntiAffinity
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PodAntiAffinity) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetPreferred returns the Preferred field value if set, zero value otherwise.
@@ -146,7 +168,7 @@ type NullablePodAntiAffinity struct {
 	isSet bool
 }
 
-func (v NullablePodAntiAffinity) Get() *PodAntiAffinity {
+func (v *NullablePodAntiAffinity) Get() *PodAntiAffinity {
 	return v.value
 }
 
@@ -155,7 +177,7 @@ func (v *NullablePodAntiAffinity) Set(val *PodAntiAffinity) {
 	v.isSet = true
 }
 
-func (v NullablePodAntiAffinity) IsSet() bool {
+func (v *NullablePodAntiAffinity) IsSet() bool {
 	return v.isSet
 }
 

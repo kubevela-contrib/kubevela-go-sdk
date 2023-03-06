@@ -12,6 +12,7 @@ package daemon
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,24 +23,40 @@ var _ utils.MappedNullable = &SecretKeyRef{}
 // SecretKeyRef Selects a key of a secret in the pod's namespace
 type SecretKeyRef struct {
 	// The key of the secret to select from. Must be a valid secret key
-	Key *string `json:"key,omitempty"`
+	Key *string `json:"key"`
 	// The name of the secret in the pod's namespace to select from
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 }
 
 // NewSecretKeyRefWith instantiates a new SecretKeyRef object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewSecretKeyRefWith() *SecretKeyRef {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewSecretKeyRefWith(key string, name string) *SecretKeyRef {
+	this := SecretKeyRef{}
+	this.Key = &key
+	this.Name = &name
+	return &this
+}
+
+// NewSecretKeyRefWithDefault instantiates a new SecretKeyRef object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSecretKeyRefWithDefault() *SecretKeyRef {
 	this := SecretKeyRef{}
 	return &this
 }
 
-// NewSecretKeyRef instantiates a new SecretKeyRef object
+// NewSecretKeyRef is short for NewSecretKeyRefWithDefault which instantiates a new SecretKeyRef object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSecretKeyRef() *SecretKeyRef {
+	return NewSecretKeyRefWithDefault()
+}
+
+// NewSecretKeyRefEmpty instantiates a new SecretKeyRef object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSecretKeyRefEmpty() *SecretKeyRef {
 	this := SecretKeyRef{}
 	return &this
 }
@@ -54,69 +71,65 @@ func NewSecretKeyRefList(ps ...*SecretKeyRef) []SecretKeyRef {
 	return objs
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
+// Validate validates this SecretKeyRef
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *SecretKeyRef) Validate() error {
+	if o.Key == nil {
+		return errors.New("Key in SecretKeyRef must be set")
+	}
+	if o.Name == nil {
+		return errors.New("Name in SecretKeyRef must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetKey returns the Key field value
 func (o *SecretKeyRef) GetKey() string {
-	if o == nil || utils.IsNil(o.Key) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Key
 }
 
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// GetKeyOk returns a tuple with the Key field value
 // and a boolean to check if the value has been set.
 func (o *SecretKeyRef) GetKeyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Key) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Key, true
 }
 
-// HasKey returns a boolean if a field has been set.
-func (o *SecretKeyRef) HasKey() bool {
-	if o != nil && !utils.IsNil(o.Key) {
-		return true
-	}
-
-	return false
-}
-
-// SetKey gets a reference to the given string and assigns it to the key field.
-// Key:  The key of the secret to select from. Must be a valid secret key
+// SetKey sets field value
 func (o *SecretKeyRef) SetKey(v string) *SecretKeyRef {
 	o.Key = &v
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *SecretKeyRef) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *SecretKeyRef) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *SecretKeyRef) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  The name of the secret in the pod's namespace to select from
+// SetName sets field value
 func (o *SecretKeyRef) SetName(v string) *SecretKeyRef {
 	o.Name = &v
 	return o
@@ -132,12 +145,8 @@ func (o SecretKeyRef) MarshalJSON() ([]byte, error) {
 
 func (o SecretKeyRef) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Key) {
-		toSerialize["key"] = o.Key
-	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
+	toSerialize["key"] = o.Key
+	toSerialize["name"] = o.Name
 	return toSerialize, nil
 }
 
@@ -146,7 +155,7 @@ type NullableSecretKeyRef struct {
 	isSet bool
 }
 
-func (v NullableSecretKeyRef) Get() *SecretKeyRef {
+func (v *NullableSecretKeyRef) Get() *SecretKeyRef {
 	return v.value
 }
 
@@ -155,7 +164,7 @@ func (v *NullableSecretKeyRef) Set(val *SecretKeyRef) {
 	v.isSet = true
 }
 
-func (v NullableSecretKeyRef) IsSet() bool {
+func (v *NullableSecretKeyRef) IsSet() bool {
 	return v.isSet
 }
 

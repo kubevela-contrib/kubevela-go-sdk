@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -26,28 +27,43 @@ type Message2 struct {
 	// Specify the message text format in markdown for slack notification
 	Mrkdwn *bool `json:"mrkdwn,omitempty"`
 	// Specify the message text for slack notification
-	Text     *string `json:"text,omitempty"`
+	Text     *string `json:"text"`
 	ThreadTs *string `json:"thread_ts,omitempty"`
 }
 
 // NewMessage2With instantiates a new Message2 object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewMessage2With() *Message2 {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewMessage2With(text string) *Message2 {
+	this := Message2{}
+	var mrkdwn bool = true
+	this.Mrkdwn = &mrkdwn
+	this.Text = &text
+	return &this
+}
+
+// NewMessage2WithDefault instantiates a new Message2 object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewMessage2WithDefault() *Message2 {
 	this := Message2{}
 	var mrkdwn bool = true
 	this.Mrkdwn = &mrkdwn
 	return &this
 }
 
-// NewMessage2 instantiates a new Message2 object
+// NewMessage2 is short for NewMessage2WithDefault which instantiates a new Message2 object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewMessage2() *Message2 {
+	return NewMessage2WithDefault()
+}
+
+// NewMessage2Empty instantiates a new Message2 object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewMessage2Empty() *Message2 {
 	this := Message2{}
-	var mrkdwn bool = true
-	this.Mrkdwn = &mrkdwn
 	return &this
 }
 
@@ -59,6 +75,22 @@ func NewMessage2List(ps ...*Message2) []Message2 {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Message2
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Message2) Validate() error {
+	if o.Text == nil {
+		return errors.New("Text in Message2 must be set")
+	}
+	// validate all nested properties
+	if o.Attachments != nil {
+		if err := o.Attachments.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetAttachments returns the Attachments field value if set, zero value otherwise.
@@ -163,35 +195,26 @@ func (o *Message2) SetMrkdwn(v bool) *Message2 {
 	return o
 }
 
-// GetText returns the Text field value if set, zero value otherwise.
+// GetText returns the Text field value
 func (o *Message2) GetText() string {
-	if o == nil || utils.IsNil(o.Text) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Text
 }
 
-// GetTextOk returns a tuple with the Text field value if set, nil otherwise
+// GetTextOk returns a tuple with the Text field value
 // and a boolean to check if the value has been set.
 func (o *Message2) GetTextOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Text) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Text, true
 }
 
-// HasText returns a boolean if a field has been set.
-func (o *Message2) HasText() bool {
-	if o != nil && !utils.IsNil(o.Text) {
-		return true
-	}
-
-	return false
-}
-
-// SetText gets a reference to the given string and assigns it to the text field.
-// Text:  Specify the message text for slack notification
+// SetText sets field value
 func (o *Message2) SetText(v string) *Message2 {
 	o.Text = &v
 	return o
@@ -250,9 +273,7 @@ func (o Message2) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Mrkdwn) {
 		toSerialize["mrkdwn"] = o.Mrkdwn
 	}
-	if !utils.IsNil(o.Text) {
-		toSerialize["text"] = o.Text
-	}
+	toSerialize["text"] = o.Text
 	if !utils.IsNil(o.ThreadTs) {
 		toSerialize["thread_ts"] = o.ThreadTs
 	}
@@ -264,7 +285,7 @@ type NullableMessage2 struct {
 	isSet bool
 }
 
-func (v NullableMessage2) Get() *Message2 {
+func (v *NullableMessage2) Get() *Message2 {
 	return v.value
 }
 
@@ -273,7 +294,7 @@ func (v *NullableMessage2) Set(val *Message2) {
 	v.isSet = true
 }
 
-func (v NullableMessage2) IsSet() bool {
+func (v *NullableMessage2) IsSet() bool {
 	return v.isSet
 }
 

@@ -28,18 +28,32 @@ type Link struct {
 }
 
 // NewLinkWith instantiates a new Link object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewLinkWith() *Link {
 	this := Link{}
 	return &this
 }
 
-// NewLink instantiates a new Link object
+// NewLinkWithDefault instantiates a new Link object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewLinkWithDefault() *Link {
+	this := Link{}
+	return &this
+}
+
+// NewLink is short for NewLinkWithDefault which instantiates a new Link object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewLink() *Link {
+	return NewLinkWithDefault()
+}
+
+// NewLinkEmpty instantiates a new Link object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewLinkEmpty() *Link {
 	this := Link{}
 	return &this
 }
@@ -52,6 +66,14 @@ func NewLinkList(ps ...*Link) []Link {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this Link
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Link) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetMessageUrl returns the MessageUrl field value if set, zero value otherwise.
@@ -220,7 +242,7 @@ type NullableLink struct {
 	isSet bool
 }
 
-func (v NullableLink) Get() *Link {
+func (v *NullableLink) Get() *Link {
 	return v.value
 }
 
@@ -229,7 +251,7 @@ func (v *NullableLink) Set(val *Link) {
 	v.isSet = true
 }
 
-func (v NullableLink) IsSet() bool {
+func (v *NullableLink) IsSet() bool {
 	return v.isSet
 }
 

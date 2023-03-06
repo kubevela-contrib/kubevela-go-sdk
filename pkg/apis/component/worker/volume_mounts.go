@@ -34,18 +34,32 @@ type VolumeMounts struct {
 }
 
 // NewVolumeMountsWith instantiates a new VolumeMounts object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewVolumeMountsWith() *VolumeMounts {
 	this := VolumeMounts{}
 	return &this
 }
 
-// NewVolumeMounts instantiates a new VolumeMounts object
+// NewVolumeMountsWithDefault instantiates a new VolumeMounts object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewVolumeMountsWithDefault() *VolumeMounts {
+	this := VolumeMounts{}
+	return &this
+}
+
+// NewVolumeMounts is short for NewVolumeMountsWithDefault which instantiates a new VolumeMounts object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewVolumeMounts() *VolumeMounts {
+	return NewVolumeMountsWithDefault()
+}
+
+// NewVolumeMountsEmpty instantiates a new VolumeMounts object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewVolumeMountsEmpty() *VolumeMounts {
 	this := VolumeMounts{}
 	return &this
 }
@@ -58,6 +72,14 @@ func NewVolumeMountsList(ps ...*VolumeMounts) []VolumeMounts {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this VolumeMounts
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *VolumeMounts) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 // GetConfigMap returns the ConfigMap field value if set, zero value otherwise.
@@ -263,7 +285,7 @@ type NullableVolumeMounts struct {
 	isSet bool
 }
 
-func (v NullableVolumeMounts) Get() *VolumeMounts {
+func (v *NullableVolumeMounts) Get() *VolumeMounts {
 	return v.value
 }
 
@@ -272,7 +294,7 @@ func (v *NullableVolumeMounts) Set(val *VolumeMounts) {
 	v.isSet = true
 }
 
-func (v NullableVolumeMounts) IsSet() bool {
+func (v *NullableVolumeMounts) IsSet() bool {
 	return v.isSet
 }
 

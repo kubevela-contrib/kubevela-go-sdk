@@ -12,6 +12,7 @@ package affinity
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,29 +22,43 @@ var _ utils.MappedNullable = &NodeSelecor{}
 
 // NodeSelecor struct for NodeSelecor
 type NodeSelecor struct {
-	Key      *string  `json:"key,omitempty"`
-	Operator *string  `json:"operator,omitempty"`
+	Key      *string  `json:"key"`
+	Operator *string  `json:"operator"`
 	Values   []string `json:"values,omitempty"`
 }
 
 // NewNodeSelecorWith instantiates a new NodeSelecor object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewNodeSelecorWith() *NodeSelecor {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewNodeSelecorWith(key string, operator string) *NodeSelecor {
+	this := NodeSelecor{}
+	this.Key = &key
+	this.Operator = &operator
+	return &this
+}
+
+// NewNodeSelecorWithDefault instantiates a new NodeSelecor object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewNodeSelecorWithDefault() *NodeSelecor {
 	this := NodeSelecor{}
 	var operator string = "In"
 	this.Operator = &operator
 	return &this
 }
 
-// NewNodeSelecor instantiates a new NodeSelecor object
+// NewNodeSelecor is short for NewNodeSelecorWithDefault which instantiates a new NodeSelecor object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewNodeSelecor() *NodeSelecor {
+	return NewNodeSelecorWithDefault()
+}
+
+// NewNodeSelecorEmpty instantiates a new NodeSelecor object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewNodeSelecorEmpty() *NodeSelecor {
 	this := NodeSelecor{}
-	var operator string = "In"
-	this.Operator = &operator
 	return &this
 }
 
@@ -57,69 +72,65 @@ func NewNodeSelecorList(ps ...*NodeSelecor) []NodeSelecor {
 	return objs
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
+// Validate validates this NodeSelecor
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *NodeSelecor) Validate() error {
+	if o.Key == nil {
+		return errors.New("Key in NodeSelecor must be set")
+	}
+	if o.Operator == nil {
+		return errors.New("Operator in NodeSelecor must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetKey returns the Key field value
 func (o *NodeSelecor) GetKey() string {
-	if o == nil || utils.IsNil(o.Key) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Key
 }
 
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// GetKeyOk returns a tuple with the Key field value
 // and a boolean to check if the value has been set.
 func (o *NodeSelecor) GetKeyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Key) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Key, true
 }
 
-// HasKey returns a boolean if a field has been set.
-func (o *NodeSelecor) HasKey() bool {
-	if o != nil && !utils.IsNil(o.Key) {
-		return true
-	}
-
-	return false
-}
-
-// SetKey gets a reference to the given string and assigns it to the key field.
-// Key:
+// SetKey sets field value
 func (o *NodeSelecor) SetKey(v string) *NodeSelecor {
 	o.Key = &v
 	return o
 }
 
-// GetOperator returns the Operator field value if set, zero value otherwise.
+// GetOperator returns the Operator field value
 func (o *NodeSelecor) GetOperator() string {
-	if o == nil || utils.IsNil(o.Operator) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Operator
 }
 
-// GetOperatorOk returns a tuple with the Operator field value if set, nil otherwise
+// GetOperatorOk returns a tuple with the Operator field value
 // and a boolean to check if the value has been set.
 func (o *NodeSelecor) GetOperatorOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Operator) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Operator, true
 }
 
-// HasOperator returns a boolean if a field has been set.
-func (o *NodeSelecor) HasOperator() bool {
-	if o != nil && !utils.IsNil(o.Operator) {
-		return true
-	}
-
-	return false
-}
-
-// SetOperator gets a reference to the given string and assigns it to the operator field.
-// Operator:
+// SetOperator sets field value
 func (o *NodeSelecor) SetOperator(v string) *NodeSelecor {
 	o.Operator = &v
 	return o
@@ -169,12 +180,8 @@ func (o NodeSelecor) MarshalJSON() ([]byte, error) {
 
 func (o NodeSelecor) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Key) {
-		toSerialize["key"] = o.Key
-	}
-	if !utils.IsNil(o.Operator) {
-		toSerialize["operator"] = o.Operator
-	}
+	toSerialize["key"] = o.Key
+	toSerialize["operator"] = o.Operator
 	if !utils.IsNil(o.Values) {
 		toSerialize["values"] = o.Values
 	}
@@ -186,7 +193,7 @@ type NullableNodeSelecor struct {
 	isSet bool
 }
 
-func (v NullableNodeSelecor) Get() *NodeSelecor {
+func (v *NullableNodeSelecor) Get() *NodeSelecor {
 	return v.value
 }
 
@@ -195,7 +202,7 @@ func (v *NullableNodeSelecor) Set(val *NodeSelecor) {
 	v.isSet = true
 }
 
-func (v NullableNodeSelecor) IsSet() bool {
+func (v *NullableNodeSelecor) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,23 +22,39 @@ var _ utils.MappedNullable = &Btns{}
 
 // Btns struct for Btns
 type Btns struct {
-	ActionURL *string `json:"actionURL,omitempty"`
-	Title     *string `json:"title,omitempty"`
+	ActionURL *string `json:"actionURL"`
+	Title     *string `json:"title"`
 }
 
 // NewBtnsWith instantiates a new Btns object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewBtnsWith() *Btns {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewBtnsWith(actionURL string, title string) *Btns {
+	this := Btns{}
+	this.ActionURL = &actionURL
+	this.Title = &title
+	return &this
+}
+
+// NewBtnsWithDefault instantiates a new Btns object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewBtnsWithDefault() *Btns {
 	this := Btns{}
 	return &this
 }
 
-// NewBtns instantiates a new Btns object
+// NewBtns is short for NewBtnsWithDefault which instantiates a new Btns object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewBtns() *Btns {
+	return NewBtnsWithDefault()
+}
+
+// NewBtnsEmpty instantiates a new Btns object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewBtnsEmpty() *Btns {
 	this := Btns{}
 	return &this
 }
@@ -52,69 +69,65 @@ func NewBtnsList(ps ...*Btns) []Btns {
 	return objs
 }
 
-// GetActionURL returns the ActionURL field value if set, zero value otherwise.
+// Validate validates this Btns
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Btns) Validate() error {
+	if o.ActionURL == nil {
+		return errors.New("ActionURL in Btns must be set")
+	}
+	if o.Title == nil {
+		return errors.New("Title in Btns must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetActionURL returns the ActionURL field value
 func (o *Btns) GetActionURL() string {
-	if o == nil || utils.IsNil(o.ActionURL) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.ActionURL
 }
 
-// GetActionURLOk returns a tuple with the ActionURL field value if set, nil otherwise
+// GetActionURLOk returns a tuple with the ActionURL field value
 // and a boolean to check if the value has been set.
 func (o *Btns) GetActionURLOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.ActionURL) {
+	if o == nil {
 		return nil, false
 	}
 	return o.ActionURL, true
 }
 
-// HasActionURL returns a boolean if a field has been set.
-func (o *Btns) HasActionURL() bool {
-	if o != nil && !utils.IsNil(o.ActionURL) {
-		return true
-	}
-
-	return false
-}
-
-// SetActionURL gets a reference to the given string and assigns it to the actionURL field.
-// ActionURL:
+// SetActionURL sets field value
 func (o *Btns) SetActionURL(v string) *Btns {
 	o.ActionURL = &v
 	return o
 }
 
-// GetTitle returns the Title field value if set, zero value otherwise.
+// GetTitle returns the Title field value
 func (o *Btns) GetTitle() string {
-	if o == nil || utils.IsNil(o.Title) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Title
 }
 
-// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
+// GetTitleOk returns a tuple with the Title field value
 // and a boolean to check if the value has been set.
 func (o *Btns) GetTitleOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Title) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Title, true
 }
 
-// HasTitle returns a boolean if a field has been set.
-func (o *Btns) HasTitle() bool {
-	if o != nil && !utils.IsNil(o.Title) {
-		return true
-	}
-
-	return false
-}
-
-// SetTitle gets a reference to the given string and assigns it to the title field.
-// Title:
+// SetTitle sets field value
 func (o *Btns) SetTitle(v string) *Btns {
 	o.Title = &v
 	return o
@@ -130,12 +143,8 @@ func (o Btns) MarshalJSON() ([]byte, error) {
 
 func (o Btns) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.ActionURL) {
-		toSerialize["actionURL"] = o.ActionURL
-	}
-	if !utils.IsNil(o.Title) {
-		toSerialize["title"] = o.Title
-	}
+	toSerialize["actionURL"] = o.ActionURL
+	toSerialize["title"] = o.Title
 	return toSerialize, nil
 }
 
@@ -144,7 +153,7 @@ type NullableBtns struct {
 	isSet bool
 }
 
-func (v NullableBtns) Get() *Btns {
+func (v *NullableBtns) Get() *Btns {
 	return v.value
 }
 
@@ -153,7 +162,7 @@ func (v *NullableBtns) Set(val *Btns) {
 	v.isSet = true
 }
 
-func (v NullableBtns) IsSet() bool {
+func (v *NullableBtns) IsSet() bool {
 	return v.isSet
 }
 

@@ -12,6 +12,7 @@ package daemon
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,31 +22,47 @@ var _ utils.MappedNullable = &Secret{}
 
 // Secret struct for Secret
 type Secret struct {
-	DefaultMode *int32  `json:"defaultMode,omitempty"`
+	DefaultMode *int32  `json:"defaultMode"`
 	Items       []Items `json:"items,omitempty"`
-	MountPath   *string `json:"mountPath,omitempty"`
-	Name        *string `json:"name,omitempty"`
-	SecretName  *string `json:"secretName,omitempty"`
+	MountPath   *string `json:"mountPath"`
+	Name        *string `json:"name"`
+	SecretName  *string `json:"secretName"`
 }
 
 // NewSecretWith instantiates a new Secret object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewSecretWith() *Secret {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewSecretWith(defaultMode int32, mountPath string, name string, secretName string) *Secret {
+	this := Secret{}
+	this.DefaultMode = &defaultMode
+	this.MountPath = &mountPath
+	this.Name = &name
+	this.SecretName = &secretName
+	return &this
+}
+
+// NewSecretWithDefault instantiates a new Secret object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSecretWithDefault() *Secret {
 	this := Secret{}
 	var defaultMode int32 = 420
 	this.DefaultMode = &defaultMode
 	return &this
 }
 
-// NewSecret instantiates a new Secret object
+// NewSecret is short for NewSecretWithDefault which instantiates a new Secret object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSecret() *Secret {
+	return NewSecretWithDefault()
+}
+
+// NewSecretEmpty instantiates a new Secret object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSecretEmpty() *Secret {
 	this := Secret{}
-	var defaultMode int32 = 420
-	this.DefaultMode = &defaultMode
 	return &this
 }
 
@@ -59,35 +76,46 @@ func NewSecretList(ps ...*Secret) []Secret {
 	return objs
 }
 
-// GetDefaultMode returns the DefaultMode field value if set, zero value otherwise.
+// Validate validates this Secret
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Secret) Validate() error {
+	if o.DefaultMode == nil {
+		return errors.New("DefaultMode in Secret must be set")
+	}
+	if o.MountPath == nil {
+		return errors.New("MountPath in Secret must be set")
+	}
+	if o.Name == nil {
+		return errors.New("Name in Secret must be set")
+	}
+	if o.SecretName == nil {
+		return errors.New("SecretName in Secret must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetDefaultMode returns the DefaultMode field value
 func (o *Secret) GetDefaultMode() int32 {
-	if o == nil || utils.IsNil(o.DefaultMode) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.DefaultMode
 }
 
-// GetDefaultModeOk returns a tuple with the DefaultMode field value if set, nil otherwise
+// GetDefaultModeOk returns a tuple with the DefaultMode field value
 // and a boolean to check if the value has been set.
 func (o *Secret) GetDefaultModeOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.DefaultMode) {
+	if o == nil {
 		return nil, false
 	}
 	return o.DefaultMode, true
 }
 
-// HasDefaultMode returns a boolean if a field has been set.
-func (o *Secret) HasDefaultMode() bool {
-	if o != nil && !utils.IsNil(o.DefaultMode) {
-		return true
-	}
-
-	return false
-}
-
-// SetDefaultMode gets a reference to the given int32 and assigns it to the defaultMode field.
-// DefaultMode:
+// SetDefaultMode sets field value
 func (o *Secret) SetDefaultMode(v int32) *Secret {
 	o.DefaultMode = &v
 	return o
@@ -127,103 +155,76 @@ func (o *Secret) SetItems(v []Items) *Secret {
 	return o
 }
 
-// GetMountPath returns the MountPath field value if set, zero value otherwise.
+// GetMountPath returns the MountPath field value
 func (o *Secret) GetMountPath() string {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MountPath
 }
 
-// GetMountPathOk returns a tuple with the MountPath field value if set, nil otherwise
+// GetMountPathOk returns a tuple with the MountPath field value
 // and a boolean to check if the value has been set.
 func (o *Secret) GetMountPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		return nil, false
 	}
 	return o.MountPath, true
 }
 
-// HasMountPath returns a boolean if a field has been set.
-func (o *Secret) HasMountPath() bool {
-	if o != nil && !utils.IsNil(o.MountPath) {
-		return true
-	}
-
-	return false
-}
-
-// SetMountPath gets a reference to the given string and assigns it to the mountPath field.
-// MountPath:
+// SetMountPath sets field value
 func (o *Secret) SetMountPath(v string) *Secret {
 	o.MountPath = &v
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *Secret) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *Secret) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *Secret) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
+// SetName sets field value
 func (o *Secret) SetName(v string) *Secret {
 	o.Name = &v
 	return o
 }
 
-// GetSecretName returns the SecretName field value if set, zero value otherwise.
+// GetSecretName returns the SecretName field value
 func (o *Secret) GetSecretName() string {
-	if o == nil || utils.IsNil(o.SecretName) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.SecretName
 }
 
-// GetSecretNameOk returns a tuple with the SecretName field value if set, nil otherwise
+// GetSecretNameOk returns a tuple with the SecretName field value
 // and a boolean to check if the value has been set.
 func (o *Secret) GetSecretNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.SecretName) {
+	if o == nil {
 		return nil, false
 	}
 	return o.SecretName, true
 }
 
-// HasSecretName returns a boolean if a field has been set.
-func (o *Secret) HasSecretName() bool {
-	if o != nil && !utils.IsNil(o.SecretName) {
-		return true
-	}
-
-	return false
-}
-
-// SetSecretName gets a reference to the given string and assigns it to the secretName field.
-// SecretName:
+// SetSecretName sets field value
 func (o *Secret) SetSecretName(v string) *Secret {
 	o.SecretName = &v
 	return o
@@ -239,21 +240,13 @@ func (o Secret) MarshalJSON() ([]byte, error) {
 
 func (o Secret) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.DefaultMode) {
-		toSerialize["defaultMode"] = o.DefaultMode
-	}
+	toSerialize["defaultMode"] = o.DefaultMode
 	if !utils.IsNil(o.Items) {
 		toSerialize["items"] = o.Items
 	}
-	if !utils.IsNil(o.MountPath) {
-		toSerialize["mountPath"] = o.MountPath
-	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.SecretName) {
-		toSerialize["secretName"] = o.SecretName
-	}
+	toSerialize["mountPath"] = o.MountPath
+	toSerialize["name"] = o.Name
+	toSerialize["secretName"] = o.SecretName
 	return toSerialize, nil
 }
 
@@ -262,7 +255,7 @@ type NullableSecret struct {
 	isSet bool
 }
 
-func (v NullableSecret) Get() *Secret {
+func (v *NullableSecret) Get() *Secret {
 	return v.value
 }
 
@@ -271,7 +264,7 @@ func (v *NullableSecret) Set(val *Secret) {
 	v.isSet = true
 }
 
-func (v NullableSecret) IsSet() bool {
+func (v *NullableSecret) IsSet() bool {
 	return v.isSet
 }
 

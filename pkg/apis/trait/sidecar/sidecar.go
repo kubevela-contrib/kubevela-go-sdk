@@ -12,6 +12,7 @@ package sidecar
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -33,28 +34,44 @@ type SidecarSpec struct {
 	// Specify the env in the sidecar
 	Env []Env `json:"env,omitempty"`
 	// Specify the image of sidecar container
-	Image         *string      `json:"image,omitempty"`
+	Image         *string      `json:"image"`
 	LivenessProbe *HealthProbe `json:"livenessProbe,omitempty"`
 	// Specify the name of sidecar container
-	Name           *string      `json:"name,omitempty"`
+	Name           *string      `json:"name"`
 	ReadinessProbe *HealthProbe `json:"readinessProbe,omitempty"`
 	// Specify the shared volume path
 	Volumes []Volumes `json:"volumes,omitempty"`
 }
 
 // NewSidecarSpecWith instantiates a new SidecarSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewSidecarSpecWith() *SidecarSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewSidecarSpecWith(image string, name string) *SidecarSpec {
+	this := SidecarSpec{}
+	this.Image = &image
+	this.Name = &name
+	return &this
+}
+
+// NewSidecarSpecWithDefault instantiates a new SidecarSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewSidecarSpecWithDefault() *SidecarSpec {
 	this := SidecarSpec{}
 	return &this
 }
 
-// NewSidecarSpec instantiates a new SidecarSpec object
+// NewSidecarSpec is short for NewSidecarSpecWithDefault which instantiates a new SidecarSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewSidecarSpec() *SidecarSpec {
+	return NewSidecarSpecWithDefault()
+}
+
+// NewSidecarSpecEmpty instantiates a new SidecarSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewSidecarSpecEmpty() *SidecarSpec {
 	this := SidecarSpec{}
 	return &this
 }
@@ -67,6 +84,30 @@ func NewSidecarSpecList(ps ...*SidecarSpec) []SidecarSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this SidecarSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *SidecarTrait) Validate() error {
+	if o.Properties.Image == nil {
+		return errors.New("Image in SidecarSpec must be set")
+	}
+	if o.Properties.Name == nil {
+		return errors.New("Name in SidecarSpec must be set")
+	}
+	// validate all nested properties
+	if o.Properties.LivenessProbe != nil {
+		if err := o.Properties.LivenessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.ReadinessProbe != nil {
+		if err := o.Properties.ReadinessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetArgs returns the Args field value if set, zero value otherwise.
@@ -171,35 +212,26 @@ func (o *SidecarTrait) SetEnv(v []Env) *SidecarTrait {
 	return o
 }
 
-// GetImage returns the Image field value if set, zero value otherwise.
+// GetImage returns the Image field value
 func (o *SidecarTrait) GetImage() string {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Image
 }
 
-// GetImageOk returns a tuple with the Image field value if set, nil otherwise
+// GetImageOk returns a tuple with the Image field value
 // and a boolean to check if the value has been set.
 func (o *SidecarTrait) GetImageOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Image) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Image, true
 }
 
-// HasImage returns a boolean if a field has been set.
-func (o *SidecarTrait) HasImage() bool {
-	if o != nil && !utils.IsNil(o.Properties.Image) {
-		return true
-	}
-
-	return false
-}
-
-// SetImage gets a reference to the given string and assigns it to the image field.
-// Image:  Specify the image of sidecar container
+// SetImage sets field value
 func (o *SidecarTrait) SetImage(v string) *SidecarTrait {
 	o.Properties.Image = &v
 	return o
@@ -239,35 +271,26 @@ func (o *SidecarTrait) SetLivenessProbe(v HealthProbe) *SidecarTrait {
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *SidecarTrait) GetName() string {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *SidecarTrait) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *SidecarTrait) HasName() bool {
-	if o != nil && !utils.IsNil(o.Properties.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Specify the name of sidecar container
+// SetName sets field value
 func (o *SidecarTrait) SetName(v string) *SidecarTrait {
 	o.Properties.Name = &v
 	return o
@@ -360,15 +383,11 @@ func (o SidecarSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Env) {
 		toSerialize["env"] = o.Env
 	}
-	if !utils.IsNil(o.Image) {
-		toSerialize["image"] = o.Image
-	}
+	toSerialize["image"] = o.Image
 	if !utils.IsNil(o.LivenessProbe) {
 		toSerialize["livenessProbe"] = o.LivenessProbe
 	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
+	toSerialize["name"] = o.Name
 	if !utils.IsNil(o.ReadinessProbe) {
 		toSerialize["readinessProbe"] = o.ReadinessProbe
 	}
@@ -383,7 +402,7 @@ type NullableSidecarSpec struct {
 	isSet bool
 }
 
-func (v NullableSidecarSpec) Get() *SidecarSpec {
+func (v *NullableSidecarSpec) Get() *SidecarSpec {
 	return v.value
 }
 
@@ -392,7 +411,7 @@ func (v *NullableSidecarSpec) Set(val *SidecarSpec) {
 	v.isSet = true
 }
 
-func (v NullableSidecarSpec) IsSet() bool {
+func (v *NullableSidecarSpec) IsSet() bool {
 	return v.isSet
 }
 

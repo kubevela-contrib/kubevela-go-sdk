@@ -29,18 +29,32 @@ type JsonMergePatchSpec struct {
 }
 
 // NewJsonMergePatchSpecWith instantiates a new JsonMergePatchSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewJsonMergePatchSpecWith() *JsonMergePatchSpec {
 	this := JsonMergePatchSpec{}
 	return &this
 }
 
-// NewJsonMergePatchSpec instantiates a new JsonMergePatchSpec object
+// NewJsonMergePatchSpecWithDefault instantiates a new JsonMergePatchSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewJsonMergePatchSpecWithDefault() *JsonMergePatchSpec {
+	this := JsonMergePatchSpec{}
+	return &this
+}
+
+// NewJsonMergePatchSpec is short for NewJsonMergePatchSpecWithDefault which instantiates a new JsonMergePatchSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewJsonMergePatchSpec() *JsonMergePatchSpec {
+	return NewJsonMergePatchSpecWithDefault()
+}
+
+// NewJsonMergePatchSpecEmpty instantiates a new JsonMergePatchSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewJsonMergePatchSpecEmpty() *JsonMergePatchSpec {
 	this := JsonMergePatchSpec{}
 	return &this
 }
@@ -53,6 +67,14 @@ func NewJsonMergePatchSpecList(ps ...*JsonMergePatchSpec) []JsonMergePatchSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this JsonMergePatchSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *JSONMergePatchTrait) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 func (o JsonMergePatchSpec) MarshalJSON() ([]byte, error) {
@@ -73,7 +95,7 @@ type NullableJsonMergePatchSpec struct {
 	isSet bool
 }
 
-func (v NullableJsonMergePatchSpec) Get() *JsonMergePatchSpec {
+func (v *NullableJsonMergePatchSpec) Get() *JsonMergePatchSpec {
 	return v.value
 }
 
@@ -82,7 +104,7 @@ func (v *NullableJsonMergePatchSpec) Set(val *JsonMergePatchSpec) {
 	v.isSet = true
 }
 
-func (v NullableJsonMergePatchSpec) IsSet() bool {
+func (v *NullableJsonMergePatchSpec) IsSet() bool {
 	return v.isSet
 }
 

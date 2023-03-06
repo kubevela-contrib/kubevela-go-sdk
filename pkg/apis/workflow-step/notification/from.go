@@ -12,6 +12,7 @@ package notification
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,34 +23,50 @@ var _ utils.MappedNullable = &From{}
 // From Specify the email info that you want to send from
 type From struct {
 	// Specify the email address that you want to send from
-	Address *string `json:"address,omitempty"`
+	Address *string `json:"address"`
 	// The alias is the email alias to show after sending the email
 	Alias *string `json:"alias,omitempty"`
 	// Specify the host of your email
-	Host     *string   `json:"host,omitempty"`
-	Password *Password `json:"password,omitempty"`
+	Host     *string   `json:"host"`
+	Password *Password `json:"password"`
 	// Specify the port of the email host, default to 587
-	Port *int32 `json:"port,omitempty"`
+	Port *int32 `json:"port"`
 }
 
 // NewFromWith instantiates a new From object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewFromWith() *From {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewFromWith(address string, host string, password Password, port int32) *From {
+	this := From{}
+	this.Address = &address
+	this.Host = &host
+	this.Password = &password
+	this.Port = &port
+	return &this
+}
+
+// NewFromWithDefault instantiates a new From object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewFromWithDefault() *From {
 	this := From{}
 	var port int32 = 587
 	this.Port = &port
 	return &this
 }
 
-// NewFrom instantiates a new From object
+// NewFrom is short for NewFromWithDefault which instantiates a new From object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewFrom() *From {
+	return NewFromWithDefault()
+}
+
+// NewFromEmpty instantiates a new From object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewFromEmpty() *From {
 	this := From{}
-	var port int32 = 587
-	this.Port = &port
 	return &this
 }
 
@@ -63,35 +80,51 @@ func NewFromList(ps ...*From) []From {
 	return objs
 }
 
-// GetAddress returns the Address field value if set, zero value otherwise.
+// Validate validates this From
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *From) Validate() error {
+	if o.Address == nil {
+		return errors.New("Address in From must be set")
+	}
+	if o.Host == nil {
+		return errors.New("Host in From must be set")
+	}
+	if o.Password == nil {
+		return errors.New("Password in From must be set")
+	}
+	if o.Port == nil {
+		return errors.New("Port in From must be set")
+	}
+	// validate all nested properties
+	if o.Password != nil {
+		if err := o.Password.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetAddress returns the Address field value
 func (o *From) GetAddress() string {
-	if o == nil || utils.IsNil(o.Address) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Address
 }
 
-// GetAddressOk returns a tuple with the Address field value if set, nil otherwise
+// GetAddressOk returns a tuple with the Address field value
 // and a boolean to check if the value has been set.
 func (o *From) GetAddressOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Address) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Address, true
 }
 
-// HasAddress returns a boolean if a field has been set.
-func (o *From) HasAddress() bool {
-	if o != nil && !utils.IsNil(o.Address) {
-		return true
-	}
-
-	return false
-}
-
-// SetAddress gets a reference to the given string and assigns it to the address field.
-// Address:  Specify the email address that you want to send from
+// SetAddress sets field value
 func (o *From) SetAddress(v string) *From {
 	o.Address = &v
 	return o
@@ -131,103 +164,76 @@ func (o *From) SetAlias(v string) *From {
 	return o
 }
 
-// GetHost returns the Host field value if set, zero value otherwise.
+// GetHost returns the Host field value
 func (o *From) GetHost() string {
-	if o == nil || utils.IsNil(o.Host) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Host
 }
 
-// GetHostOk returns a tuple with the Host field value if set, nil otherwise
+// GetHostOk returns a tuple with the Host field value
 // and a boolean to check if the value has been set.
 func (o *From) GetHostOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Host) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Host, true
 }
 
-// HasHost returns a boolean if a field has been set.
-func (o *From) HasHost() bool {
-	if o != nil && !utils.IsNil(o.Host) {
-		return true
-	}
-
-	return false
-}
-
-// SetHost gets a reference to the given string and assigns it to the host field.
-// Host:  Specify the host of your email
+// SetHost sets field value
 func (o *From) SetHost(v string) *From {
 	o.Host = &v
 	return o
 }
 
-// GetPassword returns the Password field value if set, zero value otherwise.
+// GetPassword returns the Password field value
 func (o *From) GetPassword() Password {
-	if o == nil || utils.IsNil(o.Password) {
+	if o == nil {
 		var ret Password
 		return ret
 	}
+
 	return *o.Password
 }
 
-// GetPasswordOk returns a tuple with the Password field value if set, nil otherwise
+// GetPasswordOk returns a tuple with the Password field value
 // and a boolean to check if the value has been set.
 func (o *From) GetPasswordOk() (*Password, bool) {
-	if o == nil || utils.IsNil(o.Password) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Password, true
 }
 
-// HasPassword returns a boolean if a field has been set.
-func (o *From) HasPassword() bool {
-	if o != nil && !utils.IsNil(o.Password) {
-		return true
-	}
-
-	return false
-}
-
-// SetPassword gets a reference to the given Password and assigns it to the password field.
-// Password:
+// SetPassword sets field value
 func (o *From) SetPassword(v Password) *From {
 	o.Password = &v
 	return o
 }
 
-// GetPort returns the Port field value if set, zero value otherwise.
+// GetPort returns the Port field value
 func (o *From) GetPort() int32 {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
+
 	return *o.Port
 }
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
 func (o *From) GetPortOk() (*int32, bool) {
-	if o == nil || utils.IsNil(o.Port) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Port, true
 }
 
-// HasPort returns a boolean if a field has been set.
-func (o *From) HasPort() bool {
-	if o != nil && !utils.IsNil(o.Port) {
-		return true
-	}
-
-	return false
-}
-
-// SetPort gets a reference to the given int32 and assigns it to the port field.
-// Port:  Specify the port of the email host, default to 587
+// SetPort sets field value
 func (o *From) SetPort(v int32) *From {
 	o.Port = &v
 	return o
@@ -243,21 +249,13 @@ func (o From) MarshalJSON() ([]byte, error) {
 
 func (o From) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Address) {
-		toSerialize["address"] = o.Address
-	}
+	toSerialize["address"] = o.Address
 	if !utils.IsNil(o.Alias) {
 		toSerialize["alias"] = o.Alias
 	}
-	if !utils.IsNil(o.Host) {
-		toSerialize["host"] = o.Host
-	}
-	if !utils.IsNil(o.Password) {
-		toSerialize["password"] = o.Password
-	}
-	if !utils.IsNil(o.Port) {
-		toSerialize["port"] = o.Port
-	}
+	toSerialize["host"] = o.Host
+	toSerialize["password"] = o.Password
+	toSerialize["port"] = o.Port
 	return toSerialize, nil
 }
 
@@ -266,7 +264,7 @@ type NullableFrom struct {
 	isSet bool
 }
 
-func (v NullableFrom) Get() *From {
+func (v *NullableFrom) Get() *From {
 	return v.value
 }
 
@@ -275,7 +273,7 @@ func (v *NullableFrom) Set(val *From) {
 	v.isSet = true
 }
 
-func (v NullableFrom) IsSet() bool {
+func (v *NullableFrom) IsSet() bool {
 	return v.isSet
 }
 

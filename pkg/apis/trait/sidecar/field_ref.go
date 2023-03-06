@@ -12,6 +12,7 @@ package sidecar
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,22 +23,37 @@ var _ utils.MappedNullable = &FieldRef{}
 // FieldRef Specify the field reference for env
 type FieldRef struct {
 	// Specify the field path for env
-	FieldPath *string `json:"fieldPath,omitempty"`
+	FieldPath *string `json:"fieldPath"`
 }
 
 // NewFieldRefWith instantiates a new FieldRef object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewFieldRefWith() *FieldRef {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewFieldRefWith(fieldPath string) *FieldRef {
+	this := FieldRef{}
+	this.FieldPath = &fieldPath
+	return &this
+}
+
+// NewFieldRefWithDefault instantiates a new FieldRef object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewFieldRefWithDefault() *FieldRef {
 	this := FieldRef{}
 	return &this
 }
 
-// NewFieldRef instantiates a new FieldRef object
+// NewFieldRef is short for NewFieldRefWithDefault which instantiates a new FieldRef object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewFieldRef() *FieldRef {
+	return NewFieldRefWithDefault()
+}
+
+// NewFieldRefEmpty instantiates a new FieldRef object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewFieldRefEmpty() *FieldRef {
 	this := FieldRef{}
 	return &this
 }
@@ -52,35 +68,37 @@ func NewFieldRefList(ps ...*FieldRef) []FieldRef {
 	return objs
 }
 
-// GetFieldPath returns the FieldPath field value if set, zero value otherwise.
+// Validate validates this FieldRef
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *FieldRef) Validate() error {
+	if o.FieldPath == nil {
+		return errors.New("FieldPath in FieldRef must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetFieldPath returns the FieldPath field value
 func (o *FieldRef) GetFieldPath() string {
-	if o == nil || utils.IsNil(o.FieldPath) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.FieldPath
 }
 
-// GetFieldPathOk returns a tuple with the FieldPath field value if set, nil otherwise
+// GetFieldPathOk returns a tuple with the FieldPath field value
 // and a boolean to check if the value has been set.
 func (o *FieldRef) GetFieldPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.FieldPath) {
+	if o == nil {
 		return nil, false
 	}
 	return o.FieldPath, true
 }
 
-// HasFieldPath returns a boolean if a field has been set.
-func (o *FieldRef) HasFieldPath() bool {
-	if o != nil && !utils.IsNil(o.FieldPath) {
-		return true
-	}
-
-	return false
-}
-
-// SetFieldPath gets a reference to the given string and assigns it to the fieldPath field.
-// FieldPath:  Specify the field path for env
+// SetFieldPath sets field value
 func (o *FieldRef) SetFieldPath(v string) *FieldRef {
 	o.FieldPath = &v
 	return o
@@ -96,9 +114,7 @@ func (o FieldRef) MarshalJSON() ([]byte, error) {
 
 func (o FieldRef) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.FieldPath) {
-		toSerialize["fieldPath"] = o.FieldPath
-	}
+	toSerialize["fieldPath"] = o.FieldPath
 	return toSerialize, nil
 }
 
@@ -107,7 +123,7 @@ type NullableFieldRef struct {
 	isSet bool
 }
 
-func (v NullableFieldRef) Get() *FieldRef {
+func (v *NullableFieldRef) Get() *FieldRef {
 	return v.value
 }
 
@@ -116,7 +132,7 @@ func (v *NullableFieldRef) Set(val *FieldRef) {
 	v.isSet = true
 }
 
-func (v NullableFieldRef) IsSet() bool {
+func (v *NullableFieldRef) IsSet() bool {
 	return v.isSet
 }
 

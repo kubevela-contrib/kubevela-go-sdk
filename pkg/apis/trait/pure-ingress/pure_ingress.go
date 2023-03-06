@@ -12,6 +12,7 @@ package pure_ingress
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
@@ -27,24 +28,40 @@ var _ utils.MappedNullable = &PureIngressSpec{}
 // PureIngressSpec struct for PureIngressSpec
 type PureIngressSpec struct {
 	// Specify the domain you want to expose
-	Domain *string `json:"domain,omitempty"`
+	Domain *string `json:"domain"`
 	// Specify the mapping relationship between the http path and the workload port
-	Http *map[string]int32 `json:"http,omitempty"`
+	Http map[string]int32 `json:"http"`
 }
 
 // NewPureIngressSpecWith instantiates a new PureIngressSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPureIngressSpecWith() *PureIngressSpec {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPureIngressSpecWith(domain string, http map[string]int32) *PureIngressSpec {
+	this := PureIngressSpec{}
+	this.Domain = &domain
+	this.Http = http
+	return &this
+}
+
+// NewPureIngressSpecWithDefault instantiates a new PureIngressSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPureIngressSpecWithDefault() *PureIngressSpec {
 	this := PureIngressSpec{}
 	return &this
 }
 
-// NewPureIngressSpec instantiates a new PureIngressSpec object
+// NewPureIngressSpec is short for NewPureIngressSpecWithDefault which instantiates a new PureIngressSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPureIngressSpec() *PureIngressSpec {
+	return NewPureIngressSpecWithDefault()
+}
+
+// NewPureIngressSpecEmpty instantiates a new PureIngressSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPureIngressSpecEmpty() *PureIngressSpec {
 	this := PureIngressSpec{}
 	return &this
 }
@@ -59,71 +76,67 @@ func NewPureIngressSpecList(ps ...*PureIngressSpec) []PureIngressSpec {
 	return objs
 }
 
-// GetDomain returns the Domain field value if set, zero value otherwise.
+// Validate validates this PureIngressSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PureIngressTrait) Validate() error {
+	if o.Properties.Domain == nil {
+		return errors.New("Domain in PureIngressSpec must be set")
+	}
+	if o.Properties.Http == nil {
+		return errors.New("Http in PureIngressSpec must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetDomain returns the Domain field value
 func (o *PureIngressTrait) GetDomain() string {
-	if o == nil || utils.IsNil(o.Properties.Domain) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Domain
 }
 
-// GetDomainOk returns a tuple with the Domain field value if set, nil otherwise
+// GetDomainOk returns a tuple with the Domain field value
 // and a boolean to check if the value has been set.
 func (o *PureIngressTrait) GetDomainOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Domain) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Domain, true
 }
 
-// HasDomain returns a boolean if a field has been set.
-func (o *PureIngressTrait) HasDomain() bool {
-	if o != nil && !utils.IsNil(o.Properties.Domain) {
-		return true
-	}
-
-	return false
-}
-
-// SetDomain gets a reference to the given string and assigns it to the domain field.
-// Domain:  Specify the domain you want to expose
+// SetDomain sets field value
 func (o *PureIngressTrait) SetDomain(v string) *PureIngressTrait {
 	o.Properties.Domain = &v
 	return o
 }
 
-// GetHttp returns the Http field value if set, zero value otherwise.
+// GetHttp returns the Http field value
 func (o *PureIngressTrait) GetHttp() map[string]int32 {
-	if o == nil || utils.IsNil(o.Properties.Http) {
+	if o == nil {
 		var ret map[string]int32
 		return ret
 	}
-	return *o.Properties.Http
+
+	return o.Properties.Http
 }
 
-// GetHttpOk returns a tuple with the Http field value if set, nil otherwise
+// GetHttpOk returns a tuple with the Http field value
 // and a boolean to check if the value has been set.
-func (o *PureIngressTrait) GetHttpOk() (*map[string]int32, bool) {
-	if o == nil || utils.IsNil(o.Properties.Http) {
+func (o *PureIngressTrait) GetHttpOk() (map[string]int32, bool) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Http, true
 }
 
-// HasHttp returns a boolean if a field has been set.
-func (o *PureIngressTrait) HasHttp() bool {
-	if o != nil && !utils.IsNil(o.Properties.Http) {
-		return true
-	}
-
-	return false
-}
-
-// SetHttp gets a reference to the given map[string]int32 and assigns it to the http field.
-// Http:  Specify the mapping relationship between the http path and the workload port
+// SetHttp sets field value
 func (o *PureIngressTrait) SetHttp(v map[string]int32) *PureIngressTrait {
-	o.Properties.Http = &v
+	o.Properties.Http = v
 	return o
 }
 
@@ -137,12 +150,8 @@ func (o PureIngressSpec) MarshalJSON() ([]byte, error) {
 
 func (o PureIngressSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Domain) {
-		toSerialize["domain"] = o.Domain
-	}
-	if !utils.IsNil(o.Http) {
-		toSerialize["http"] = o.Http
-	}
+	toSerialize["domain"] = o.Domain
+	toSerialize["http"] = o.Http
 	return toSerialize, nil
 }
 
@@ -151,7 +160,7 @@ type NullablePureIngressSpec struct {
 	isSet bool
 }
 
-func (v NullablePureIngressSpec) Get() *PureIngressSpec {
+func (v *NullablePureIngressSpec) Get() *PureIngressSpec {
 	return v.value
 }
 
@@ -160,7 +169,7 @@ func (v *NullablePureIngressSpec) Set(val *PureIngressSpec) {
 	v.isSet = true
 }
 
-func (v NullablePureIngressSpec) IsSet() bool {
+func (v *NullablePureIngressSpec) IsSet() bool {
 	return v.isSet
 }
 

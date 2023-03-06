@@ -12,6 +12,7 @@ package nocalhost
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -21,15 +22,25 @@ var _ utils.MappedNullable = &Requests{}
 
 // Requests struct for Requests
 type Requests struct {
-	Cpu    *string `json:"cpu,omitempty"`
-	Memory *string `json:"memory,omitempty"`
+	Cpu    *string `json:"cpu"`
+	Memory *string `json:"memory"`
 }
 
 // NewRequestsWith instantiates a new Requests object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewRequestsWith() *Requests {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewRequestsWith(cpu string, memory string) *Requests {
+	this := Requests{}
+	this.Cpu = &cpu
+	this.Memory = &memory
+	return &this
+}
+
+// NewRequestsWithDefault instantiates a new Requests object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewRequestsWithDefault() *Requests {
 	this := Requests{}
 	var cpu string = "0.5"
 	this.Cpu = &cpu
@@ -38,15 +49,17 @@ func NewRequestsWith() *Requests {
 	return &this
 }
 
-// NewRequests instantiates a new Requests object
+// NewRequests is short for NewRequestsWithDefault which instantiates a new Requests object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewRequests() *Requests {
+	return NewRequestsWithDefault()
+}
+
+// NewRequestsEmpty instantiates a new Requests object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewRequestsEmpty() *Requests {
 	this := Requests{}
-	var cpu string = "0.5"
-	this.Cpu = &cpu
-	var memory string = "512Mi"
-	this.Memory = &memory
 	return &this
 }
 
@@ -60,69 +73,65 @@ func NewRequestsList(ps ...*Requests) []Requests {
 	return objs
 }
 
-// GetCpu returns the Cpu field value if set, zero value otherwise.
+// Validate validates this Requests
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *Requests) Validate() error {
+	if o.Cpu == nil {
+		return errors.New("Cpu in Requests must be set")
+	}
+	if o.Memory == nil {
+		return errors.New("Memory in Requests must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetCpu returns the Cpu field value
 func (o *Requests) GetCpu() string {
-	if o == nil || utils.IsNil(o.Cpu) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Cpu
 }
 
-// GetCpuOk returns a tuple with the Cpu field value if set, nil otherwise
+// GetCpuOk returns a tuple with the Cpu field value
 // and a boolean to check if the value has been set.
 func (o *Requests) GetCpuOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Cpu) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Cpu, true
 }
 
-// HasCpu returns a boolean if a field has been set.
-func (o *Requests) HasCpu() bool {
-	if o != nil && !utils.IsNil(o.Cpu) {
-		return true
-	}
-
-	return false
-}
-
-// SetCpu gets a reference to the given string and assigns it to the cpu field.
-// Cpu:
+// SetCpu sets field value
 func (o *Requests) SetCpu(v string) *Requests {
 	o.Cpu = &v
 	return o
 }
 
-// GetMemory returns the Memory field value if set, zero value otherwise.
+// GetMemory returns the Memory field value
 func (o *Requests) GetMemory() string {
-	if o == nil || utils.IsNil(o.Memory) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Memory
 }
 
-// GetMemoryOk returns a tuple with the Memory field value if set, nil otherwise
+// GetMemoryOk returns a tuple with the Memory field value
 // and a boolean to check if the value has been set.
 func (o *Requests) GetMemoryOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Memory) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Memory, true
 }
 
-// HasMemory returns a boolean if a field has been set.
-func (o *Requests) HasMemory() bool {
-	if o != nil && !utils.IsNil(o.Memory) {
-		return true
-	}
-
-	return false
-}
-
-// SetMemory gets a reference to the given string and assigns it to the memory field.
-// Memory:
+// SetMemory sets field value
 func (o *Requests) SetMemory(v string) *Requests {
 	o.Memory = &v
 	return o
@@ -138,12 +147,8 @@ func (o Requests) MarshalJSON() ([]byte, error) {
 
 func (o Requests) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Cpu) {
-		toSerialize["cpu"] = o.Cpu
-	}
-	if !utils.IsNil(o.Memory) {
-		toSerialize["memory"] = o.Memory
-	}
+	toSerialize["cpu"] = o.Cpu
+	toSerialize["memory"] = o.Memory
 	return toSerialize, nil
 }
 
@@ -152,7 +157,7 @@ type NullableRequests struct {
 	isSet bool
 }
 
-func (v NullableRequests) Get() *Requests {
+func (v *NullableRequests) Get() *Requests {
 	return v.value
 }
 
@@ -161,7 +166,7 @@ func (v *NullableRequests) Set(val *Requests) {
 	v.isSet = true
 }
 
-func (v NullableRequests) IsSet() bool {
+func (v *NullableRequests) IsSet() bool {
 	return v.isSet
 }
 

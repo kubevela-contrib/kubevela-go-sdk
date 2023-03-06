@@ -12,6 +12,7 @@ package hpa
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -22,24 +23,40 @@ var _ utils.MappedNullable = &PodCustomMetrics{}
 // PodCustomMetrics struct for PodCustomMetrics
 type PodCustomMetrics struct {
 	// Specify name of custom metrics
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 	// Specify target value of custom metrics
-	Value *string `json:"value,omitempty"`
+	Value *string `json:"value"`
 }
 
 // NewPodCustomMetricsWith instantiates a new PodCustomMetrics object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPodCustomMetricsWith() *PodCustomMetrics {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPodCustomMetricsWith(name string, value string) *PodCustomMetrics {
+	this := PodCustomMetrics{}
+	this.Name = &name
+	this.Value = &value
+	return &this
+}
+
+// NewPodCustomMetricsWithDefault instantiates a new PodCustomMetrics object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPodCustomMetricsWithDefault() *PodCustomMetrics {
 	this := PodCustomMetrics{}
 	return &this
 }
 
-// NewPodCustomMetrics instantiates a new PodCustomMetrics object
+// NewPodCustomMetrics is short for NewPodCustomMetricsWithDefault which instantiates a new PodCustomMetrics object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPodCustomMetrics() *PodCustomMetrics {
+	return NewPodCustomMetricsWithDefault()
+}
+
+// NewPodCustomMetricsEmpty instantiates a new PodCustomMetrics object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPodCustomMetricsEmpty() *PodCustomMetrics {
 	this := PodCustomMetrics{}
 	return &this
 }
@@ -54,69 +71,65 @@ func NewPodCustomMetricsList(ps ...*PodCustomMetrics) []PodCustomMetrics {
 	return objs
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// Validate validates this PodCustomMetrics
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PodCustomMetrics) Validate() error {
+	if o.Name == nil {
+		return errors.New("Name in PodCustomMetrics must be set")
+	}
+	if o.Value == nil {
+		return errors.New("Value in PodCustomMetrics must be set")
+	}
+	// validate all nested properties
+	return nil
+}
+
+// GetName returns the Name field value
 func (o *PodCustomMetrics) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *PodCustomMetrics) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *PodCustomMetrics) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Specify name of custom metrics
+// SetName sets field value
 func (o *PodCustomMetrics) SetName(v string) *PodCustomMetrics {
 	o.Name = &v
 	return o
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
+// GetValue returns the Value field value
 func (o *PodCustomMetrics) GetValue() string {
-	if o == nil || utils.IsNil(o.Value) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Value
 }
 
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// GetValueOk returns a tuple with the Value field value
 // and a boolean to check if the value has been set.
 func (o *PodCustomMetrics) GetValueOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Value) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Value, true
 }
 
-// HasValue returns a boolean if a field has been set.
-func (o *PodCustomMetrics) HasValue() bool {
-	if o != nil && !utils.IsNil(o.Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetValue gets a reference to the given string and assigns it to the value field.
-// Value:  Specify target value of custom metrics
+// SetValue sets field value
 func (o *PodCustomMetrics) SetValue(v string) *PodCustomMetrics {
 	o.Value = &v
 	return o
@@ -132,12 +145,8 @@ func (o PodCustomMetrics) MarshalJSON() ([]byte, error) {
 
 func (o PodCustomMetrics) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Value) {
-		toSerialize["value"] = o.Value
-	}
+	toSerialize["name"] = o.Name
+	toSerialize["value"] = o.Value
 	return toSerialize, nil
 }
 
@@ -146,7 +155,7 @@ type NullablePodCustomMetrics struct {
 	isSet bool
 }
 
-func (v NullablePodCustomMetrics) Get() *PodCustomMetrics {
+func (v *NullablePodCustomMetrics) Get() *PodCustomMetrics {
 	return v.value
 }
 
@@ -155,7 +164,7 @@ func (v *NullablePodCustomMetrics) Set(val *PodCustomMetrics) {
 	v.isSet = true
 }
 
-func (v NullablePodCustomMetrics) IsSet() bool {
+func (v *NullablePodCustomMetrics) IsSet() bool {
 	return v.isSet
 }
 

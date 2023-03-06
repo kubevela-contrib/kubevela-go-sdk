@@ -12,6 +12,7 @@ package env
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -26,19 +27,33 @@ type EnvSpecOneOf struct {
 }
 
 // NewEnvSpecOneOfWith instantiates a new EnvSpecOneOf object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewEnvSpecOneOfWith(containers []PatchParams) *EnvSpecOneOf {
 	this := EnvSpecOneOf{}
 	this.Containers = containers
 	return &this
 }
 
-// NewEnvSpecOneOf instantiates a new EnvSpecOneOf object
+// NewEnvSpecOneOfWithDefault instantiates a new EnvSpecOneOf object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewEnvSpecOneOfWithDefault() *EnvSpecOneOf {
+	this := EnvSpecOneOf{}
+	return &this
+}
+
+// NewEnvSpecOneOf is short for NewEnvSpecOneOfWithDefault which instantiates a new EnvSpecOneOf object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewEnvSpecOneOf() *EnvSpecOneOf {
+	return NewEnvSpecOneOfWithDefault()
+}
+
+// NewEnvSpecOneOfEmpty instantiates a new EnvSpecOneOf object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewEnvSpecOneOfEmpty() *EnvSpecOneOf {
 	this := EnvSpecOneOf{}
 	return &this
 }
@@ -51,6 +66,17 @@ func NewEnvSpecOneOfList(ps ...*EnvSpecOneOf) []EnvSpecOneOf {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this EnvSpecOneOf
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *EnvSpecOneOf) Validate() error {
+	if o.Containers == nil {
+		return errors.New("Containers in EnvSpecOneOf must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetContainers returns the Containers field value
@@ -97,7 +123,7 @@ type NullableEnvSpecOneOf struct {
 	isSet bool
 }
 
-func (v NullableEnvSpecOneOf) Get() *EnvSpecOneOf {
+func (v *NullableEnvSpecOneOf) Get() *EnvSpecOneOf {
 	return v.value
 }
 
@@ -106,7 +132,7 @@ func (v *NullableEnvSpecOneOf) Set(val *EnvSpecOneOf) {
 	v.isSet = true
 }
 
-func (v NullableEnvSpecOneOf) IsSet() bool {
+func (v *NullableEnvSpecOneOf) IsSet() bool {
 	return v.isSet
 }
 

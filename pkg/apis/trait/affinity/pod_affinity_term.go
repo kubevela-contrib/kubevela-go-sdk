@@ -12,6 +12,7 @@ package affinity
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -24,22 +25,37 @@ type PodAffinityTerm struct {
 	LabelSelector     *LabelSelector `json:"labelSelector,omitempty"`
 	NamespaceSelector *LabelSelector `json:"namespaceSelector,omitempty"`
 	Namespaces        []string       `json:"namespaces,omitempty"`
-	TopologyKey       *string        `json:"topologyKey,omitempty"`
+	TopologyKey       *string        `json:"topologyKey"`
 }
 
 // NewPodAffinityTermWith instantiates a new PodAffinityTerm object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
-func NewPodAffinityTermWith() *PodAffinityTerm {
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
+func NewPodAffinityTermWith(topologyKey string) *PodAffinityTerm {
+	this := PodAffinityTerm{}
+	this.TopologyKey = &topologyKey
+	return &this
+}
+
+// NewPodAffinityTermWithDefault instantiates a new PodAffinityTerm object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewPodAffinityTermWithDefault() *PodAffinityTerm {
 	this := PodAffinityTerm{}
 	return &this
 }
 
-// NewPodAffinityTerm instantiates a new PodAffinityTerm object
+// NewPodAffinityTerm is short for NewPodAffinityTermWithDefault which instantiates a new PodAffinityTerm object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewPodAffinityTerm() *PodAffinityTerm {
+	return NewPodAffinityTermWithDefault()
+}
+
+// NewPodAffinityTermEmpty instantiates a new PodAffinityTerm object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewPodAffinityTermEmpty() *PodAffinityTerm {
 	this := PodAffinityTerm{}
 	return &this
 }
@@ -52,6 +68,27 @@ func NewPodAffinityTermList(ps ...*PodAffinityTerm) []PodAffinityTerm {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this PodAffinityTerm
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *PodAffinityTerm) Validate() error {
+	if o.TopologyKey == nil {
+		return errors.New("TopologyKey in PodAffinityTerm must be set")
+	}
+	// validate all nested properties
+	if o.LabelSelector != nil {
+		if err := o.LabelSelector.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.NamespaceSelector != nil {
+		if err := o.NamespaceSelector.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // GetLabelSelector returns the LabelSelector field value if set, zero value otherwise.
@@ -156,35 +193,26 @@ func (o *PodAffinityTerm) SetNamespaces(v []string) *PodAffinityTerm {
 	return o
 }
 
-// GetTopologyKey returns the TopologyKey field value if set, zero value otherwise.
+// GetTopologyKey returns the TopologyKey field value
 func (o *PodAffinityTerm) GetTopologyKey() string {
-	if o == nil || utils.IsNil(o.TopologyKey) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.TopologyKey
 }
 
-// GetTopologyKeyOk returns a tuple with the TopologyKey field value if set, nil otherwise
+// GetTopologyKeyOk returns a tuple with the TopologyKey field value
 // and a boolean to check if the value has been set.
 func (o *PodAffinityTerm) GetTopologyKeyOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.TopologyKey) {
+	if o == nil {
 		return nil, false
 	}
 	return o.TopologyKey, true
 }
 
-// HasTopologyKey returns a boolean if a field has been set.
-func (o *PodAffinityTerm) HasTopologyKey() bool {
-	if o != nil && !utils.IsNil(o.TopologyKey) {
-		return true
-	}
-
-	return false
-}
-
-// SetTopologyKey gets a reference to the given string and assigns it to the topologyKey field.
-// TopologyKey:
+// SetTopologyKey sets field value
 func (o *PodAffinityTerm) SetTopologyKey(v string) *PodAffinityTerm {
 	o.TopologyKey = &v
 	return o
@@ -209,9 +237,7 @@ func (o PodAffinityTerm) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Namespaces) {
 		toSerialize["namespaces"] = o.Namespaces
 	}
-	if !utils.IsNil(o.TopologyKey) {
-		toSerialize["topologyKey"] = o.TopologyKey
-	}
+	toSerialize["topologyKey"] = o.TopologyKey
 	return toSerialize, nil
 }
 
@@ -220,7 +246,7 @@ type NullablePodAffinityTerm struct {
 	isSet bool
 }
 
-func (v NullablePodAffinityTerm) Get() *PodAffinityTerm {
+func (v *NullablePodAffinityTerm) Get() *PodAffinityTerm {
 	return v.value
 }
 
@@ -229,7 +255,7 @@ func (v *NullablePodAffinityTerm) Set(val *PodAffinityTerm) {
 	v.isSet = true
 }
 
-func (v NullablePodAffinityTerm) IsSet() bool {
+func (v *NullablePodAffinityTerm) IsSet() bool {
 	return v.isSet
 }
 

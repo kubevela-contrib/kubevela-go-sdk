@@ -30,18 +30,32 @@ type StepGroupSpec struct {
 }
 
 // NewStepGroupSpecWith instantiates a new StepGroupSpec object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewStepGroupSpecWith() *StepGroupSpec {
 	this := StepGroupSpec{}
 	return &this
 }
 
-// NewStepGroupSpec instantiates a new StepGroupSpec object
+// NewStepGroupSpecWithDefault instantiates a new StepGroupSpec object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewStepGroupSpecWithDefault() *StepGroupSpec {
+	this := StepGroupSpec{}
+	return &this
+}
+
+// NewStepGroupSpec is short for NewStepGroupSpecWithDefault which instantiates a new StepGroupSpec object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewStepGroupSpec() *StepGroupSpec {
+	return NewStepGroupSpecWithDefault()
+}
+
+// NewStepGroupSpecEmpty instantiates a new StepGroupSpec object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewStepGroupSpecEmpty() *StepGroupSpec {
 	this := StepGroupSpec{}
 	return &this
 }
@@ -54,6 +68,14 @@ func NewStepGroupSpecList(ps ...*StepGroupSpec) []StepGroupSpec {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this StepGroupSpec
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *StepGroupWorkflowStep) Validate() error {
+	// validate all nested properties
+	return nil
 }
 
 func (o StepGroupSpec) MarshalJSON() ([]byte, error) {
@@ -74,7 +96,7 @@ type NullableStepGroupSpec struct {
 	isSet bool
 }
 
-func (v NullableStepGroupSpec) Get() *StepGroupSpec {
+func (v *NullableStepGroupSpec) Get() *StepGroupSpec {
 	return v.value
 }
 
@@ -83,7 +105,7 @@ func (v *NullableStepGroupSpec) Set(val *StepGroupSpec) {
 	v.isSet = true
 }
 
-func (v NullableStepGroupSpec) IsSet() bool {
+func (v *NullableStepGroupSpec) IsSet() bool {
 	return v.isSet
 }
 

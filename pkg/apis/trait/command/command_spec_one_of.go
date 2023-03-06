@@ -12,6 +12,7 @@ package command
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -26,19 +27,33 @@ type CommandSpecOneOf struct {
 }
 
 // NewCommandSpecOneOfWith instantiates a new CommandSpecOneOf object
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed
+// This constructor will make sure properties required by API are set.
+// For optional properties, it will set default values if they have been defined.
+// The set of arguments will change when the set of required properties is changed
 func NewCommandSpecOneOfWith(containers []PatchParams) *CommandSpecOneOf {
 	this := CommandSpecOneOf{}
 	this.Containers = containers
 	return &this
 }
 
-// NewCommandSpecOneOf instantiates a new CommandSpecOneOf object
+// NewCommandSpecOneOfWithDefault instantiates a new CommandSpecOneOf object
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set
+func NewCommandSpecOneOfWithDefault() *CommandSpecOneOf {
+	this := CommandSpecOneOf{}
+	return &this
+}
+
+// NewCommandSpecOneOf is short for NewCommandSpecOneOfWithDefault which instantiates a new CommandSpecOneOf object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
 func NewCommandSpecOneOf() *CommandSpecOneOf {
+	return NewCommandSpecOneOfWithDefault()
+}
+
+// NewCommandSpecOneOfEmpty instantiates a new CommandSpecOneOf object with no properties set.
+// This constructor will not assign any default values to properties.
+func NewCommandSpecOneOfEmpty() *CommandSpecOneOf {
 	this := CommandSpecOneOf{}
 	return &this
 }
@@ -51,6 +66,17 @@ func NewCommandSpecOneOfList(ps ...*CommandSpecOneOf) []CommandSpecOneOf {
 		objs = append(objs, *p)
 	}
 	return objs
+}
+
+// Validate validates this CommandSpecOneOf
+// 1. If the required properties are not set, this will return an error
+// 2. If properties are set, will check if nested required properties are set
+func (o *CommandSpecOneOf) Validate() error {
+	if o.Containers == nil {
+		return errors.New("Containers in CommandSpecOneOf must be set")
+	}
+	// validate all nested properties
+	return nil
 }
 
 // GetContainers returns the Containers field value
@@ -97,7 +123,7 @@ type NullableCommandSpecOneOf struct {
 	isSet bool
 }
 
-func (v NullableCommandSpecOneOf) Get() *CommandSpecOneOf {
+func (v *NullableCommandSpecOneOf) Get() *CommandSpecOneOf {
 	return v.value
 }
 
@@ -106,7 +132,7 @@ func (v *NullableCommandSpecOneOf) Set(val *CommandSpecOneOf) {
 	v.isSet = true
 }
 
-func (v NullableCommandSpecOneOf) IsSet() bool {
+func (v *NullableCommandSpecOneOf) IsSet() bool {
 	return v.isSet
 }
 
