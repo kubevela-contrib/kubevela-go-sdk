@@ -19,6 +19,7 @@ go get github.com/kubevela-contrib/kubevela-go-sdk
     - [x] Convert from K8s Application Object
     - [x] Convert to YAML
     - [x] Get Components/Traits/Workflow Steps/Policies from app
+    - [x] Validate Application required parameters
     - [ ] Referring to external Workflow object.
 - 🔍Application client
     - [x] Create/Delete/Patch/Update Application
