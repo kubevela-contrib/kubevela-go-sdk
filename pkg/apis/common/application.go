@@ -19,6 +19,7 @@ package common
 import (
 	"github.com/pkg/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/json"
 	"sigs.k8s.io/yaml"
 
 	. "github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -239,6 +240,26 @@ func (a *ApplicationBuilder) Build() v1beta1.Application {
 	return res
 }
 
+func (a *ApplicationBuilder) ToYAML() (string, error) {
+	app := a.Build()
+	marshal, err := yaml.Marshal(app)
+	if err != nil {
+		return "", err
+	}
+	return string(marshal), nil
+}
+
+func (a *ApplicationBuilder) ToJSON() (string, error) {
+	app := a.Build()
+	marshal, err := json.Marshal(app)
+	if err != nil {
+		return "", err
+	}
+	return string(marshal), nil
+}
+
+// Validate validates the application name/namespace/component/step/policy.
+// For component/step/policy, it will validate if the required fields are set.
 func (a *ApplicationBuilder) Validate() error {
 	if a.name == "" {
 		return errors.New("name is required")
@@ -262,15 +283,6 @@ func (a *ApplicationBuilder) Validate() error {
 		}
 	}
 	return nil
-}
-
-func (a *ApplicationBuilder) ToYAML() (string, error) {
-	app := a.Build()
-	marshal, err := yaml.Marshal(app)
-	if err != nil {
-		return "", err
-	}
-	return string(marshal), nil
 }
 
 func FromK8sObject(app *v1beta1.Application) (TypedApplication, error) {

@@ -12,9 +12,10 @@ package ref_objects
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"

@@ -13,9 +13,9 @@ package cron_task
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -56,7 +56,7 @@ type CronTaskSpec struct {
 	ImagePullSecrets []string `json:"imagePullSecrets,omitempty"`
 	// Specify the labels in the workload
 	Labels        map[string]string `json:"labels,omitempty"`
-	LivenessProbe *HealthProbe      `json:"livenessProbe"`
+	LivenessProbe *HealthProbe      `json:"livenessProbe,omitempty"`
 	// Specifies the attributes of the memory resource required for the container.
 	Memory         *string      `json:"memory,omitempty"`
 	ReadinessProbe *HealthProbe `json:"readinessProbe,omitempty"`
@@ -80,14 +80,13 @@ type CronTaskSpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewCronTaskSpecWith(backoffLimit int32, concurrencyPolicy string, count int32, failedJobsHistoryLimit int32, image string, livenessProbe HealthProbe, restart string, schedule string, successfulJobsHistoryLimit int32, suspend bool) *CronTaskSpec {
+func NewCronTaskSpecWith(backoffLimit int32, concurrencyPolicy string, count int32, failedJobsHistoryLimit int32, image string, restart string, schedule string, successfulJobsHistoryLimit int32, suspend bool) *CronTaskSpec {
 	this := CronTaskSpec{}
 	this.BackoffLimit = &backoffLimit
 	this.ConcurrencyPolicy = &concurrencyPolicy
 	this.Count = &count
 	this.FailedJobsHistoryLimit = &failedJobsHistoryLimit
 	this.Image = &image
-	this.LivenessProbe = &livenessProbe
 	this.Restart = &restart
 	this.Schedule = &schedule
 	this.SuccessfulJobsHistoryLimit = &successfulJobsHistoryLimit
@@ -159,9 +158,6 @@ func (o *CronTaskComponent) Validate() error {
 	}
 	if o.Properties.Image == nil {
 		return errors.New("Image in CronTaskSpec must be set")
-	}
-	if o.Properties.LivenessProbe == nil {
-		return errors.New("LivenessProbe in CronTaskSpec must be set")
 	}
 	if o.Properties.Restart == nil {
 		return errors.New("Restart in CronTaskSpec must be set")
@@ -626,26 +622,35 @@ func (o *CronTaskComponent) SetLabels(v map[string]string) *CronTaskComponent {
 	return o
 }
 
-// GetLivenessProbe returns the LivenessProbe field value
+// GetLivenessProbe returns the LivenessProbe field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetLivenessProbe() HealthProbe {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.LivenessProbe) {
 		var ret HealthProbe
 		return ret
 	}
-
 	return *o.Properties.LivenessProbe
 }
 
-// GetLivenessProbeOk returns a tuple with the LivenessProbe field value
+// GetLivenessProbeOk returns a tuple with the LivenessProbe field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CronTaskComponent) GetLivenessProbeOk() (*HealthProbe, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.LivenessProbe) {
 		return nil, false
 	}
 	return o.Properties.LivenessProbe, true
 }
 
-// SetLivenessProbe sets field value
+// HasLivenessProbe returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasLivenessProbe() bool {
+	if o != nil && !utils.IsNil(o.Properties.LivenessProbe) {
+		return true
+	}
+
+	return false
+}
+
+// SetLivenessProbe gets a reference to the given HealthProbe and assigns it to the livenessProbe field.
+// LivenessProbe:
 func (o *CronTaskComponent) SetLivenessProbe(v HealthProbe) *CronTaskComponent {
 	o.Properties.LivenessProbe = &v
 	return o
@@ -963,7 +968,9 @@ func (o CronTaskSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Labels) {
 		toSerialize["labels"] = o.Labels
 	}
-	toSerialize["livenessProbe"] = o.LivenessProbe
+	if !utils.IsNil(o.LivenessProbe) {
+		toSerialize["livenessProbe"] = o.LivenessProbe
+	}
 	if !utils.IsNil(o.Memory) {
 		toSerialize["memory"] = o.Memory
 	}

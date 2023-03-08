@@ -52,8 +52,8 @@ type Component interface {
 	DefType() string
 	Build() common.ApplicationComponent
 	GetTrait(typ string) Trait
-	Validate() error
 	GetAllTraits() []Trait
+	Validate() error
 }
 
 type Trait interface {

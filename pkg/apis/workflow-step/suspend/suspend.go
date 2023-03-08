@@ -12,6 +12,7 @@ package suspend
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
@@ -29,6 +30,8 @@ var _ utils.MappedNullable = &SuspendSpec{}
 type SuspendSpec struct {
 	// Specify the wait duration time to resume workflow such as \"30s\", \"1min\" or \"2m15s\"
 	Duration *string `json:"duration,omitempty"`
+	// The suspend message to show
+	Message *string `json:"message,omitempty"`
 }
 
 // NewSuspendSpecWith instantiates a new SuspendSpec object
@@ -114,6 +117,40 @@ func (o *SuspendWorkflowStep) SetDuration(v string) *SuspendWorkflowStep {
 	return o
 }
 
+// GetMessage returns the Message field value if set, zero value otherwise.
+func (o *SuspendWorkflowStep) GetMessage() string {
+	if o == nil || utils.IsNil(o.Properties.Message) {
+		var ret string
+		return ret
+	}
+	return *o.Properties.Message
+}
+
+// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SuspendWorkflowStep) GetMessageOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Properties.Message) {
+		return nil, false
+	}
+	return o.Properties.Message, true
+}
+
+// HasMessage returns a boolean if a field has been set.
+func (o *SuspendWorkflowStep) HasMessage() bool {
+	if o != nil && !utils.IsNil(o.Properties.Message) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessage gets a reference to the given string and assigns it to the message field.
+// Message:  The suspend message to show
+func (o *SuspendWorkflowStep) SetMessage(v string) *SuspendWorkflowStep {
+	o.Properties.Message = &v
+	return o
+}
+
 func (o SuspendSpec) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -126,6 +163,9 @@ func (o SuspendSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !utils.IsNil(o.Duration) {
 		toSerialize["duration"] = o.Duration
+	}
+	if !utils.IsNil(o.Message) {
+		toSerialize["message"] = o.Message
 	}
 	return toSerialize, nil
 }
