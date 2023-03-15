@@ -22,8 +22,7 @@ var _ utils.MappedNullable = &Limits{}
 
 // Limits Specify the resources in limits
 type Limits struct {
-	// Specify the amount of cpu for limits
-	Cpu *float32 `json:"cpu"`
+	Cpu *Cpu1 `json:"cpu"`
 	// Specify the amount of memory for limits
 	Memory *string `json:"memory"`
 }
@@ -32,7 +31,7 @@ type Limits struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewLimitsWith(cpu float32, memory string) *Limits {
+func NewLimitsWith(cpu Cpu1, memory string) *Limits {
 	this := Limits{}
 	this.Cpu = &cpu
 	this.Memory = &memory
@@ -44,8 +43,6 @@ func NewLimitsWith(cpu float32, memory string) *Limits {
 // but it doesn't guarantee that properties required by API are set
 func NewLimitsWithDefault() *Limits {
 	this := Limits{}
-	var cpu float32 = 1
-	this.Cpu = &cpu
 	var memory string = "2048Mi"
 	this.Memory = &memory
 	return &this
@@ -86,13 +83,18 @@ func (o *Limits) Validate() error {
 		return errors.New("Memory in Limits must be set")
 	}
 	// validate all nested properties
+	if o.Cpu != nil {
+		if err := o.Cpu.Validate(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
 // GetCpu returns the Cpu field value
-func (o *Limits) GetCpu() float32 {
+func (o *Limits) GetCpu() Cpu1 {
 	if o == nil {
-		var ret float32
+		var ret Cpu1
 		return ret
 	}
 
@@ -101,7 +103,7 @@ func (o *Limits) GetCpu() float32 {
 
 // GetCpuOk returns a tuple with the Cpu field value
 // and a boolean to check if the value has been set.
-func (o *Limits) GetCpuOk() (*float32, bool) {
+func (o *Limits) GetCpuOk() (*Cpu1, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -109,7 +111,7 @@ func (o *Limits) GetCpuOk() (*float32, bool) {
 }
 
 // SetCpu sets field value
-func (o *Limits) SetCpu(v float32) *Limits {
+func (o *Limits) SetCpu(v Cpu1) *Limits {
 	o.Cpu = &v
 	return o
 }

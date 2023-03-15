@@ -26,9 +26,8 @@ var _ utils.MappedNullable = &ResourceSpec{}
 
 // ResourceSpec struct for ResourceSpec
 type ResourceSpec struct {
-	// Specify the amount of cpu for requests and limits
-	Cpu    *float32 `json:"cpu,omitempty"`
-	Limits *Limits  `json:"limits,omitempty"`
+	Cpu    *Cpu    `json:"cpu,omitempty"`
+	Limits *Limits `json:"limits,omitempty"`
 	// Specify the amount of memory for requests and limits
 	Memory   *string   `json:"memory,omitempty"`
 	Requests *Requests `json:"requests,omitempty"`
@@ -40,8 +39,6 @@ type ResourceSpec struct {
 // The set of arguments will change when the set of required properties is changed
 func NewResourceSpecWith() *ResourceSpec {
 	this := ResourceSpec{}
-	var cpu float32 = 1
-	this.Cpu = &cpu
 	var memory string = "2048Mi"
 	this.Memory = &memory
 	return &this
@@ -52,8 +49,6 @@ func NewResourceSpecWith() *ResourceSpec {
 // but it doesn't guarantee that properties required by API are set
 func NewResourceSpecWithDefault() *ResourceSpec {
 	this := ResourceSpec{}
-	var cpu float32 = 1
-	this.Cpu = &cpu
 	var memory string = "2048Mi"
 	this.Memory = &memory
 	return &this
@@ -88,6 +83,11 @@ func NewResourceSpecList(ps ...*ResourceSpec) []ResourceSpec {
 // 2. If properties are set, will check if nested required properties are set
 func (o *ResourceTrait) Validate() error {
 	// validate all nested properties
+	if o.Properties.Cpu != nil {
+		if err := o.Properties.Cpu.Validate(); err != nil {
+			return err
+		}
+	}
 	if o.Properties.Limits != nil {
 		if err := o.Properties.Limits.Validate(); err != nil {
 			return err
@@ -102,9 +102,9 @@ func (o *ResourceTrait) Validate() error {
 }
 
 // GetCpu returns the Cpu field value if set, zero value otherwise.
-func (o *ResourceTrait) GetCpu() float32 {
+func (o *ResourceTrait) GetCpu() Cpu {
 	if o == nil || utils.IsNil(o.Properties.Cpu) {
-		var ret float32
+		var ret Cpu
 		return ret
 	}
 	return *o.Properties.Cpu
@@ -112,7 +112,7 @@ func (o *ResourceTrait) GetCpu() float32 {
 
 // GetCpuOk returns a tuple with the Cpu field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ResourceTrait) GetCpuOk() (*float32, bool) {
+func (o *ResourceTrait) GetCpuOk() (*Cpu, bool) {
 	if o == nil || utils.IsNil(o.Properties.Cpu) {
 		return nil, false
 	}
@@ -128,9 +128,9 @@ func (o *ResourceTrait) HasCpu() bool {
 	return false
 }
 
-// SetCpu gets a reference to the given float32 and assigns it to the cpu field.
-// Cpu:  Specify the amount of cpu for requests and limits
-func (o *ResourceTrait) SetCpu(v float32) *ResourceTrait {
+// SetCpu gets a reference to the given Cpu and assigns it to the cpu field.
+// Cpu:
+func (o *ResourceTrait) SetCpu(v Cpu) *ResourceTrait {
 	o.Properties.Cpu = &v
 	return o
 }

@@ -22,8 +22,7 @@ var _ utils.MappedNullable = &Requests{}
 
 // Requests Specify the resources in requests
 type Requests struct {
-	// Specify the amount of cpu for requests
-	Cpu *float32 `json:"cpu"`
+	Cpu *Cpu2 `json:"cpu"`
 	// Specify the amount of memory for requests
 	Memory *string `json:"memory"`
 }
@@ -32,7 +31,7 @@ type Requests struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewRequestsWith(cpu float32, memory string) *Requests {
+func NewRequestsWith(cpu Cpu2, memory string) *Requests {
 	this := Requests{}
 	this.Cpu = &cpu
 	this.Memory = &memory
@@ -44,8 +43,6 @@ func NewRequestsWith(cpu float32, memory string) *Requests {
 // but it doesn't guarantee that properties required by API are set
 func NewRequestsWithDefault() *Requests {
 	this := Requests{}
-	var cpu float32 = 1
-	this.Cpu = &cpu
 	var memory string = "2048Mi"
 	this.Memory = &memory
 	return &this
@@ -86,13 +83,18 @@ func (o *Requests) Validate() error {
 		return errors.New("Memory in Requests must be set")
 	}
 	// validate all nested properties
+	if o.Cpu != nil {
+		if err := o.Cpu.Validate(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
 // GetCpu returns the Cpu field value
-func (o *Requests) GetCpu() float32 {
+func (o *Requests) GetCpu() Cpu2 {
 	if o == nil {
-		var ret float32
+		var ret Cpu2
 		return ret
 	}
 
@@ -101,7 +103,7 @@ func (o *Requests) GetCpu() float32 {
 
 // GetCpuOk returns a tuple with the Cpu field value
 // and a boolean to check if the value has been set.
-func (o *Requests) GetCpuOk() (*float32, bool) {
+func (o *Requests) GetCpuOk() (*Cpu2, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -109,7 +111,7 @@ func (o *Requests) GetCpuOk() (*float32, bool) {
 }
 
 // SetCpu sets field value
-func (o *Requests) SetCpu(v float32) *Requests {
+func (o *Requests) SetCpu(v Cpu2) *Requests {
 	o.Cpu = &v
 	return o
 }
