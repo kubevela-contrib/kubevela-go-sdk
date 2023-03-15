@@ -23,14 +23,14 @@ type Source struct {
 	SourceOneOf1 *SourceOneOf1
 }
 
-// SourceOneOfAsSource is a convenience function that returns SourceOneOf wrapped in Source
+// SourceOneOfAsSource is is a convenience function that returns SourceOneOf wrapped in Source
 func SourceOneOfAsSource(v *SourceOneOf) Source {
 	return Source{
 		SourceOneOf: v,
 	}
 }
 
-// SourceOneOf1AsSource is a convenience function that returns SourceOneOf1 wrapped in Source
+// SourceOneOf1AsSource is is a convenience function that returns SourceOneOf1 wrapped in Source
 func SourceOneOf1AsSource(v *SourceOneOf1) Source {
 	return Source{
 		SourceOneOf1: v,

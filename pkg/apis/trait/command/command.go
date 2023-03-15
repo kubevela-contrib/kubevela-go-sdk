@@ -28,17 +28,17 @@ type CommandSpec struct {
 	PatchParams      *PatchParams
 }
 
-// CommandSpecOneOfAsCommandSpec is a convenience function that returns CommandSpecOneOf wrapped in CommandSpec
-func CommandSpecOneOfAsCommandSpec(v *CommandSpecOneOf) CommandSpec {
-	return CommandSpec{
-		CommandSpecOneOf: v,
-	}
-}
-
-// PatchParamsAsCommandSpec is a convenience function that returns PatchParams wrapped in CommandSpec
+// PatchParamsAsCommandSpec is is a convenience function that returns PatchParams wrapped in CommandSpec
 func PatchParamsAsCommandSpec(v *PatchParams) CommandSpec {
 	return CommandSpec{
 		PatchParams: v,
+	}
+}
+
+// CommandSpecOneOfAsCommandSpec is is a convenience function that returns CommandSpecOneOf wrapped in CommandSpec
+func CommandSpecOneOfAsCommandSpec(v *CommandSpecOneOf) CommandSpec {
+	return CommandSpec{
+		CommandSpecOneOf: v,
 	}
 }
 

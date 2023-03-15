@@ -28,14 +28,14 @@ type StartupProbeSpec struct {
 	StartupProbeSpecOneOf *StartupProbeSpecOneOf
 }
 
-// StartupProbeParamsAsStartupProbeSpec is a convenience function that returns StartupProbeParams wrapped in StartupProbeSpec
+// StartupProbeParamsAsStartupProbeSpec is is a convenience function that returns StartupProbeParams wrapped in StartupProbeSpec
 func StartupProbeParamsAsStartupProbeSpec(v *StartupProbeParams) StartupProbeSpec {
 	return StartupProbeSpec{
 		StartupProbeParams: v,
 	}
 }
 
-// StartupProbeSpecOneOfAsStartupProbeSpec is a convenience function that returns StartupProbeSpecOneOf wrapped in StartupProbeSpec
+// StartupProbeSpecOneOfAsStartupProbeSpec is is a convenience function that returns StartupProbeSpecOneOf wrapped in StartupProbeSpec
 func StartupProbeSpecOneOfAsStartupProbeSpec(v *StartupProbeSpecOneOf) StartupProbeSpec {
 	return StartupProbeSpec{
 		StartupProbeSpecOneOf: v,

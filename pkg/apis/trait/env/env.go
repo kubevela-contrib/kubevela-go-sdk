@@ -28,17 +28,17 @@ type EnvSpec struct {
 	PatchParams  *PatchParams
 }
 
-// EnvSpecOneOfAsEnvSpec is a convenience function that returns EnvSpecOneOf wrapped in EnvSpec
-func EnvSpecOneOfAsEnvSpec(v *EnvSpecOneOf) EnvSpec {
-	return EnvSpec{
-		EnvSpecOneOf: v,
-	}
-}
-
-// PatchParamsAsEnvSpec is a convenience function that returns PatchParams wrapped in EnvSpec
+// PatchParamsAsEnvSpec is is a convenience function that returns PatchParams wrapped in EnvSpec
 func PatchParamsAsEnvSpec(v *PatchParams) EnvSpec {
 	return EnvSpec{
 		PatchParams: v,
+	}
+}
+
+// EnvSpecOneOfAsEnvSpec is is a convenience function that returns EnvSpecOneOf wrapped in EnvSpec
+func EnvSpecOneOfAsEnvSpec(v *EnvSpecOneOf) EnvSpec {
+	return EnvSpec{
+		EnvSpecOneOf: v,
 	}
 }
 

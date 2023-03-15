@@ -23,14 +23,14 @@ type Url2 struct {
 	UrlOneOf1 *UrlOneOf1
 }
 
-// UrlOneOfAsUrl2 is a convenience function that returns UrlOneOf wrapped in Url2
+// UrlOneOfAsUrl2 is is a convenience function that returns UrlOneOf wrapped in Url2
 func UrlOneOfAsUrl2(v *UrlOneOf) Url2 {
 	return Url2{
 		UrlOneOf: v,
 	}
 }
 
-// UrlOneOf1AsUrl2 is a convenience function that returns UrlOneOf1 wrapped in Url2
+// UrlOneOf1AsUrl2 is is a convenience function that returns UrlOneOf1 wrapped in Url2
 func UrlOneOf1AsUrl2(v *UrlOneOf1) Url2 {
 	return Url2{
 		UrlOneOf1: v,

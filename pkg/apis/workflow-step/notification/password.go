@@ -23,14 +23,14 @@ type Password struct {
 	UrlOneOf1     *UrlOneOf1
 }
 
-// PasswordOneOfAsPassword is a convenience function that returns PasswordOneOf wrapped in Password
+// PasswordOneOfAsPassword is is a convenience function that returns PasswordOneOf wrapped in Password
 func PasswordOneOfAsPassword(v *PasswordOneOf) Password {
 	return Password{
 		PasswordOneOf: v,
 	}
 }
 
-// UrlOneOf1AsPassword is a convenience function that returns UrlOneOf1 wrapped in Password
+// UrlOneOf1AsPassword is is a convenience function that returns UrlOneOf1 wrapped in Password
 func UrlOneOf1AsPassword(v *UrlOneOf1) Password {
 	return Password{
 		UrlOneOf1: v,

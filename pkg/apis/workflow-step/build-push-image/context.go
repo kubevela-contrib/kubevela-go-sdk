@@ -23,14 +23,14 @@ type Context struct {
 	String *string
 }
 
-// GitAsContext is a convenience function that returns Git wrapped in Context
+// GitAsContext is is a convenience function that returns Git wrapped in Context
 func GitAsContext(v *Git) Context {
 	return Context{
 		Git: v,
 	}
 }
 
-// stringAsContext is a convenience function that returns string wrapped in Context
+// StringAsContext is is a convenience function that returns string wrapped in Context
 func StringAsContext(v *string) Context {
 	return Context{
 		String: v,

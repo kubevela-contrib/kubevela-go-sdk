@@ -22,7 +22,7 @@ type Image struct {
 	String *string
 }
 
-// stringAsImage is a convenience function that returns string wrapped in Image
+// StringAsImage is is a convenience function that returns string wrapped in Image
 func StringAsImage(v *string) Image {
 	return Image{
 		String: v,

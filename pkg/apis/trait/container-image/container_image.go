@@ -28,17 +28,17 @@ type ContainerImageSpec struct {
 	PatchParams             *PatchParams
 }
 
-// ContainerImageSpecOneOfAsContainerImageSpec is a convenience function that returns ContainerImageSpecOneOf wrapped in ContainerImageSpec
-func ContainerImageSpecOneOfAsContainerImageSpec(v *ContainerImageSpecOneOf) ContainerImageSpec {
-	return ContainerImageSpec{
-		ContainerImageSpecOneOf: v,
-	}
-}
-
-// PatchParamsAsContainerImageSpec is a convenience function that returns PatchParams wrapped in ContainerImageSpec
+// PatchParamsAsContainerImageSpec is is a convenience function that returns PatchParams wrapped in ContainerImageSpec
 func PatchParamsAsContainerImageSpec(v *PatchParams) ContainerImageSpec {
 	return ContainerImageSpec{
 		PatchParams: v,
+	}
+}
+
+// ContainerImageSpecOneOfAsContainerImageSpec is is a convenience function that returns ContainerImageSpecOneOf wrapped in ContainerImageSpec
+func ContainerImageSpecOneOfAsContainerImageSpec(v *ContainerImageSpecOneOf) ContainerImageSpec {
+	return ContainerImageSpec{
+		ContainerImageSpecOneOf: v,
 	}
 }
 
