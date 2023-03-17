@@ -26,7 +26,7 @@ type Secret struct {
 	DefaultMode *int32                 `json:"defaultMode"`
 	Items       []Items                `json:"items,omitempty"`
 	MountOnly   *bool                  `json:"mountOnly"`
-	MountPath   *string                `json:"mountPath,omitempty"`
+	MountPath   *string                `json:"mountPath"`
 	MountToEnv  *MountToEnv1           `json:"mountToEnv,omitempty"`
 	MountToEnvs []MountToEnvs1         `json:"mountToEnvs,omitempty"`
 	Name        *string                `json:"name"`
@@ -39,10 +39,11 @@ type Secret struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewSecretWith(defaultMode int32, mountOnly bool, name string, readOnly bool) *Secret {
+func NewSecretWith(defaultMode int32, mountOnly bool, mountPath string, name string, readOnly bool) *Secret {
 	this := Secret{}
 	this.DefaultMode = &defaultMode
 	this.MountOnly = &mountOnly
+	this.MountPath = &mountPath
 	this.Name = &name
 	this.ReadOnly = &readOnly
 	return &this
@@ -95,6 +96,9 @@ func (o *Secret) Validate() error {
 	}
 	if o.MountOnly == nil {
 		return errors.New("MountOnly in Secret must be set")
+	}
+	if o.MountPath == nil {
+		return errors.New("MountPath in Secret must be set")
 	}
 	if o.Name == nil {
 		return errors.New("Name in Secret must be set")
@@ -229,35 +233,26 @@ func (o *Secret) SetMountOnly(v bool) *Secret {
 	return o
 }
 
-// GetMountPath returns the MountPath field value if set, zero value otherwise.
+// GetMountPath returns the MountPath field value
 func (o *Secret) GetMountPath() string {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.MountPath
 }
 
-// GetMountPathOk returns a tuple with the MountPath field value if set, nil otherwise
+// GetMountPathOk returns a tuple with the MountPath field value
 // and a boolean to check if the value has been set.
 func (o *Secret) GetMountPathOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.MountPath) {
+	if o == nil {
 		return nil, false
 	}
 	return o.MountPath, true
 }
 
-// HasMountPath returns a boolean if a field has been set.
-func (o *Secret) HasMountPath() bool {
-	if o != nil && !utils.IsNil(o.MountPath) {
-		return true
-	}
-
-	return false
-}
-
-// SetMountPath gets a reference to the given string and assigns it to the mountPath field.
-// MountPath:
+// SetMountPath sets field value
 func (o *Secret) SetMountPath(v string) *Secret {
 	o.MountPath = &v
 	return o
@@ -467,9 +462,7 @@ func (o Secret) ToMap() (map[string]interface{}, error) {
 		toSerialize["items"] = o.Items
 	}
 	toSerialize["mountOnly"] = o.MountOnly
-	if !utils.IsNil(o.MountPath) {
-		toSerialize["mountPath"] = o.MountPath
-	}
+	toSerialize["mountPath"] = o.MountPath
 	if !utils.IsNil(o.MountToEnv) {
 		toSerialize["mountToEnv"] = o.MountToEnv
 	}
