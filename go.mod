@@ -4,8 +4,6 @@ go 1.19
 
 require (
 	github.com/oam-dev/kubevela-core-api v1.5.8
-
-	// for main module
 	github.com/pkg/errors v0.9.1
 	k8s.io/apimachinery v0.23.6
 	k8s.io/client-go v0.23.6
