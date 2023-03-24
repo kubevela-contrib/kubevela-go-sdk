@@ -249,7 +249,7 @@ func (r *RefObjectsComponent) Build() common.ApplicationComponent {
 
 func (r *RefObjectsComponent) FromComponent(from common.ApplicationComponent) (*RefObjectsComponent, error) {
 	for _, trait := range from.Traits {
-		_t, err := sdkcommon.FromTrait(&trait)
+		_t, err := sdkcommon.FromTrait(trait)
 		if err != nil {
 			return nil, err
 		}

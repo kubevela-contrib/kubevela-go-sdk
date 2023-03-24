@@ -203,7 +203,7 @@ func (k *K8sObjectsComponent) Build() common.ApplicationComponent {
 
 func (k *K8sObjectsComponent) FromComponent(from common.ApplicationComponent) (*K8sObjectsComponent, error) {
 	for _, trait := range from.Traits {
-		_t, err := sdkcommon.FromTrait(&trait)
+		_t, err := sdkcommon.FromTrait(trait)
 		if err != nil {
 			return nil, err
 		}

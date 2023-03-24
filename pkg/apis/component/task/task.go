@@ -709,7 +709,7 @@ func (t *TaskComponent) Build() common.ApplicationComponent {
 
 func (t *TaskComponent) FromComponent(from common.ApplicationComponent) (*TaskComponent, error) {
 	for _, trait := range from.Traits {
-		_t, err := sdkcommon.FromTrait(&trait)
+		_t, err := sdkcommon.FromTrait(trait)
 		if err != nil {
 			return nil, err
 		}

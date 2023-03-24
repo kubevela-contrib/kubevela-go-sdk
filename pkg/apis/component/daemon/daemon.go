@@ -866,7 +866,7 @@ func (d *DaemonComponent) Build() common.ApplicationComponent {
 
 func (d *DaemonComponent) FromComponent(from common.ApplicationComponent) (*DaemonComponent, error) {
 	for _, trait := range from.Traits {
-		_t, err := sdkcommon.FromTrait(&trait)
+		_t, err := sdkcommon.FromTrait(trait)
 		if err != nil {
 			return nil, err
 		}
