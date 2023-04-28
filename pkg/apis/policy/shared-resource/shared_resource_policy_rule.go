@@ -22,17 +22,16 @@ var _ utils.MappedNullable = &SharedResourcePolicyRule{}
 
 // SharedResourcePolicyRule struct for SharedResourcePolicyRule
 type SharedResourcePolicyRule struct {
-	// Specify how to select the targets of the rule
-	Selector []ResourcePolicyRuleSelector `json:"selector"`
+	Selector *ResourcePolicyRuleSelector `json:"selector"`
 }
 
 // NewSharedResourcePolicyRuleWith instantiates a new SharedResourcePolicyRule object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewSharedResourcePolicyRuleWith(selector []ResourcePolicyRuleSelector) *SharedResourcePolicyRule {
+func NewSharedResourcePolicyRuleWith(selector ResourcePolicyRuleSelector) *SharedResourcePolicyRule {
 	this := SharedResourcePolicyRule{}
-	this.Selector = selector
+	this.Selector = &selector
 	return &this
 }
 
@@ -76,22 +75,27 @@ func (o *SharedResourcePolicyRule) Validate() error {
 		return errors.New("Selector in SharedResourcePolicyRule must be set")
 	}
 	// validate all nested properties
+	if o.Selector != nil {
+		if err := o.Selector.Validate(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
 // GetSelector returns the Selector field value
-func (o *SharedResourcePolicyRule) GetSelector() []ResourcePolicyRuleSelector {
+func (o *SharedResourcePolicyRule) GetSelector() ResourcePolicyRuleSelector {
 	if o == nil {
-		var ret []ResourcePolicyRuleSelector
+		var ret ResourcePolicyRuleSelector
 		return ret
 	}
 
-	return o.Selector
+	return *o.Selector
 }
 
 // GetSelectorOk returns a tuple with the Selector field value
 // and a boolean to check if the value has been set.
-func (o *SharedResourcePolicyRule) GetSelectorOk() ([]ResourcePolicyRuleSelector, bool) {
+func (o *SharedResourcePolicyRule) GetSelectorOk() (*ResourcePolicyRuleSelector, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -99,8 +103,8 @@ func (o *SharedResourcePolicyRule) GetSelectorOk() ([]ResourcePolicyRuleSelector
 }
 
 // SetSelector sets field value
-func (o *SharedResourcePolicyRule) SetSelector(v []ResourcePolicyRuleSelector) *SharedResourcePolicyRule {
-	o.Selector = v
+func (o *SharedResourcePolicyRule) SetSelector(v ResourcePolicyRuleSelector) *SharedResourcePolicyRule {
+	o.Selector = &v
 	return o
 }
 
