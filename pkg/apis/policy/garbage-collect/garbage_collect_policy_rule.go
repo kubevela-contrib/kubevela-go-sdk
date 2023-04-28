@@ -22,7 +22,8 @@ var _ utils.MappedNullable = &GarbageCollectPolicyRule{}
 
 // GarbageCollectPolicyRule struct for GarbageCollectPolicyRule
 type GarbageCollectPolicyRule struct {
-	Selector *ResourcePolicyRuleSelector `json:"selector"`
+	// Specify how to select the targets of the rule
+	Selector []ResourcePolicyRuleSelector `json:"selector"`
 	// Specify the strategy for target resource to recycle
 	Strategy *string `json:"strategy"`
 }
@@ -31,9 +32,9 @@ type GarbageCollectPolicyRule struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewGarbageCollectPolicyRuleWith(selector ResourcePolicyRuleSelector, strategy string) *GarbageCollectPolicyRule {
+func NewGarbageCollectPolicyRuleWith(selector []ResourcePolicyRuleSelector, strategy string) *GarbageCollectPolicyRule {
 	this := GarbageCollectPolicyRule{}
-	this.Selector = &selector
+	this.Selector = selector
 	this.Strategy = &strategy
 	return &this
 }
@@ -83,27 +84,22 @@ func (o *GarbageCollectPolicyRule) Validate() error {
 		return errors.New("Strategy in GarbageCollectPolicyRule must be set")
 	}
 	// validate all nested properties
-	if o.Selector != nil {
-		if err := o.Selector.Validate(); err != nil {
-			return err
-		}
-	}
 	return nil
 }
 
 // GetSelector returns the Selector field value
-func (o *GarbageCollectPolicyRule) GetSelector() ResourcePolicyRuleSelector {
+func (o *GarbageCollectPolicyRule) GetSelector() []ResourcePolicyRuleSelector {
 	if o == nil {
-		var ret ResourcePolicyRuleSelector
+		var ret []ResourcePolicyRuleSelector
 		return ret
 	}
 
-	return *o.Selector
+	return o.Selector
 }
 
 // GetSelectorOk returns a tuple with the Selector field value
 // and a boolean to check if the value has been set.
-func (o *GarbageCollectPolicyRule) GetSelectorOk() (*ResourcePolicyRuleSelector, bool) {
+func (o *GarbageCollectPolicyRule) GetSelectorOk() ([]ResourcePolicyRuleSelector, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -111,8 +107,8 @@ func (o *GarbageCollectPolicyRule) GetSelectorOk() (*ResourcePolicyRuleSelector,
 }
 
 // SetSelector sets field value
-func (o *GarbageCollectPolicyRule) SetSelector(v ResourcePolicyRuleSelector) *GarbageCollectPolicyRule {
-	o.Selector = &v
+func (o *GarbageCollectPolicyRule) SetSelector(v []ResourcePolicyRuleSelector) *GarbageCollectPolicyRule {
+	o.Selector = v
 	return o
 }
 
