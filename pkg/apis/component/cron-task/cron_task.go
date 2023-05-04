@@ -1103,9 +1103,9 @@ func (c *CronTaskComponent) SetTraits(traits ...apis.Trait) *CronTaskComponent {
 				found = true
 				break
 			}
-			if !found {
-				c.Base.Traits = append(c.Base.Traits, addTrait)
-			}
+		}
+		if !found {
+			c.Base.Traits = append(c.Base.Traits, addTrait)
 		}
 	}
 	return c

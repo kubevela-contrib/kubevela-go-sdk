@@ -642,9 +642,9 @@ func (w *WorkerComponent) SetTraits(traits ...apis.Trait) *WorkerComponent {
 				found = true
 				break
 			}
-			if !found {
-				w.Base.Traits = append(w.Base.Traits, addTrait)
-			}
+		}
+		if !found {
+			w.Base.Traits = append(w.Base.Traits, addTrait)
 		}
 	}
 	return w

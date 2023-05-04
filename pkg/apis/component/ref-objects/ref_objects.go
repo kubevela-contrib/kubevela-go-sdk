@@ -285,9 +285,9 @@ func (r *RefObjectsComponent) SetTraits(traits ...apis.Trait) *RefObjectsCompone
 				found = true
 				break
 			}
-			if !found {
-				r.Base.Traits = append(r.Base.Traits, addTrait)
-			}
+		}
+		if !found {
+			r.Base.Traits = append(r.Base.Traits, addTrait)
 		}
 	}
 	return r

@@ -745,9 +745,9 @@ func (t *TaskComponent) SetTraits(traits ...apis.Trait) *TaskComponent {
 				found = true
 				break
 			}
-			if !found {
-				t.Base.Traits = append(t.Base.Traits, addTrait)
-			}
+		}
+		if !found {
+			t.Base.Traits = append(t.Base.Traits, addTrait)
 		}
 	}
 	return t

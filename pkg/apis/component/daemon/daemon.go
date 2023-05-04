@@ -902,9 +902,9 @@ func (d *DaemonComponent) SetTraits(traits ...apis.Trait) *DaemonComponent {
 				found = true
 				break
 			}
-			if !found {
-				d.Base.Traits = append(d.Base.Traits, addTrait)
-			}
+		}
+		if !found {
+			d.Base.Traits = append(d.Base.Traits, addTrait)
 		}
 	}
 	return d

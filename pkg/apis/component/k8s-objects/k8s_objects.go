@@ -239,9 +239,9 @@ func (k *K8sObjectsComponent) SetTraits(traits ...apis.Trait) *K8sObjectsCompone
 				found = true
 				break
 			}
-			if !found {
-				k.Base.Traits = append(k.Base.Traits, addTrait)
-			}
+		}
+		if !found {
+			k.Base.Traits = append(k.Base.Traits, addTrait)
 		}
 	}
 	return k
