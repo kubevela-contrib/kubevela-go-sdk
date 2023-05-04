@@ -22,16 +22,17 @@ var _ utils.MappedNullable = &PolicyRule{}
 
 // PolicyRule struct for PolicyRule
 type PolicyRule struct {
-	Selector *RuleSelector `json:"selector"`
+	// Specify how to select the targets of the rule
+	Selector []RuleSelector `json:"selector"`
 }
 
 // NewPolicyRuleWith instantiates a new PolicyRule object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewPolicyRuleWith(selector RuleSelector) *PolicyRule {
+func NewPolicyRuleWith(selector []RuleSelector) *PolicyRule {
 	this := PolicyRule{}
-	this.Selector = &selector
+	this.Selector = selector
 	return &this
 }
 
@@ -75,27 +76,22 @@ func (o *PolicyRule) Validate() error {
 		return errors.New("Selector in PolicyRule must be set")
 	}
 	// validate all nested properties
-	if o.Selector != nil {
-		if err := o.Selector.Validate(); err != nil {
-			return err
-		}
-	}
 	return nil
 }
 
 // GetSelector returns the Selector field value
-func (o *PolicyRule) GetSelector() RuleSelector {
+func (o *PolicyRule) GetSelector() []RuleSelector {
 	if o == nil {
-		var ret RuleSelector
+		var ret []RuleSelector
 		return ret
 	}
 
-	return *o.Selector
+	return o.Selector
 }
 
 // GetSelectorOk returns a tuple with the Selector field value
 // and a boolean to check if the value has been set.
-func (o *PolicyRule) GetSelectorOk() (*RuleSelector, bool) {
+func (o *PolicyRule) GetSelectorOk() ([]RuleSelector, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -103,8 +99,8 @@ func (o *PolicyRule) GetSelectorOk() (*RuleSelector, bool) {
 }
 
 // SetSelector sets field value
-func (o *PolicyRule) SetSelector(v RuleSelector) *PolicyRule {
-	o.Selector = &v
+func (o *PolicyRule) SetSelector(v []RuleSelector) *PolicyRule {
+	o.Selector = v
 	return o
 }
 
