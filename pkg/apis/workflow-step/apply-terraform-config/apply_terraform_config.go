@@ -30,7 +30,8 @@ var _ utils.MappedNullable = &ApplyTerraformConfigSpec{}
 type ApplyTerraformConfigSpec struct {
 	// whether to delete resource
 	DeleteResource *bool `json:"deleteResource"`
-	ForceDelete    *bool `json:"forceDelete"`
+	// forceDelete will force delete Configuration no matter which state it is or whether it has provisioned some resources
+	ForceDelete *bool `json:"forceDelete"`
 	// the envs for job
 	JobEnv      map[string]interface{} `json:"jobEnv,omitempty"`
 	ProviderRef *ProviderRef           `json:"providerRef,omitempty"`
