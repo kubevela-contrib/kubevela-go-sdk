@@ -27,6 +27,10 @@ var _ utils.MappedNullable = &GarbageCollectSpec{}
 
 // GarbageCollectSpec struct for GarbageCollectSpec
 type GarbageCollectSpec struct {
+	// If set, it will override the default revision limit number and customize this number for the current application
+	ApplicationRevisionLimit *int32 `json:"applicationRevisionLimit,omitempty"`
+	// If is set, continue to execute gc when the workflow fails, by default gc will be executed only after the workflow succeeds
+	ContinueOnFailure *bool `json:"continueOnFailure"`
 	// If is set, outdated versioned resourcetracker will not be recycled automatically, outdated resources will be kept until resourcetracker be deleted manually
 	KeepLegacyResource *bool `json:"keepLegacyResource"`
 	// Specify the list of rules to control gc strategy at resource level, if one resource is controlled by multiple rules, first rule will be used
@@ -37,8 +41,9 @@ type GarbageCollectSpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewGarbageCollectSpecWith(keepLegacyResource bool) *GarbageCollectSpec {
+func NewGarbageCollectSpecWith(continueOnFailure bool, keepLegacyResource bool) *GarbageCollectSpec {
 	this := GarbageCollectSpec{}
+	this.ContinueOnFailure = &continueOnFailure
 	this.KeepLegacyResource = &keepLegacyResource
 	return &this
 }
@@ -48,6 +53,8 @@ func NewGarbageCollectSpecWith(keepLegacyResource bool) *GarbageCollectSpec {
 // but it doesn't guarantee that properties required by API are set
 func NewGarbageCollectSpecWithDefault() *GarbageCollectSpec {
 	this := GarbageCollectSpec{}
+	var continueOnFailure bool = false
+	this.ContinueOnFailure = &continueOnFailure
 	var keepLegacyResource bool = false
 	this.KeepLegacyResource = &keepLegacyResource
 	return &this
@@ -81,11 +88,73 @@ func NewGarbageCollectSpecList(ps ...*GarbageCollectSpec) []GarbageCollectSpec {
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *GarbageCollectPolicy) Validate() error {
+	if o.Properties.ContinueOnFailure == nil {
+		return errors.New("ContinueOnFailure in GarbageCollectSpec must be set")
+	}
 	if o.Properties.KeepLegacyResource == nil {
 		return errors.New("KeepLegacyResource in GarbageCollectSpec must be set")
 	}
 	// validate all nested properties
 	return nil
+}
+
+// GetApplicationRevisionLimit returns the ApplicationRevisionLimit field value if set, zero value otherwise.
+func (o *GarbageCollectPolicy) GetApplicationRevisionLimit() int32 {
+	if o == nil || utils.IsNil(o.Properties.ApplicationRevisionLimit) {
+		var ret int32
+		return ret
+	}
+	return *o.Properties.ApplicationRevisionLimit
+}
+
+// GetApplicationRevisionLimitOk returns a tuple with the ApplicationRevisionLimit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GarbageCollectPolicy) GetApplicationRevisionLimitOk() (*int32, bool) {
+	if o == nil || utils.IsNil(o.Properties.ApplicationRevisionLimit) {
+		return nil, false
+	}
+	return o.Properties.ApplicationRevisionLimit, true
+}
+
+// HasApplicationRevisionLimit returns a boolean if a field has been set.
+func (o *GarbageCollectPolicy) HasApplicationRevisionLimit() bool {
+	if o != nil && !utils.IsNil(o.Properties.ApplicationRevisionLimit) {
+		return true
+	}
+
+	return false
+}
+
+// SetApplicationRevisionLimit gets a reference to the given int32 and assigns it to the applicationRevisionLimit field.
+// ApplicationRevisionLimit:  If set, it will override the default revision limit number and customize this number for the current application
+func (o *GarbageCollectPolicy) SetApplicationRevisionLimit(v int32) *GarbageCollectPolicy {
+	o.Properties.ApplicationRevisionLimit = &v
+	return o
+}
+
+// GetContinueOnFailure returns the ContinueOnFailure field value
+func (o *GarbageCollectPolicy) GetContinueOnFailure() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return *o.Properties.ContinueOnFailure
+}
+
+// GetContinueOnFailureOk returns a tuple with the ContinueOnFailure field value
+// and a boolean to check if the value has been set.
+func (o *GarbageCollectPolicy) GetContinueOnFailureOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Properties.ContinueOnFailure, true
+}
+
+// SetContinueOnFailure sets field value
+func (o *GarbageCollectPolicy) SetContinueOnFailure(v bool) *GarbageCollectPolicy {
+	o.Properties.ContinueOnFailure = &v
+	return o
 }
 
 // GetKeepLegacyResource returns the KeepLegacyResource field value
@@ -157,6 +226,10 @@ func (o GarbageCollectSpec) MarshalJSON() ([]byte, error) {
 
 func (o GarbageCollectSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !utils.IsNil(o.ApplicationRevisionLimit) {
+		toSerialize["applicationRevisionLimit"] = o.ApplicationRevisionLimit
+	}
+	toSerialize["continueOnFailure"] = o.ContinueOnFailure
 	toSerialize["keepLegacyResource"] = o.KeepLegacyResource
 	if !utils.IsNil(o.Rules) {
 		toSerialize["rules"] = o.Rules

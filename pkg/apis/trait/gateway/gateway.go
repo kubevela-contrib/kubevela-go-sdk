@@ -37,6 +37,10 @@ type GatewaySpec struct {
 	GatewayHost *string `json:"gatewayHost,omitempty"`
 	// Specify the mapping relationship between the http path and the workload port
 	Http map[string]int32 `json:"http"`
+	// Specify a unique name for this gateway, required to support multiple gateway traits on a component
+	Name *string `json:"name,omitempty"`
+	// Specify a pathType for the ingress rules, defaults to \"ImplementationSpecific\"
+	PathType *string `json:"pathType"`
 	// Specify the secret name you want to quote to use tls.
 	SecretName *string `json:"secretName,omitempty"`
 }
@@ -45,11 +49,12 @@ type GatewaySpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewGatewaySpecWith(class string, classInSpec bool, http map[string]int32) *GatewaySpec {
+func NewGatewaySpecWith(class string, classInSpec bool, http map[string]int32, pathType string) *GatewaySpec {
 	this := GatewaySpec{}
 	this.Class = &class
 	this.ClassInSpec = &classInSpec
 	this.Http = http
+	this.PathType = &pathType
 	return &this
 }
 
@@ -62,6 +67,8 @@ func NewGatewaySpecWithDefault() *GatewaySpec {
 	this.Class = &class
 	var classInSpec bool = false
 	this.ClassInSpec = &classInSpec
+	var pathType string = "ImplementationSpecific"
+	this.PathType = &pathType
 	return &this
 }
 
@@ -101,6 +108,9 @@ func (o *GatewayTrait) Validate() error {
 	}
 	if o.Properties.Http == nil {
 		return errors.New("Http in GatewaySpec must be set")
+	}
+	if o.Properties.PathType == nil {
+		return errors.New("PathType in GatewaySpec must be set")
 	}
 	// validate all nested properties
 	return nil
@@ -249,6 +259,65 @@ func (o *GatewayTrait) SetHttp(v map[string]int32) *GatewayTrait {
 	return o
 }
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *GatewayTrait) GetName() string {
+	if o == nil || utils.IsNil(o.Properties.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Properties.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewayTrait) GetNameOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Properties.Name) {
+		return nil, false
+	}
+	return o.Properties.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *GatewayTrait) HasName() bool {
+	if o != nil && !utils.IsNil(o.Properties.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the name field.
+// Name:  Specify a unique name for this gateway, required to support multiple gateway traits on a component
+func (o *GatewayTrait) SetName(v string) *GatewayTrait {
+	o.Properties.Name = &v
+	return o
+}
+
+// GetPathType returns the PathType field value
+func (o *GatewayTrait) GetPathType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Properties.PathType
+}
+
+// GetPathTypeOk returns a tuple with the PathType field value
+// and a boolean to check if the value has been set.
+func (o *GatewayTrait) GetPathTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Properties.PathType, true
+}
+
+// SetPathType sets field value
+func (o *GatewayTrait) SetPathType(v string) *GatewayTrait {
+	o.Properties.PathType = &v
+	return o
+}
+
 // GetSecretName returns the SecretName field value if set, zero value otherwise.
 func (o *GatewayTrait) GetSecretName() string {
 	if o == nil || utils.IsNil(o.Properties.SecretName) {
@@ -302,6 +371,10 @@ func (o GatewaySpec) ToMap() (map[string]interface{}, error) {
 		toSerialize["gatewayHost"] = o.GatewayHost
 	}
 	toSerialize["http"] = o.Http
+	if !utils.IsNil(o.Name) {
+		toSerialize["name"] = o.Name
+	}
+	toSerialize["pathType"] = o.PathType
 	if !utils.IsNil(o.SecretName) {
 		toSerialize["secretName"] = o.SecretName
 	}
