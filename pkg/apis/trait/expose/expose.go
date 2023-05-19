@@ -27,7 +27,7 @@ var _ utils.MappedNullable = &ExposeSpec{}
 
 // ExposeSpec struct for ExposeSpec
 type ExposeSpec struct {
-	// Specify the annotations of the exposed service
+	// Specify the annotaions of the exposed service
 	Annotations map[string]string `json:"annotations"`
 	MatchLabels map[string]string `json:"matchLabels,omitempty"`
 	// Deprecated, the old way to specify the exposion ports
