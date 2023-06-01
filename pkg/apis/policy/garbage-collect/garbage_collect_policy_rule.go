@@ -22,7 +22,9 @@ var _ utils.MappedNullable = &GarbageCollectPolicyRule{}
 
 // GarbageCollectPolicyRule struct for GarbageCollectPolicyRule
 type GarbageCollectPolicyRule struct {
-	Selector *ResourcePolicyRuleSelector `json:"selector"`
+	// Specify the deletion propagation strategy for target resource to delete
+	Propagation *string                     `json:"propagation,omitempty"`
+	Selector    *ResourcePolicyRuleSelector `json:"selector"`
 	// Specify the strategy for target resource to recycle
 	Strategy *string `json:"strategy"`
 }
@@ -91,6 +93,40 @@ func (o *GarbageCollectPolicyRule) Validate() error {
 	return nil
 }
 
+// GetPropagation returns the Propagation field value if set, zero value otherwise.
+func (o *GarbageCollectPolicyRule) GetPropagation() string {
+	if o == nil || utils.IsNil(o.Propagation) {
+		var ret string
+		return ret
+	}
+	return *o.Propagation
+}
+
+// GetPropagationOk returns a tuple with the Propagation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GarbageCollectPolicyRule) GetPropagationOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Propagation) {
+		return nil, false
+	}
+	return o.Propagation, true
+}
+
+// HasPropagation returns a boolean if a field has been set.
+func (o *GarbageCollectPolicyRule) HasPropagation() bool {
+	if o != nil && !utils.IsNil(o.Propagation) {
+		return true
+	}
+
+	return false
+}
+
+// SetPropagation gets a reference to the given string and assigns it to the propagation field.
+// Propagation:  Specify the deletion propagation strategy for target resource to delete
+func (o *GarbageCollectPolicyRule) SetPropagation(v string) *GarbageCollectPolicyRule {
+	o.Propagation = &v
+	return o
+}
+
 // GetSelector returns the Selector field value
 func (o *GarbageCollectPolicyRule) GetSelector() ResourcePolicyRuleSelector {
 	if o == nil {
@@ -151,6 +187,9 @@ func (o GarbageCollectPolicyRule) MarshalJSON() ([]byte, error) {
 
 func (o GarbageCollectPolicyRule) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !utils.IsNil(o.Propagation) {
+		toSerialize["propagation"] = o.Propagation
+	}
 	toSerialize["selector"] = o.Selector
 	toSerialize["strategy"] = o.Strategy
 	return toSerialize, nil
