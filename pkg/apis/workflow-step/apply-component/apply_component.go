@@ -32,16 +32,19 @@ type ApplyComponentSpec struct {
 	Cluster *string `json:"cluster"`
 	// Specify the component name to apply
 	Component *string `json:"component"`
+	// Specify the namespace
+	Namespace *string `json:"namespace"`
 }
 
 // NewApplyComponentSpecWith instantiates a new ApplyComponentSpec object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewApplyComponentSpecWith(cluster string, component string) *ApplyComponentSpec {
+func NewApplyComponentSpecWith(cluster string, component string, namespace string) *ApplyComponentSpec {
 	this := ApplyComponentSpec{}
 	this.Cluster = &cluster
 	this.Component = &component
+	this.Namespace = &namespace
 	return &this
 }
 
@@ -52,6 +55,8 @@ func NewApplyComponentSpecWithDefault() *ApplyComponentSpec {
 	this := ApplyComponentSpec{}
 	var cluster string = ""
 	this.Cluster = &cluster
+	var namespace string = ""
+	this.Namespace = &namespace
 	return &this
 }
 
@@ -88,6 +93,9 @@ func (o *ApplyComponentWorkflowStep) Validate() error {
 	}
 	if o.Properties.Component == nil {
 		return errors.New("Component in ApplyComponentSpec must be set")
+	}
+	if o.Properties.Namespace == nil {
+		return errors.New("Namespace in ApplyComponentSpec must be set")
 	}
 	// validate all nested properties
 	return nil
@@ -143,6 +151,31 @@ func (o *ApplyComponentWorkflowStep) SetComponent(v string) *ApplyComponentWorkf
 	return o
 }
 
+// GetNamespace returns the Namespace field value
+func (o *ApplyComponentWorkflowStep) GetNamespace() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Properties.Namespace
+}
+
+// GetNamespaceOk returns a tuple with the Namespace field value
+// and a boolean to check if the value has been set.
+func (o *ApplyComponentWorkflowStep) GetNamespaceOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Properties.Namespace, true
+}
+
+// SetNamespace sets field value
+func (o *ApplyComponentWorkflowStep) SetNamespace(v string) *ApplyComponentWorkflowStep {
+	o.Properties.Namespace = &v
+	return o
+}
+
 func (o ApplyComponentSpec) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -155,6 +188,7 @@ func (o ApplyComponentSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["cluster"] = o.Cluster
 	toSerialize["component"] = o.Component
+	toSerialize["namespace"] = o.Namespace
 	return toSerialize, nil
 }
 
