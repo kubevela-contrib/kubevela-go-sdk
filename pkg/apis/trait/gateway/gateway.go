@@ -27,6 +27,8 @@ var _ utils.MappedNullable = &GatewaySpec{}
 
 // GatewaySpec struct for GatewaySpec
 type GatewaySpec struct {
+	// Specify the annotations to be added to the ingress
+	Annotations map[string]string `json:"annotations,omitempty"`
 	// Specify the class of ingress to use
 	Class *string `json:"class"`
 	// Set ingress class in '.spec.ingressClassName' instead of 'kubernetes.io/ingress.class' annotation.
@@ -37,6 +39,8 @@ type GatewaySpec struct {
 	GatewayHost *string `json:"gatewayHost,omitempty"`
 	// Specify the mapping relationship between the http path and the workload port
 	Http map[string]int32 `json:"http"`
+	// Specify the labels to be added to the ingress
+	Labels map[string]string `json:"labels,omitempty"`
 	// Specify a unique name for this gateway, required to support multiple gateway traits on a component
 	Name *string `json:"name,omitempty"`
 	// Specify a pathType for the ingress rules, defaults to \"ImplementationSpecific\"
@@ -114,6 +118,40 @@ func (o *GatewayTrait) Validate() error {
 	}
 	// validate all nested properties
 	return nil
+}
+
+// GetAnnotations returns the Annotations field value if set, zero value otherwise.
+func (o *GatewayTrait) GetAnnotations() map[string]string {
+	if o == nil || utils.IsNil(o.Properties.Annotations) {
+		var ret map[string]string
+		return ret
+	}
+	return o.Properties.Annotations
+}
+
+// GetAnnotationsOk returns a tuple with the Annotations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewayTrait) GetAnnotationsOk() (map[string]string, bool) {
+	if o == nil || utils.IsNil(o.Properties.Annotations) {
+		return nil, false
+	}
+	return o.Properties.Annotations, true
+}
+
+// HasAnnotations returns a boolean if a field has been set.
+func (o *GatewayTrait) HasAnnotations() bool {
+	if o != nil && !utils.IsNil(o.Properties.Annotations) {
+		return true
+	}
+
+	return false
+}
+
+// SetAnnotations gets a reference to the given map[string]string and assigns it to the annotations field.
+// Annotations:  Specify the annotations to be added to the ingress
+func (o *GatewayTrait) SetAnnotations(v map[string]string) *GatewayTrait {
+	o.Properties.Annotations = v
+	return o
 }
 
 // GetClass returns the Class field value
@@ -259,6 +297,40 @@ func (o *GatewayTrait) SetHttp(v map[string]int32) *GatewayTrait {
 	return o
 }
 
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *GatewayTrait) GetLabels() map[string]string {
+	if o == nil || utils.IsNil(o.Properties.Labels) {
+		var ret map[string]string
+		return ret
+	}
+	return o.Properties.Labels
+}
+
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewayTrait) GetLabelsOk() (map[string]string, bool) {
+	if o == nil || utils.IsNil(o.Properties.Labels) {
+		return nil, false
+	}
+	return o.Properties.Labels, true
+}
+
+// HasLabels returns a boolean if a field has been set.
+func (o *GatewayTrait) HasLabels() bool {
+	if o != nil && !utils.IsNil(o.Properties.Labels) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabels gets a reference to the given map[string]string and assigns it to the labels field.
+// Labels:  Specify the labels to be added to the ingress
+func (o *GatewayTrait) SetLabels(v map[string]string) *GatewayTrait {
+	o.Properties.Labels = v
+	return o
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *GatewayTrait) GetName() string {
 	if o == nil || utils.IsNil(o.Properties.Name) {
@@ -362,6 +434,9 @@ func (o GatewaySpec) MarshalJSON() ([]byte, error) {
 
 func (o GatewaySpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !utils.IsNil(o.Annotations) {
+		toSerialize["annotations"] = o.Annotations
+	}
 	toSerialize["class"] = o.Class
 	toSerialize["classInSpec"] = o.ClassInSpec
 	if !utils.IsNil(o.Domain) {
@@ -371,6 +446,9 @@ func (o GatewaySpec) ToMap() (map[string]interface{}, error) {
 		toSerialize["gatewayHost"] = o.GatewayHost
 	}
 	toSerialize["http"] = o.Http
+	if !utils.IsNil(o.Labels) {
+		toSerialize["labels"] = o.Labels
+	}
 	if !utils.IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
