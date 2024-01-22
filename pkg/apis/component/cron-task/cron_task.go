@@ -71,8 +71,9 @@ type CronTaskSpec struct {
 	// suspend subsequent executions
 	Suspend *bool `json:"suspend"`
 	// Limits the lifetime of a Job that has finished
-	TtlSecondsAfterFinished *int32 `json:"ttlSecondsAfterFinished,omitempty"`
-	// Declare volumes and volumeMounts
+	TtlSecondsAfterFinished *int32        `json:"ttlSecondsAfterFinished,omitempty"`
+	VolumeMounts            *VolumeMounts `json:"volumeMounts,omitempty"`
+	// Deprecated field, use volumeMounts instead.
 	Volumes []Volumes `json:"volumes,omitempty"`
 }
 
@@ -179,6 +180,11 @@ func (o *CronTaskComponent) Validate() error {
 	}
 	if o.Properties.ReadinessProbe != nil {
 		if err := o.Properties.ReadinessProbe.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.Properties.VolumeMounts != nil {
+		if err := o.Properties.VolumeMounts.Validate(); err != nil {
 			return err
 		}
 	}
@@ -892,6 +898,40 @@ func (o *CronTaskComponent) SetTtlSecondsAfterFinished(v int32) *CronTaskCompone
 	return o
 }
 
+// GetVolumeMounts returns the VolumeMounts field value if set, zero value otherwise.
+func (o *CronTaskComponent) GetVolumeMounts() VolumeMounts {
+	if o == nil || utils.IsNil(o.Properties.VolumeMounts) {
+		var ret VolumeMounts
+		return ret
+	}
+	return *o.Properties.VolumeMounts
+}
+
+// GetVolumeMountsOk returns a tuple with the VolumeMounts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CronTaskComponent) GetVolumeMountsOk() (*VolumeMounts, bool) {
+	if o == nil || utils.IsNil(o.Properties.VolumeMounts) {
+		return nil, false
+	}
+	return o.Properties.VolumeMounts, true
+}
+
+// HasVolumeMounts returns a boolean if a field has been set.
+func (o *CronTaskComponent) HasVolumeMounts() bool {
+	if o != nil && !utils.IsNil(o.Properties.VolumeMounts) {
+		return true
+	}
+
+	return false
+}
+
+// SetVolumeMounts gets a reference to the given VolumeMounts and assigns it to the volumeMounts field.
+// VolumeMounts:
+func (o *CronTaskComponent) SetVolumeMounts(v VolumeMounts) *CronTaskComponent {
+	o.Properties.VolumeMounts = &v
+	return o
+}
+
 // GetVolumes returns the Volumes field value if set, zero value otherwise.
 func (o *CronTaskComponent) GetVolumes() []Volumes {
 	if o == nil || utils.IsNil(o.Properties.Volumes) {
@@ -920,7 +960,7 @@ func (o *CronTaskComponent) HasVolumes() bool {
 }
 
 // SetVolumes gets a reference to the given []Volumes and assigns it to the volumes field.
-// Volumes:  Declare volumes and volumeMounts
+// Volumes:  Deprecated field, use volumeMounts instead.
 func (o *CronTaskComponent) SetVolumes(v []Volumes) *CronTaskComponent {
 	o.Properties.Volumes = v
 	return o
@@ -986,6 +1026,9 @@ func (o CronTaskSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize["suspend"] = o.Suspend
 	if !utils.IsNil(o.TtlSecondsAfterFinished) {
 		toSerialize["ttlSecondsAfterFinished"] = o.TtlSecondsAfterFinished
+	}
+	if !utils.IsNil(o.VolumeMounts) {
+		toSerialize["volumeMounts"] = o.VolumeMounts
 	}
 	if !utils.IsNil(o.Volumes) {
 		toSerialize["volumes"] = o.Volumes
