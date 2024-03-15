@@ -35,6 +35,8 @@ type GatewaySpec struct {
 	ClassInSpec *bool `json:"classInSpec"`
 	// Specify the domain you want to expose
 	Domain *string `json:"domain,omitempty"`
+	// If specified, use an existing Service rather than creating one
+	ExistingServiceName *string `json:"existingServiceName,omitempty"`
 	// Specify the host of the ingress gateway, which is used to generate the endpoints when the host is empty.
 	GatewayHost *string `json:"gatewayHost,omitempty"`
 	// Specify the mapping relationship between the http path and the workload port
@@ -235,6 +237,40 @@ func (o *GatewayTrait) HasDomain() bool {
 // Domain:  Specify the domain you want to expose
 func (o *GatewayTrait) SetDomain(v string) *GatewayTrait {
 	o.Properties.Domain = &v
+	return o
+}
+
+// GetExistingServiceName returns the ExistingServiceName field value if set, zero value otherwise.
+func (o *GatewayTrait) GetExistingServiceName() string {
+	if o == nil || utils.IsNil(o.Properties.ExistingServiceName) {
+		var ret string
+		return ret
+	}
+	return *o.Properties.ExistingServiceName
+}
+
+// GetExistingServiceNameOk returns a tuple with the ExistingServiceName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GatewayTrait) GetExistingServiceNameOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Properties.ExistingServiceName) {
+		return nil, false
+	}
+	return o.Properties.ExistingServiceName, true
+}
+
+// HasExistingServiceName returns a boolean if a field has been set.
+func (o *GatewayTrait) HasExistingServiceName() bool {
+	if o != nil && !utils.IsNil(o.Properties.ExistingServiceName) {
+		return true
+	}
+
+	return false
+}
+
+// SetExistingServiceName gets a reference to the given string and assigns it to the existingServiceName field.
+// ExistingServiceName:  If specified, use an existing Service rather than creating one
+func (o *GatewayTrait) SetExistingServiceName(v string) *GatewayTrait {
+	o.Properties.ExistingServiceName = &v
 	return o
 }
 
@@ -441,6 +477,9 @@ func (o GatewaySpec) ToMap() (map[string]interface{}, error) {
 	toSerialize["classInSpec"] = o.ClassInSpec
 	if !utils.IsNil(o.Domain) {
 		toSerialize["domain"] = o.Domain
+	}
+	if !utils.IsNil(o.ExistingServiceName) {
+		toSerialize["existingServiceName"] = o.ExistingServiceName
 	}
 	if !utils.IsNil(o.GatewayHost) {
 		toSerialize["gatewayHost"] = o.GatewayHost

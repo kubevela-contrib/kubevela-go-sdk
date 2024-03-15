@@ -22,6 +22,8 @@ var _ utils.MappedNullable = &Ports{}
 
 // Ports struct for Ports
 type Ports struct {
+	// Number of container port to connect to, defaults to port
+	ContainerPort *int32 `json:"containerPort,omitempty"`
 	// Specify if the port should be exposed
 	Expose *bool `json:"expose"`
 	// Name of the port
@@ -97,6 +99,40 @@ func (o *Ports) Validate() error {
 	}
 	// validate all nested properties
 	return nil
+}
+
+// GetContainerPort returns the ContainerPort field value if set, zero value otherwise.
+func (o *Ports) GetContainerPort() int32 {
+	if o == nil || utils.IsNil(o.ContainerPort) {
+		var ret int32
+		return ret
+	}
+	return *o.ContainerPort
+}
+
+// GetContainerPortOk returns a tuple with the ContainerPort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Ports) GetContainerPortOk() (*int32, bool) {
+	if o == nil || utils.IsNil(o.ContainerPort) {
+		return nil, false
+	}
+	return o.ContainerPort, true
+}
+
+// HasContainerPort returns a boolean if a field has been set.
+func (o *Ports) HasContainerPort() bool {
+	if o != nil && !utils.IsNil(o.ContainerPort) {
+		return true
+	}
+
+	return false
+}
+
+// SetContainerPort gets a reference to the given int32 and assigns it to the containerPort field.
+// ContainerPort:  Number of container port to connect to, defaults to port
+func (o *Ports) SetContainerPort(v int32) *Ports {
+	o.ContainerPort = &v
+	return o
 }
 
 // GetExpose returns the Expose field value
@@ -252,6 +288,9 @@ func (o Ports) MarshalJSON() ([]byte, error) {
 
 func (o Ports) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !utils.IsNil(o.ContainerPort) {
+		toSerialize["containerPort"] = o.ContainerPort
+	}
 	toSerialize["expose"] = o.Expose
 	if !utils.IsNil(o.Name) {
 		toSerialize["name"] = o.Name
