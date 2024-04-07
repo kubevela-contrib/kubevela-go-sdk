@@ -25,14 +25,14 @@ type TcpSocket struct {
 	// Host name to connect to, defaults to the pod IP.
 	Host *string `json:"host,omitempty"`
 	// Number or name of the port to access on the container.
-	Port *string `json:"port"`
+	Port *int32 `json:"port"`
 }
 
 // NewTcpSocketWith instantiates a new TcpSocket object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewTcpSocketWith(port string) *TcpSocket {
+func NewTcpSocketWith(port int32) *TcpSocket {
 	this := TcpSocket{}
 	this.Port = &port
 	return &this
@@ -116,9 +116,9 @@ func (o *TcpSocket) SetHost(v string) *TcpSocket {
 }
 
 // GetPort returns the Port field value
-func (o *TcpSocket) GetPort() string {
+func (o *TcpSocket) GetPort() int32 {
 	if o == nil {
-		var ret string
+		var ret int32
 		return ret
 	}
 
@@ -127,7 +127,7 @@ func (o *TcpSocket) GetPort() string {
 
 // GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
-func (o *TcpSocket) GetPortOk() (*string, bool) {
+func (o *TcpSocket) GetPortOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -135,7 +135,7 @@ func (o *TcpSocket) GetPortOk() (*string, bool) {
 }
 
 // SetPort sets field value
-func (o *TcpSocket) SetPort(v string) *TcpSocket {
+func (o *TcpSocket) SetPort(v int32) *TcpSocket {
 	o.Port = &v
 	return o
 }
