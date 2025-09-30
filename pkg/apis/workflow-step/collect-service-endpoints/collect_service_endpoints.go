@@ -31,9 +31,9 @@ type CollectServiceEndpointsSpec struct {
 	// Filter the component of the endpoints
 	Components []string `json:"components,omitempty"`
 	// Specify the name of the application
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 	// Specify the namespace of the application
-	Namespace *string `json:"namespace,omitempty"`
+	Namespace *string `json:"namespace"`
 	// Filter the endpoint that are only outer
 	Outer *bool `json:"outer,omitempty"`
 	// Filter the port of the endpoints
@@ -48,8 +48,10 @@ type CollectServiceEndpointsSpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewCollectServiceEndpointsSpecWith(protocal string) *CollectServiceEndpointsSpec {
+func NewCollectServiceEndpointsSpecWith(name string, namespace string, protocal string) *CollectServiceEndpointsSpec {
 	this := CollectServiceEndpointsSpec{}
+	this.Name = &name
+	this.Namespace = &namespace
 	this.Protocal = &protocal
 	return &this
 }
@@ -92,6 +94,12 @@ func NewCollectServiceEndpointsSpecList(ps ...*CollectServiceEndpointsSpec) []Co
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *CollectServiceEndpointsWorkflowStep) Validate() error {
+	if o.Properties.Name == nil {
+		return errors.New("Name in CollectServiceEndpointsSpec must be set")
+	}
+	if o.Properties.Namespace == nil {
+		return errors.New("Namespace in CollectServiceEndpointsSpec must be set")
+	}
 	if o.Properties.Protocal == nil {
 		return errors.New("Protocal in CollectServiceEndpointsSpec must be set")
 	}
@@ -133,69 +141,51 @@ func (o *CollectServiceEndpointsWorkflowStep) SetComponents(v []string) *Collect
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *CollectServiceEndpointsWorkflowStep) GetName() string {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *CollectServiceEndpointsWorkflowStep) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *CollectServiceEndpointsWorkflowStep) HasName() bool {
-	if o != nil && !utils.IsNil(o.Properties.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Specify the name of the application
+// SetName sets field value
 func (o *CollectServiceEndpointsWorkflowStep) SetName(v string) *CollectServiceEndpointsWorkflowStep {
 	o.Properties.Name = &v
 	return o
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *CollectServiceEndpointsWorkflowStep) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *CollectServiceEndpointsWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *CollectServiceEndpointsWorkflowStep) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Properties.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:  Specify the namespace of the application
+// SetNamespace sets field value
 func (o *CollectServiceEndpointsWorkflowStep) SetNamespace(v string) *CollectServiceEndpointsWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -341,12 +331,8 @@ func (o CollectServiceEndpointsSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Components) {
 		toSerialize["components"] = o.Components
 	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
-	}
+	toSerialize["name"] = o.Name
+	toSerialize["namespace"] = o.Namespace
 	if !utils.IsNil(o.Outer) {
 		toSerialize["outer"] = o.Outer
 	}

@@ -29,7 +29,7 @@ var _ utils.MappedNullable = &ListConfigSpec{}
 // ListConfigSpec struct for ListConfigSpec
 type ListConfigSpec struct {
 	// Specify the namespace of the config.
-	Namespace *string `json:"namespace,omitempty"`
+	Namespace *string `json:"namespace"`
 	// Specify the template of the config.
 	Template *string `json:"template"`
 }
@@ -38,8 +38,9 @@ type ListConfigSpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewListConfigSpecWith(template string) *ListConfigSpec {
+func NewListConfigSpecWith(namespace string, template string) *ListConfigSpec {
 	this := ListConfigSpec{}
+	this.Namespace = &namespace
 	this.Template = &template
 	return &this
 }
@@ -80,6 +81,9 @@ func NewListConfigSpecList(ps ...*ListConfigSpec) []ListConfigSpec {
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *ListConfigWorkflowStep) Validate() error {
+	if o.Properties.Namespace == nil {
+		return errors.New("Namespace in ListConfigSpec must be set")
+	}
 	if o.Properties.Template == nil {
 		return errors.New("Template in ListConfigSpec must be set")
 	}
@@ -87,35 +91,26 @@ func (o *ListConfigWorkflowStep) Validate() error {
 	return nil
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *ListConfigWorkflowStep) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *ListConfigWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *ListConfigWorkflowStep) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Properties.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:  Specify the namespace of the config.
+// SetNamespace sets field value
 func (o *ListConfigWorkflowStep) SetNamespace(v string) *ListConfigWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -156,9 +151,7 @@ func (o ListConfigSpec) MarshalJSON() ([]byte, error) {
 
 func (o ListConfigSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
-	}
+	toSerialize["namespace"] = o.Namespace
 	toSerialize["template"] = o.Template
 	return toSerialize, nil
 }
