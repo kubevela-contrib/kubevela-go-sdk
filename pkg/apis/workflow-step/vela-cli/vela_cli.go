@@ -28,8 +28,6 @@ var _ utils.MappedNullable = &VelaCliSpec{}
 
 // VelaCliSpec struct for VelaCliSpec
 type VelaCliSpec struct {
-	// Specify the name of the addon.
-	AddonName *string `json:"addonName"`
 	// Specify the vela command
 	Command []string `json:"command"`
 	// Specify the image
@@ -43,9 +41,8 @@ type VelaCliSpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewVelaCliSpecWith(addonName string, command []string, image string, serviceAccountName string) *VelaCliSpec {
+func NewVelaCliSpecWith(command []string, image string, serviceAccountName string) *VelaCliSpec {
 	this := VelaCliSpec{}
-	this.AddonName = &addonName
 	this.Command = command
 	this.Image = &image
 	this.ServiceAccountName = &serviceAccountName
@@ -92,9 +89,6 @@ func NewVelaCliSpecList(ps ...*VelaCliSpec) []VelaCliSpec {
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *VelaCliWorkflowStep) Validate() error {
-	if o.Properties.AddonName == nil {
-		return errors.New("AddonName in VelaCliSpec must be set")
-	}
 	if o.Properties.Command == nil {
 		return errors.New("Command in VelaCliSpec must be set")
 	}
@@ -111,31 +105,6 @@ func (o *VelaCliWorkflowStep) Validate() error {
 		}
 	}
 	return nil
-}
-
-// GetAddonName returns the AddonName field value
-func (o *VelaCliWorkflowStep) GetAddonName() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return *o.Properties.AddonName
-}
-
-// GetAddonNameOk returns a tuple with the AddonName field value
-// and a boolean to check if the value has been set.
-func (o *VelaCliWorkflowStep) GetAddonNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Properties.AddonName, true
-}
-
-// SetAddonName sets field value
-func (o *VelaCliWorkflowStep) SetAddonName(v string) *VelaCliWorkflowStep {
-	o.Properties.AddonName = &v
-	return o
 }
 
 // GetCommand returns the Command field value
@@ -257,7 +226,6 @@ func (o VelaCliSpec) MarshalJSON() ([]byte, error) {
 
 func (o VelaCliSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["addonName"] = o.AddonName
 	toSerialize["command"] = o.Command
 	toSerialize["image"] = o.Image
 	toSerialize["serviceAccountName"] = o.ServiceAccountName
