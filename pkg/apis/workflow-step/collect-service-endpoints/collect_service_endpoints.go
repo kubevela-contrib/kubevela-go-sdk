@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -402,31 +401,33 @@ func CollectServiceEndpoints(name string) *CollectServiceEndpointsWorkflowStep {
 	return c
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (c *CollectServiceEndpointsWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range c.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  c.Base.DependsOn,
-		If:         c.Base.If,
-		Inputs:     c.Base.Inputs,
-		Meta:       c.Base.Meta,
-		Name:       c.Base.Name,
-		Outputs:    c.Base.Outputs,
-		Properties: util.Object2RawExtension(c.Properties),
-		SubSteps:   subSteps,
-		Timeout:    c.Base.Timeout,
-		Type:       CollectServiceEndpointsType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  c.Base.DependsOn,
+			If:         c.Base.If,
+			Inputs:     c.Base.Inputs,
+			Meta:       c.Base.Meta,
+			Name:       c.Base.Name,
+			Outputs:    c.Base.Outputs,
+			Properties: util.Object2RawExtension(c.Properties),
+			Timeout:    c.Base.Timeout,
+			Type:       CollectServiceEndpointsType,
+		},
 	}
 	return res
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*CollectServiceEndpointsWorkflowStep, error) {
+func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*CollectServiceEndpointsWorkflowStep, error) {
 	var properties CollectServiceEndpointsSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -455,12 +456,12 @@ func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowStep(from v1beta1.Work
 	return c, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	c := &CollectServiceEndpointsWorkflowStep{}
 	return c.FromWorkflowStep(from)
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*CollectServiceEndpointsWorkflowStep, error) {
+func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*CollectServiceEndpointsWorkflowStep, error) {
 	var properties CollectServiceEndpointsSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -480,7 +481,7 @@ func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowSubStep(from common.Wo
 	return c, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	c := &CollectServiceEndpointsWorkflowStep{}
 	return c.FromWorkflowSubStep(from)
 }
@@ -513,12 +514,12 @@ func (c *CollectServiceEndpointsWorkflowStep) DependsOn(dependsOn []string) *Col
 	return c
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) Inputs(input common.StepInputs) *CollectServiceEndpointsWorkflowStep {
+func (c *CollectServiceEndpointsWorkflowStep) Inputs(input v1alpha1.StepInputs) *CollectServiceEndpointsWorkflowStep {
 	c.Base.Inputs = input
 	return c
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) Outputs(output common.StepOutputs) *CollectServiceEndpointsWorkflowStep {
+func (c *CollectServiceEndpointsWorkflowStep) Outputs(output v1alpha1.StepOutputs) *CollectServiceEndpointsWorkflowStep {
 	c.Base.Outputs = output
 	return c
 }

@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
@@ -1180,12 +1181,12 @@ func (c *CronTaskComponent) DependsOn(dependsOn []string) *CronTaskComponent {
 	return c
 }
 
-func (c *CronTaskComponent) Inputs(input common.StepInputs) *CronTaskComponent {
+func (c *CronTaskComponent) Inputs(input v1alpha1.StepInputs) *CronTaskComponent {
 	c.Base.Inputs = input
 	return c
 }
 
-func (c *CronTaskComponent) Outputs(output common.StepOutputs) *CronTaskComponent {
+func (c *CronTaskComponent) Outputs(output v1alpha1.StepOutputs) *CronTaskComponent {
 	c.Base.Outputs = output
 	return c
 }

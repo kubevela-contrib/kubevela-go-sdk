@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -179,31 +178,33 @@ func PrintMessageInStatus(name string) *PrintMessageInStatusWorkflowStep {
 	return p
 }
 
-func (p *PrintMessageInStatusWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (p *PrintMessageInStatusWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range p.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  p.Base.DependsOn,
-		If:         p.Base.If,
-		Inputs:     p.Base.Inputs,
-		Meta:       p.Base.Meta,
-		Name:       p.Base.Name,
-		Outputs:    p.Base.Outputs,
-		Properties: util.Object2RawExtension(p.Properties),
-		SubSteps:   subSteps,
-		Timeout:    p.Base.Timeout,
-		Type:       PrintMessageInStatusType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  p.Base.DependsOn,
+			If:         p.Base.If,
+			Inputs:     p.Base.Inputs,
+			Meta:       p.Base.Meta,
+			Name:       p.Base.Name,
+			Outputs:    p.Base.Outputs,
+			Properties: util.Object2RawExtension(p.Properties),
+			Timeout:    p.Base.Timeout,
+			Type:       PrintMessageInStatusType,
+		},
 	}
 	return res
 }
 
-func (p *PrintMessageInStatusWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*PrintMessageInStatusWorkflowStep, error) {
+func (p *PrintMessageInStatusWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*PrintMessageInStatusWorkflowStep, error) {
 	var properties PrintMessageInStatusSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -232,12 +233,12 @@ func (p *PrintMessageInStatusWorkflowStep) FromWorkflowStep(from v1beta1.Workflo
 	return p, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	p := &PrintMessageInStatusWorkflowStep{}
 	return p.FromWorkflowStep(from)
 }
 
-func (p *PrintMessageInStatusWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*PrintMessageInStatusWorkflowStep, error) {
+func (p *PrintMessageInStatusWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*PrintMessageInStatusWorkflowStep, error) {
 	var properties PrintMessageInStatusSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -257,7 +258,7 @@ func (p *PrintMessageInStatusWorkflowStep) FromWorkflowSubStep(from common.Workf
 	return p, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	p := &PrintMessageInStatusWorkflowStep{}
 	return p.FromWorkflowSubStep(from)
 }
@@ -290,12 +291,12 @@ func (p *PrintMessageInStatusWorkflowStep) DependsOn(dependsOn []string) *PrintM
 	return p
 }
 
-func (p *PrintMessageInStatusWorkflowStep) Inputs(input common.StepInputs) *PrintMessageInStatusWorkflowStep {
+func (p *PrintMessageInStatusWorkflowStep) Inputs(input v1alpha1.StepInputs) *PrintMessageInStatusWorkflowStep {
 	p.Base.Inputs = input
 	return p
 }
 
-func (p *PrintMessageInStatusWorkflowStep) Outputs(output common.StepOutputs) *PrintMessageInStatusWorkflowStep {
+func (p *PrintMessageInStatusWorkflowStep) Outputs(output v1alpha1.StepOutputs) *PrintMessageInStatusWorkflowStep {
 	p.Base.Outputs = output
 	return p
 }

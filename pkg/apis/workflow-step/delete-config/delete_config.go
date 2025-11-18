@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -212,31 +211,33 @@ func DeleteConfig(name string) *DeleteConfigWorkflowStep {
 	return d
 }
 
-func (d *DeleteConfigWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (d *DeleteConfigWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range d.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  d.Base.DependsOn,
-		If:         d.Base.If,
-		Inputs:     d.Base.Inputs,
-		Meta:       d.Base.Meta,
-		Name:       d.Base.Name,
-		Outputs:    d.Base.Outputs,
-		Properties: util.Object2RawExtension(d.Properties),
-		SubSteps:   subSteps,
-		Timeout:    d.Base.Timeout,
-		Type:       DeleteConfigType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  d.Base.DependsOn,
+			If:         d.Base.If,
+			Inputs:     d.Base.Inputs,
+			Meta:       d.Base.Meta,
+			Name:       d.Base.Name,
+			Outputs:    d.Base.Outputs,
+			Properties: util.Object2RawExtension(d.Properties),
+			Timeout:    d.Base.Timeout,
+			Type:       DeleteConfigType,
+		},
 	}
 	return res
 }
 
-func (d *DeleteConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*DeleteConfigWorkflowStep, error) {
+func (d *DeleteConfigWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*DeleteConfigWorkflowStep, error) {
 	var properties DeleteConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -265,12 +266,12 @@ func (d *DeleteConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (
 	return d, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	d := &DeleteConfigWorkflowStep{}
 	return d.FromWorkflowStep(from)
 }
 
-func (d *DeleteConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*DeleteConfigWorkflowStep, error) {
+func (d *DeleteConfigWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*DeleteConfigWorkflowStep, error) {
 	var properties DeleteConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -290,7 +291,7 @@ func (d *DeleteConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubSt
 	return d, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	d := &DeleteConfigWorkflowStep{}
 	return d.FromWorkflowSubStep(from)
 }
@@ -323,12 +324,12 @@ func (d *DeleteConfigWorkflowStep) DependsOn(dependsOn []string) *DeleteConfigWo
 	return d
 }
 
-func (d *DeleteConfigWorkflowStep) Inputs(input common.StepInputs) *DeleteConfigWorkflowStep {
+func (d *DeleteConfigWorkflowStep) Inputs(input v1alpha1.StepInputs) *DeleteConfigWorkflowStep {
 	d.Base.Inputs = input
 	return d
 }
 
-func (d *DeleteConfigWorkflowStep) Outputs(output common.StepOutputs) *DeleteConfigWorkflowStep {
+func (d *DeleteConfigWorkflowStep) Outputs(output v1alpha1.StepOutputs) *DeleteConfigWorkflowStep {
 	d.Base.Outputs = output
 	return d
 }

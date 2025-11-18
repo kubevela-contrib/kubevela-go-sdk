@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
@@ -1018,12 +1019,12 @@ func (w *WebserviceComponent) DependsOn(dependsOn []string) *WebserviceComponent
 	return w
 }
 
-func (w *WebserviceComponent) Inputs(input common.StepInputs) *WebserviceComponent {
+func (w *WebserviceComponent) Inputs(input v1alpha1.StepInputs) *WebserviceComponent {
 	w.Base.Inputs = input
 	return w
 }
 
-func (w *WebserviceComponent) Outputs(output common.StepOutputs) *WebserviceComponent {
+func (w *WebserviceComponent) Outputs(output v1alpha1.StepOutputs) *WebserviceComponent {
 	w.Base.Outputs = output
 	return w
 }

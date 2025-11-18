@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -291,31 +290,33 @@ func VelaCli(name string) *VelaCliWorkflowStep {
 	return v
 }
 
-func (v *VelaCliWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (v *VelaCliWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range v.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  v.Base.DependsOn,
-		If:         v.Base.If,
-		Inputs:     v.Base.Inputs,
-		Meta:       v.Base.Meta,
-		Name:       v.Base.Name,
-		Outputs:    v.Base.Outputs,
-		Properties: util.Object2RawExtension(v.Properties),
-		SubSteps:   subSteps,
-		Timeout:    v.Base.Timeout,
-		Type:       VelaCliType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  v.Base.DependsOn,
+			If:         v.Base.If,
+			Inputs:     v.Base.Inputs,
+			Meta:       v.Base.Meta,
+			Name:       v.Base.Name,
+			Outputs:    v.Base.Outputs,
+			Properties: util.Object2RawExtension(v.Properties),
+			Timeout:    v.Base.Timeout,
+			Type:       VelaCliType,
+		},
 	}
 	return res
 }
 
-func (v *VelaCliWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*VelaCliWorkflowStep, error) {
+func (v *VelaCliWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*VelaCliWorkflowStep, error) {
 	var properties VelaCliSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -344,12 +345,12 @@ func (v *VelaCliWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*Vela
 	return v, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	v := &VelaCliWorkflowStep{}
 	return v.FromWorkflowStep(from)
 }
 
-func (v *VelaCliWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*VelaCliWorkflowStep, error) {
+func (v *VelaCliWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*VelaCliWorkflowStep, error) {
 	var properties VelaCliSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -369,7 +370,7 @@ func (v *VelaCliWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (
 	return v, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	v := &VelaCliWorkflowStep{}
 	return v.FromWorkflowSubStep(from)
 }
@@ -402,12 +403,12 @@ func (v *VelaCliWorkflowStep) DependsOn(dependsOn []string) *VelaCliWorkflowStep
 	return v
 }
 
-func (v *VelaCliWorkflowStep) Inputs(input common.StepInputs) *VelaCliWorkflowStep {
+func (v *VelaCliWorkflowStep) Inputs(input v1alpha1.StepInputs) *VelaCliWorkflowStep {
 	v.Base.Inputs = input
 	return v
 }
 
-func (v *VelaCliWorkflowStep) Outputs(output common.StepOutputs) *VelaCliWorkflowStep {
+func (v *VelaCliWorkflowStep) Outputs(output v1alpha1.StepOutputs) *VelaCliWorkflowStep {
 	v.Base.Outputs = output
 	return v
 }

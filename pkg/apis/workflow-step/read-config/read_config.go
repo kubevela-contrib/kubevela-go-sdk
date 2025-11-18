@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -212,31 +211,33 @@ func ReadConfig(name string) *ReadConfigWorkflowStep {
 	return r
 }
 
-func (r *ReadConfigWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (r *ReadConfigWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range r.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  r.Base.DependsOn,
-		If:         r.Base.If,
-		Inputs:     r.Base.Inputs,
-		Meta:       r.Base.Meta,
-		Name:       r.Base.Name,
-		Outputs:    r.Base.Outputs,
-		Properties: util.Object2RawExtension(r.Properties),
-		SubSteps:   subSteps,
-		Timeout:    r.Base.Timeout,
-		Type:       ReadConfigType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  r.Base.DependsOn,
+			If:         r.Base.If,
+			Inputs:     r.Base.Inputs,
+			Meta:       r.Base.Meta,
+			Name:       r.Base.Name,
+			Outputs:    r.Base.Outputs,
+			Properties: util.Object2RawExtension(r.Properties),
+			Timeout:    r.Base.Timeout,
+			Type:       ReadConfigType,
+		},
 	}
 	return res
 }
 
-func (r *ReadConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*ReadConfigWorkflowStep, error) {
+func (r *ReadConfigWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*ReadConfigWorkflowStep, error) {
 	var properties ReadConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -265,12 +266,12 @@ func (r *ReadConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*R
 	return r, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	r := &ReadConfigWorkflowStep{}
 	return r.FromWorkflowStep(from)
 }
 
-func (r *ReadConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*ReadConfigWorkflowStep, error) {
+func (r *ReadConfigWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*ReadConfigWorkflowStep, error) {
 	var properties ReadConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -290,7 +291,7 @@ func (r *ReadConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep
 	return r, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	r := &ReadConfigWorkflowStep{}
 	return r.FromWorkflowSubStep(from)
 }
@@ -323,12 +324,12 @@ func (r *ReadConfigWorkflowStep) DependsOn(dependsOn []string) *ReadConfigWorkfl
 	return r
 }
 
-func (r *ReadConfigWorkflowStep) Inputs(input common.StepInputs) *ReadConfigWorkflowStep {
+func (r *ReadConfigWorkflowStep) Inputs(input v1alpha1.StepInputs) *ReadConfigWorkflowStep {
 	r.Base.Inputs = input
 	return r
 }
 
-func (r *ReadConfigWorkflowStep) Outputs(output common.StepOutputs) *ReadConfigWorkflowStep {
+func (r *ReadConfigWorkflowStep) Outputs(output v1alpha1.StepOutputs) *ReadConfigWorkflowStep {
 	r.Base.Outputs = output
 	return r
 }

@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -214,31 +213,33 @@ func ApplyObject(name string) *ApplyObjectWorkflowStep {
 	return a
 }
 
-func (a *ApplyObjectWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (a *ApplyObjectWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range a.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  a.Base.DependsOn,
-		If:         a.Base.If,
-		Inputs:     a.Base.Inputs,
-		Meta:       a.Base.Meta,
-		Name:       a.Base.Name,
-		Outputs:    a.Base.Outputs,
-		Properties: util.Object2RawExtension(a.Properties),
-		SubSteps:   subSteps,
-		Timeout:    a.Base.Timeout,
-		Type:       ApplyObjectType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  a.Base.DependsOn,
+			If:         a.Base.If,
+			Inputs:     a.Base.Inputs,
+			Meta:       a.Base.Meta,
+			Name:       a.Base.Name,
+			Outputs:    a.Base.Outputs,
+			Properties: util.Object2RawExtension(a.Properties),
+			Timeout:    a.Base.Timeout,
+			Type:       ApplyObjectType,
+		},
 	}
 	return res
 }
 
-func (a *ApplyObjectWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*ApplyObjectWorkflowStep, error) {
+func (a *ApplyObjectWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*ApplyObjectWorkflowStep, error) {
 	var properties ApplyObjectSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -267,12 +268,12 @@ func (a *ApplyObjectWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*
 	return a, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	a := &ApplyObjectWorkflowStep{}
 	return a.FromWorkflowStep(from)
 }
 
-func (a *ApplyObjectWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*ApplyObjectWorkflowStep, error) {
+func (a *ApplyObjectWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*ApplyObjectWorkflowStep, error) {
 	var properties ApplyObjectSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -292,7 +293,7 @@ func (a *ApplyObjectWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubSte
 	return a, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	a := &ApplyObjectWorkflowStep{}
 	return a.FromWorkflowSubStep(from)
 }
@@ -325,12 +326,12 @@ func (a *ApplyObjectWorkflowStep) DependsOn(dependsOn []string) *ApplyObjectWork
 	return a
 }
 
-func (a *ApplyObjectWorkflowStep) Inputs(input common.StepInputs) *ApplyObjectWorkflowStep {
+func (a *ApplyObjectWorkflowStep) Inputs(input v1alpha1.StepInputs) *ApplyObjectWorkflowStep {
 	a.Base.Inputs = input
 	return a
 }
 
-func (a *ApplyObjectWorkflowStep) Outputs(output common.StepOutputs) *ApplyObjectWorkflowStep {
+func (a *ApplyObjectWorkflowStep) Outputs(output v1alpha1.StepOutputs) *ApplyObjectWorkflowStep {
 	a.Base.Outputs = output
 	return a
 }

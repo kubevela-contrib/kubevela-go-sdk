@@ -14,6 +14,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
@@ -319,12 +320,12 @@ func (r *RefObjectsComponent) DependsOn(dependsOn []string) *RefObjectsComponent
 	return r
 }
 
-func (r *RefObjectsComponent) Inputs(input common.StepInputs) *RefObjectsComponent {
+func (r *RefObjectsComponent) Inputs(input v1alpha1.StepInputs) *RefObjectsComponent {
 	r.Base.Inputs = input
 	return r
 }
 
-func (r *RefObjectsComponent) Outputs(output common.StepOutputs) *RefObjectsComponent {
+func (r *RefObjectsComponent) Outputs(output v1alpha1.StepOutputs) *RefObjectsComponent {
 	r.Base.Outputs = output
 	return r
 }

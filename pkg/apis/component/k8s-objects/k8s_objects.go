@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
@@ -273,12 +274,12 @@ func (k *K8sObjectsComponent) DependsOn(dependsOn []string) *K8sObjectsComponent
 	return k
 }
 
-func (k *K8sObjectsComponent) Inputs(input common.StepInputs) *K8sObjectsComponent {
+func (k *K8sObjectsComponent) Inputs(input v1alpha1.StepInputs) *K8sObjectsComponent {
 	k.Base.Inputs = input
 	return k
 }
 
-func (k *K8sObjectsComponent) Outputs(output common.StepOutputs) *K8sObjectsComponent {
+func (k *K8sObjectsComponent) Outputs(output v1alpha1.StepOutputs) *K8sObjectsComponent {
 	k.Base.Outputs = output
 	return k
 }

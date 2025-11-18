@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
@@ -975,12 +976,12 @@ func (s *StatefulsetComponent) DependsOn(dependsOn []string) *StatefulsetCompone
 	return s
 }
 
-func (s *StatefulsetComponent) Inputs(input common.StepInputs) *StatefulsetComponent {
+func (s *StatefulsetComponent) Inputs(input v1alpha1.StepInputs) *StatefulsetComponent {
 	s.Base.Inputs = input
 	return s
 }
 
-func (s *StatefulsetComponent) Outputs(output common.StepOutputs) *StatefulsetComponent {
+func (s *StatefulsetComponent) Outputs(output v1alpha1.StepOutputs) *StatefulsetComponent {
 	s.Base.Outputs = output
 	return s
 }

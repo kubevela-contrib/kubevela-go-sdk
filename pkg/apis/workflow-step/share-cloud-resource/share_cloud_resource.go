@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/workflow/api/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -246,31 +245,33 @@ func ShareCloudResource(name string) *ShareCloudResourceWorkflowStep {
 	return s
 }
 
-func (s *ShareCloudResourceWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (s *ShareCloudResourceWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range s.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  s.Base.DependsOn,
-		If:         s.Base.If,
-		Inputs:     s.Base.Inputs,
-		Meta:       s.Base.Meta,
-		Name:       s.Base.Name,
-		Outputs:    s.Base.Outputs,
-		Properties: util.Object2RawExtension(s.Properties),
-		SubSteps:   subSteps,
-		Timeout:    s.Base.Timeout,
-		Type:       ShareCloudResourceType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  s.Base.DependsOn,
+			If:         s.Base.If,
+			Inputs:     s.Base.Inputs,
+			Meta:       s.Base.Meta,
+			Name:       s.Base.Name,
+			Outputs:    s.Base.Outputs,
+			Properties: util.Object2RawExtension(s.Properties),
+			Timeout:    s.Base.Timeout,
+			Type:       ShareCloudResourceType,
+		},
 	}
 	return res
 }
 
-func (s *ShareCloudResourceWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*ShareCloudResourceWorkflowStep, error) {
+func (s *ShareCloudResourceWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*ShareCloudResourceWorkflowStep, error) {
 	var properties ShareCloudResourceSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -299,12 +300,12 @@ func (s *ShareCloudResourceWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowS
 	return s, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	s := &ShareCloudResourceWorkflowStep{}
 	return s.FromWorkflowStep(from)
 }
 
-func (s *ShareCloudResourceWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*ShareCloudResourceWorkflowStep, error) {
+func (s *ShareCloudResourceWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*ShareCloudResourceWorkflowStep, error) {
 	var properties ShareCloudResourceSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -324,7 +325,7 @@ func (s *ShareCloudResourceWorkflowStep) FromWorkflowSubStep(from common.Workflo
 	return s, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	s := &ShareCloudResourceWorkflowStep{}
 	return s.FromWorkflowSubStep(from)
 }
@@ -357,12 +358,12 @@ func (s *ShareCloudResourceWorkflowStep) DependsOn(dependsOn []string) *ShareClo
 	return s
 }
 
-func (s *ShareCloudResourceWorkflowStep) Inputs(input common.StepInputs) *ShareCloudResourceWorkflowStep {
+func (s *ShareCloudResourceWorkflowStep) Inputs(input v1alpha1.StepInputs) *ShareCloudResourceWorkflowStep {
 	s.Base.Inputs = input
 	return s
 }
 
-func (s *ShareCloudResourceWorkflowStep) Outputs(output common.StepOutputs) *ShareCloudResourceWorkflowStep {
+func (s *ShareCloudResourceWorkflowStep) Outputs(output v1alpha1.StepOutputs) *ShareCloudResourceWorkflowStep {
 	s.Base.Outputs = output
 	return s
 }
