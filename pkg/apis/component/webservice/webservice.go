@@ -15,7 +15,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kubevela/workflow/api/v1alpha1"
+	"github.com/kubevela/pkg/apis/oam/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
