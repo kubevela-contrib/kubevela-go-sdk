@@ -14,7 +14,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -30,17 +31,16 @@ type DeleteConfigSpec struct {
 	// Specify the name of the config.
 	Name *string `json:"name"`
 	// Specify the namespace of the config.
-	Namespace *string `json:"namespace"`
+	Namespace *string `json:"namespace,omitempty"`
 }
 
 // NewDeleteConfigSpecWith instantiates a new DeleteConfigSpec object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewDeleteConfigSpecWith(name string, namespace string) *DeleteConfigSpec {
+func NewDeleteConfigSpecWith(name string) *DeleteConfigSpec {
 	this := DeleteConfigSpec{}
 	this.Name = &name
-	this.Namespace = &namespace
 	return &this
 }
 
@@ -83,9 +83,6 @@ func (o *DeleteConfigWorkflowStep) Validate() error {
 	if o.Properties.Name == nil {
 		return errors.New("Name in DeleteConfigSpec must be set")
 	}
-	if o.Properties.Namespace == nil {
-		return errors.New("Namespace in DeleteConfigSpec must be set")
-	}
 	// validate all nested properties
 	return nil
 }
@@ -115,26 +112,35 @@ func (o *DeleteConfigWorkflowStep) SetName(v string) *DeleteConfigWorkflowStep {
 	return o
 }
 
-// GetNamespace returns the Namespace field value
+// GetNamespace returns the Namespace field value if set, zero value otherwise.
 func (o *DeleteConfigWorkflowStep) GetNamespace() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Namespace) {
 		var ret string
 		return ret
 	}
-
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value
+// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DeleteConfigWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Namespace) {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// SetNamespace sets field value
+// HasNamespace returns a boolean if a field has been set.
+func (o *DeleteConfigWorkflowStep) HasNamespace() bool {
+	if o != nil && !utils.IsNil(o.Properties.Namespace) {
+		return true
+	}
+
+	return false
+}
+
+// SetNamespace gets a reference to the given string and assigns it to the namespace field.
+// Namespace:  Specify the namespace of the config.
 func (o *DeleteConfigWorkflowStep) SetNamespace(v string) *DeleteConfigWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -151,7 +157,9 @@ func (o DeleteConfigSpec) MarshalJSON() ([]byte, error) {
 func (o DeleteConfigSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["name"] = o.Name
-	toSerialize["namespace"] = o.Namespace
+	if !utils.IsNil(o.Namespace) {
+		toSerialize["namespace"] = o.Namespace
+	}
 	return toSerialize, nil
 }
 
@@ -211,33 +219,31 @@ func DeleteConfig(name string) *DeleteConfigWorkflowStep {
 	return d
 }
 
-func (d *DeleteConfigWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (d *DeleteConfigWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range d.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  d.Base.DependsOn,
-			If:         d.Base.If,
-			Inputs:     d.Base.Inputs,
-			Meta:       d.Base.Meta,
-			Name:       d.Base.Name,
-			Outputs:    d.Base.Outputs,
-			Properties: util.Object2RawExtension(d.Properties),
-			Timeout:    d.Base.Timeout,
-			Type:       DeleteConfigType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  d.Base.DependsOn,
+		If:         d.Base.If,
+		Inputs:     d.Base.Inputs,
+		Meta:       d.Base.Meta,
+		Name:       d.Base.Name,
+		Outputs:    d.Base.Outputs,
+		Properties: util.Object2RawExtension(d.Properties),
+		SubSteps:   subSteps,
+		Timeout:    d.Base.Timeout,
+		Type:       DeleteConfigType,
 	}
 	return res
 }
 
-func (d *DeleteConfigWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*DeleteConfigWorkflowStep, error) {
+func (d *DeleteConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*DeleteConfigWorkflowStep, error) {
 	var properties DeleteConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -266,12 +272,12 @@ func (d *DeleteConfigWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) 
 	return d, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	d := &DeleteConfigWorkflowStep{}
 	return d.FromWorkflowStep(from)
 }
 
-func (d *DeleteConfigWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*DeleteConfigWorkflowStep, error) {
+func (d *DeleteConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*DeleteConfigWorkflowStep, error) {
 	var properties DeleteConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -291,7 +297,7 @@ func (d *DeleteConfigWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowSte
 	return d, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	d := &DeleteConfigWorkflowStep{}
 	return d.FromWorkflowSubStep(from)
 }
@@ -324,12 +330,12 @@ func (d *DeleteConfigWorkflowStep) DependsOn(dependsOn []string) *DeleteConfigWo
 	return d
 }
 
-func (d *DeleteConfigWorkflowStep) Inputs(input v1alpha1.StepInputs) *DeleteConfigWorkflowStep {
+func (d *DeleteConfigWorkflowStep) Inputs(input common.StepInputs) *DeleteConfigWorkflowStep {
 	d.Base.Inputs = input
 	return d
 }
 
-func (d *DeleteConfigWorkflowStep) Outputs(output v1alpha1.StepOutputs) *DeleteConfigWorkflowStep {
+func (d *DeleteConfigWorkflowStep) Outputs(output common.StepOutputs) *DeleteConfigWorkflowStep {
 	d.Base.Outputs = output
 	return d
 }

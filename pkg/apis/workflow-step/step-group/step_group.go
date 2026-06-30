@@ -13,7 +13,8 @@ package step_group
 import (
 	"encoding/json"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -146,33 +147,31 @@ func StepGroup(name string) *StepGroupWorkflowStep {
 	return s
 }
 
-func (s *StepGroupWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (s *StepGroupWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range s.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  s.Base.DependsOn,
-			If:         s.Base.If,
-			Inputs:     s.Base.Inputs,
-			Meta:       s.Base.Meta,
-			Name:       s.Base.Name,
-			Outputs:    s.Base.Outputs,
-			Properties: util.Object2RawExtension(s.Properties),
-			Timeout:    s.Base.Timeout,
-			Type:       StepGroupType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  s.Base.DependsOn,
+		If:         s.Base.If,
+		Inputs:     s.Base.Inputs,
+		Meta:       s.Base.Meta,
+		Name:       s.Base.Name,
+		Outputs:    s.Base.Outputs,
+		Properties: util.Object2RawExtension(s.Properties),
+		SubSteps:   subSteps,
+		Timeout:    s.Base.Timeout,
+		Type:       StepGroupType,
 	}
 	return res
 }
 
-func (s *StepGroupWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*StepGroupWorkflowStep, error) {
+func (s *StepGroupWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*StepGroupWorkflowStep, error) {
 	var properties StepGroupSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -201,12 +200,12 @@ func (s *StepGroupWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*S
 	return s, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	s := &StepGroupWorkflowStep{}
 	return s.FromWorkflowStep(from)
 }
 
-func (s *StepGroupWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*StepGroupWorkflowStep, error) {
+func (s *StepGroupWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*StepGroupWorkflowStep, error) {
 	var properties StepGroupSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -226,7 +225,7 @@ func (s *StepGroupWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBa
 	return s, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	s := &StepGroupWorkflowStep{}
 	return s.FromWorkflowSubStep(from)
 }
@@ -259,12 +258,12 @@ func (s *StepGroupWorkflowStep) DependsOn(dependsOn []string) *StepGroupWorkflow
 	return s
 }
 
-func (s *StepGroupWorkflowStep) Inputs(input v1alpha1.StepInputs) *StepGroupWorkflowStep {
+func (s *StepGroupWorkflowStep) Inputs(input common.StepInputs) *StepGroupWorkflowStep {
 	s.Base.Inputs = input
 	return s
 }
 
-func (s *StepGroupWorkflowStep) Outputs(output v1alpha1.StepOutputs) *StepGroupWorkflowStep {
+func (s *StepGroupWorkflowStep) Outputs(output common.StepOutputs) *StepGroupWorkflowStep {
 	s.Base.Outputs = output
 	return s
 }

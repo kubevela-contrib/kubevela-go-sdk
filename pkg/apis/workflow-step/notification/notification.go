@@ -13,7 +13,8 @@ package notification
 import (
 	"encoding/json"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -318,33 +319,31 @@ func Notification(name string) *NotificationWorkflowStep {
 	return n
 }
 
-func (n *NotificationWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (n *NotificationWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range n.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  n.Base.DependsOn,
-			If:         n.Base.If,
-			Inputs:     n.Base.Inputs,
-			Meta:       n.Base.Meta,
-			Name:       n.Base.Name,
-			Outputs:    n.Base.Outputs,
-			Properties: util.Object2RawExtension(n.Properties),
-			Timeout:    n.Base.Timeout,
-			Type:       NotificationType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  n.Base.DependsOn,
+		If:         n.Base.If,
+		Inputs:     n.Base.Inputs,
+		Meta:       n.Base.Meta,
+		Name:       n.Base.Name,
+		Outputs:    n.Base.Outputs,
+		Properties: util.Object2RawExtension(n.Properties),
+		SubSteps:   subSteps,
+		Timeout:    n.Base.Timeout,
+		Type:       NotificationType,
 	}
 	return res
 }
 
-func (n *NotificationWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*NotificationWorkflowStep, error) {
+func (n *NotificationWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*NotificationWorkflowStep, error) {
 	var properties NotificationSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -373,12 +372,12 @@ func (n *NotificationWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) 
 	return n, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	n := &NotificationWorkflowStep{}
 	return n.FromWorkflowStep(from)
 }
 
-func (n *NotificationWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*NotificationWorkflowStep, error) {
+func (n *NotificationWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*NotificationWorkflowStep, error) {
 	var properties NotificationSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -398,7 +397,7 @@ func (n *NotificationWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowSte
 	return n, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	n := &NotificationWorkflowStep{}
 	return n.FromWorkflowSubStep(from)
 }
@@ -431,12 +430,12 @@ func (n *NotificationWorkflowStep) DependsOn(dependsOn []string) *NotificationWo
 	return n
 }
 
-func (n *NotificationWorkflowStep) Inputs(input v1alpha1.StepInputs) *NotificationWorkflowStep {
+func (n *NotificationWorkflowStep) Inputs(input common.StepInputs) *NotificationWorkflowStep {
 	n.Base.Inputs = input
 	return n
 }
 
-func (n *NotificationWorkflowStep) Outputs(output v1alpha1.StepOutputs) *NotificationWorkflowStep {
+func (n *NotificationWorkflowStep) Outputs(output common.StepOutputs) *NotificationWorkflowStep {
 	n.Base.Outputs = output
 	return n
 }

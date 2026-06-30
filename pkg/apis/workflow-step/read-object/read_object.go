@@ -14,7 +14,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -28,27 +29,26 @@ var _ utils.MappedNullable = &ReadObjectSpec{}
 // ReadObjectSpec struct for ReadObjectSpec
 type ReadObjectSpec struct {
 	// Specify the apiVersion of the object, defaults to 'core.oam.dev/v1beta1'
-	ApiVersion *string `json:"apiVersion"`
+	ApiVersion *string `json:"apiVersion,omitempty"`
 	// The cluster you want to apply the resource to, default is the current control plane cluster
 	Cluster *string `json:"cluster"`
 	// Specify the kind of the object, defaults to Application
-	Kind *string `json:"kind"`
+	Kind *string `json:"kind,omitempty"`
 	// Specify the name of the object
 	Name *string `json:"name"`
 	// The namespace of the resource you want to read
-	Namespace *string `json:"namespace"`
+	Namespace *string `json:"namespace,omitempty"`
 }
 
 // NewReadObjectSpecWith instantiates a new ReadObjectSpec object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewReadObjectSpecWith(apiVersion string, cluster string, kind string, name string, namespace string) *ReadObjectSpec {
+func NewReadObjectSpecWith(cluster string, name string) *ReadObjectSpec {
 	this := ReadObjectSpec{}
-	this.ApiVersion = &apiVersion
 	this.Cluster = &cluster
-	this.Kind = &kind
 	this.Name = &name
+	var namespace string = "default"
 	this.Namespace = &namespace
 	return &this
 }
@@ -58,12 +58,8 @@ func NewReadObjectSpecWith(apiVersion string, cluster string, kind string, name 
 // but it doesn't guarantee that properties required by API are set
 func NewReadObjectSpecWithDefault() *ReadObjectSpec {
 	this := ReadObjectSpec{}
-	var apiVersion string = "core.oam.dev/v1beta1"
-	this.ApiVersion = &apiVersion
 	var cluster string = ""
 	this.Cluster = &cluster
-	var kind string = "Application"
-	this.Kind = &kind
 	var namespace string = "default"
 	this.Namespace = &namespace
 	return &this
@@ -97,45 +93,45 @@ func NewReadObjectSpecList(ps ...*ReadObjectSpec) []ReadObjectSpec {
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *ReadObjectWorkflowStep) Validate() error {
-	if o.Properties.ApiVersion == nil {
-		return errors.New("ApiVersion in ReadObjectSpec must be set")
-	}
 	if o.Properties.Cluster == nil {
 		return errors.New("Cluster in ReadObjectSpec must be set")
 	}
-	if o.Properties.Kind == nil {
-		return errors.New("Kind in ReadObjectSpec must be set")
-	}
 	if o.Properties.Name == nil {
 		return errors.New("Name in ReadObjectSpec must be set")
-	}
-	if o.Properties.Namespace == nil {
-		return errors.New("Namespace in ReadObjectSpec must be set")
 	}
 	// validate all nested properties
 	return nil
 }
 
-// GetApiVersion returns the ApiVersion field value
+// GetApiVersion returns the ApiVersion field value if set, zero value otherwise.
 func (o *ReadObjectWorkflowStep) GetApiVersion() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.ApiVersion) {
 		var ret string
 		return ret
 	}
-
 	return *o.Properties.ApiVersion
 }
 
-// GetApiVersionOk returns a tuple with the ApiVersion field value
+// GetApiVersionOk returns a tuple with the ApiVersion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ReadObjectWorkflowStep) GetApiVersionOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.ApiVersion) {
 		return nil, false
 	}
 	return o.Properties.ApiVersion, true
 }
 
-// SetApiVersion sets field value
+// HasApiVersion returns a boolean if a field has been set.
+func (o *ReadObjectWorkflowStep) HasApiVersion() bool {
+	if o != nil && !utils.IsNil(o.Properties.ApiVersion) {
+		return true
+	}
+
+	return false
+}
+
+// SetApiVersion gets a reference to the given string and assigns it to the apiVersion field.
+// ApiVersion:  Specify the apiVersion of the object, defaults to 'core.oam.dev/v1beta1'
 func (o *ReadObjectWorkflowStep) SetApiVersion(v string) *ReadObjectWorkflowStep {
 	o.Properties.ApiVersion = &v
 	return o
@@ -166,26 +162,35 @@ func (o *ReadObjectWorkflowStep) SetCluster(v string) *ReadObjectWorkflowStep {
 	return o
 }
 
-// GetKind returns the Kind field value
+// GetKind returns the Kind field value if set, zero value otherwise.
 func (o *ReadObjectWorkflowStep) GetKind() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Kind) {
 		var ret string
 		return ret
 	}
-
 	return *o.Properties.Kind
 }
 
-// GetKindOk returns a tuple with the Kind field value
+// GetKindOk returns a tuple with the Kind field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ReadObjectWorkflowStep) GetKindOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Kind) {
 		return nil, false
 	}
 	return o.Properties.Kind, true
 }
 
-// SetKind sets field value
+// HasKind returns a boolean if a field has been set.
+func (o *ReadObjectWorkflowStep) HasKind() bool {
+	if o != nil && !utils.IsNil(o.Properties.Kind) {
+		return true
+	}
+
+	return false
+}
+
+// SetKind gets a reference to the given string and assigns it to the kind field.
+// Kind:  Specify the kind of the object, defaults to Application
 func (o *ReadObjectWorkflowStep) SetKind(v string) *ReadObjectWorkflowStep {
 	o.Properties.Kind = &v
 	return o
@@ -216,26 +221,35 @@ func (o *ReadObjectWorkflowStep) SetName(v string) *ReadObjectWorkflowStep {
 	return o
 }
 
-// GetNamespace returns the Namespace field value
+// GetNamespace returns the Namespace field value if set, zero value otherwise.
 func (o *ReadObjectWorkflowStep) GetNamespace() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Namespace) {
 		var ret string
 		return ret
 	}
-
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value
+// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ReadObjectWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Properties.Namespace) {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// SetNamespace sets field value
+// HasNamespace returns a boolean if a field has been set.
+func (o *ReadObjectWorkflowStep) HasNamespace() bool {
+	if o != nil && !utils.IsNil(o.Properties.Namespace) {
+		return true
+	}
+
+	return false
+}
+
+// SetNamespace gets a reference to the given string and assigns it to the namespace field.
+// Namespace:  The namespace of the resource you want to read
 func (o *ReadObjectWorkflowStep) SetNamespace(v string) *ReadObjectWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -251,11 +265,17 @@ func (o ReadObjectSpec) MarshalJSON() ([]byte, error) {
 
 func (o ReadObjectSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["apiVersion"] = o.ApiVersion
+	if !utils.IsNil(o.ApiVersion) {
+		toSerialize["apiVersion"] = o.ApiVersion
+	}
 	toSerialize["cluster"] = o.Cluster
-	toSerialize["kind"] = o.Kind
+	if !utils.IsNil(o.Kind) {
+		toSerialize["kind"] = o.Kind
+	}
 	toSerialize["name"] = o.Name
-	toSerialize["namespace"] = o.Namespace
+	if !utils.IsNil(o.Namespace) {
+		toSerialize["namespace"] = o.Namespace
+	}
 	return toSerialize, nil
 }
 
@@ -315,33 +335,31 @@ func ReadObject(name string) *ReadObjectWorkflowStep {
 	return r
 }
 
-func (r *ReadObjectWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (r *ReadObjectWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range r.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  r.Base.DependsOn,
-			If:         r.Base.If,
-			Inputs:     r.Base.Inputs,
-			Meta:       r.Base.Meta,
-			Name:       r.Base.Name,
-			Outputs:    r.Base.Outputs,
-			Properties: util.Object2RawExtension(r.Properties),
-			Timeout:    r.Base.Timeout,
-			Type:       ReadObjectType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  r.Base.DependsOn,
+		If:         r.Base.If,
+		Inputs:     r.Base.Inputs,
+		Meta:       r.Base.Meta,
+		Name:       r.Base.Name,
+		Outputs:    r.Base.Outputs,
+		Properties: util.Object2RawExtension(r.Properties),
+		SubSteps:   subSteps,
+		Timeout:    r.Base.Timeout,
+		Type:       ReadObjectType,
 	}
 	return res
 }
 
-func (r *ReadObjectWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*ReadObjectWorkflowStep, error) {
+func (r *ReadObjectWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*ReadObjectWorkflowStep, error) {
 	var properties ReadObjectSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -370,12 +388,12 @@ func (r *ReadObjectWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*
 	return r, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	r := &ReadObjectWorkflowStep{}
 	return r.FromWorkflowStep(from)
 }
 
-func (r *ReadObjectWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*ReadObjectWorkflowStep, error) {
+func (r *ReadObjectWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*ReadObjectWorkflowStep, error) {
 	var properties ReadObjectSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -395,7 +413,7 @@ func (r *ReadObjectWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepB
 	return r, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	r := &ReadObjectWorkflowStep{}
 	return r.FromWorkflowSubStep(from)
 }
@@ -428,12 +446,12 @@ func (r *ReadObjectWorkflowStep) DependsOn(dependsOn []string) *ReadObjectWorkfl
 	return r
 }
 
-func (r *ReadObjectWorkflowStep) Inputs(input v1alpha1.StepInputs) *ReadObjectWorkflowStep {
+func (r *ReadObjectWorkflowStep) Inputs(input common.StepInputs) *ReadObjectWorkflowStep {
 	r.Base.Inputs = input
 	return r
 }
 
-func (r *ReadObjectWorkflowStep) Outputs(output v1alpha1.StepOutputs) *ReadObjectWorkflowStep {
+func (r *ReadObjectWorkflowStep) Outputs(output common.StepOutputs) *ReadObjectWorkflowStep {
 	r.Base.Outputs = output
 	return r
 }

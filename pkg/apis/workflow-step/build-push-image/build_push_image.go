@@ -14,7 +14,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -438,33 +439,31 @@ func BuildPushImage(name string) *BuildPushImageWorkflowStep {
 	return b
 }
 
-func (b *BuildPushImageWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (b *BuildPushImageWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range b.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  b.Base.DependsOn,
-			If:         b.Base.If,
-			Inputs:     b.Base.Inputs,
-			Meta:       b.Base.Meta,
-			Name:       b.Base.Name,
-			Outputs:    b.Base.Outputs,
-			Properties: util.Object2RawExtension(b.Properties),
-			Timeout:    b.Base.Timeout,
-			Type:       BuildPushImageType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  b.Base.DependsOn,
+		If:         b.Base.If,
+		Inputs:     b.Base.Inputs,
+		Meta:       b.Base.Meta,
+		Name:       b.Base.Name,
+		Outputs:    b.Base.Outputs,
+		Properties: util.Object2RawExtension(b.Properties),
+		SubSteps:   subSteps,
+		Timeout:    b.Base.Timeout,
+		Type:       BuildPushImageType,
 	}
 	return res
 }
 
-func (b *BuildPushImageWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*BuildPushImageWorkflowStep, error) {
+func (b *BuildPushImageWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*BuildPushImageWorkflowStep, error) {
 	var properties BuildPushImageSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -493,12 +492,12 @@ func (b *BuildPushImageWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep
 	return b, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	b := &BuildPushImageWorkflowStep{}
 	return b.FromWorkflowStep(from)
 }
 
-func (b *BuildPushImageWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*BuildPushImageWorkflowStep, error) {
+func (b *BuildPushImageWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*BuildPushImageWorkflowStep, error) {
 	var properties BuildPushImageSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -518,7 +517,7 @@ func (b *BuildPushImageWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowS
 	return b, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	b := &BuildPushImageWorkflowStep{}
 	return b.FromWorkflowSubStep(from)
 }
@@ -551,12 +550,12 @@ func (b *BuildPushImageWorkflowStep) DependsOn(dependsOn []string) *BuildPushIma
 	return b
 }
 
-func (b *BuildPushImageWorkflowStep) Inputs(input v1alpha1.StepInputs) *BuildPushImageWorkflowStep {
+func (b *BuildPushImageWorkflowStep) Inputs(input common.StepInputs) *BuildPushImageWorkflowStep {
 	b.Base.Inputs = input
 	return b
 }
 
-func (b *BuildPushImageWorkflowStep) Outputs(output v1alpha1.StepOutputs) *BuildPushImageWorkflowStep {
+func (b *BuildPushImageWorkflowStep) Outputs(output common.StepOutputs) *BuildPushImageWorkflowStep {
 	b.Base.Outputs = output
 	return b
 }

@@ -14,7 +14,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -360,33 +361,31 @@ func ExportService(name string) *ExportServiceWorkflowStep {
 	return e
 }
 
-func (e *ExportServiceWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (e *ExportServiceWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range e.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  e.Base.DependsOn,
-			If:         e.Base.If,
-			Inputs:     e.Base.Inputs,
-			Meta:       e.Base.Meta,
-			Name:       e.Base.Name,
-			Outputs:    e.Base.Outputs,
-			Properties: util.Object2RawExtension(e.Properties),
-			Timeout:    e.Base.Timeout,
-			Type:       ExportServiceType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  e.Base.DependsOn,
+		If:         e.Base.If,
+		Inputs:     e.Base.Inputs,
+		Meta:       e.Base.Meta,
+		Name:       e.Base.Name,
+		Outputs:    e.Base.Outputs,
+		Properties: util.Object2RawExtension(e.Properties),
+		SubSteps:   subSteps,
+		Timeout:    e.Base.Timeout,
+		Type:       ExportServiceType,
 	}
 	return res
 }
 
-func (e *ExportServiceWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*ExportServiceWorkflowStep, error) {
+func (e *ExportServiceWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*ExportServiceWorkflowStep, error) {
 	var properties ExportServiceSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -415,12 +414,12 @@ func (e *ExportServiceWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep)
 	return e, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	e := &ExportServiceWorkflowStep{}
 	return e.FromWorkflowStep(from)
 }
 
-func (e *ExportServiceWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*ExportServiceWorkflowStep, error) {
+func (e *ExportServiceWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*ExportServiceWorkflowStep, error) {
 	var properties ExportServiceSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -440,7 +439,7 @@ func (e *ExportServiceWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowSt
 	return e, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	e := &ExportServiceWorkflowStep{}
 	return e.FromWorkflowSubStep(from)
 }
@@ -473,12 +472,12 @@ func (e *ExportServiceWorkflowStep) DependsOn(dependsOn []string) *ExportService
 	return e
 }
 
-func (e *ExportServiceWorkflowStep) Inputs(input v1alpha1.StepInputs) *ExportServiceWorkflowStep {
+func (e *ExportServiceWorkflowStep) Inputs(input common.StepInputs) *ExportServiceWorkflowStep {
 	e.Base.Inputs = input
 	return e
 }
 
-func (e *ExportServiceWorkflowStep) Outputs(output v1alpha1.StepOutputs) *ExportServiceWorkflowStep {
+func (e *ExportServiceWorkflowStep) Outputs(output common.StepOutputs) *ExportServiceWorkflowStep {
 	e.Base.Outputs = output
 	return e
 }

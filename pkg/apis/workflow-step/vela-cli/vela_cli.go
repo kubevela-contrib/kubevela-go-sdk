@@ -14,7 +14,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -27,6 +28,8 @@ var _ utils.MappedNullable = &VelaCliSpec{}
 
 // VelaCliSpec struct for VelaCliSpec
 type VelaCliSpec struct {
+	// Specify the name of the addon.
+	AddonName *string `json:"addonName"`
 	// Specify the vela command
 	Command []string `json:"command"`
 	// Specify the image
@@ -40,8 +43,9 @@ type VelaCliSpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewVelaCliSpecWith(command []string, image string, serviceAccountName string) *VelaCliSpec {
+func NewVelaCliSpecWith(addonName string, command []string, image string, serviceAccountName string) *VelaCliSpec {
 	this := VelaCliSpec{}
+	this.AddonName = &addonName
 	this.Command = command
 	this.Image = &image
 	this.ServiceAccountName = &serviceAccountName
@@ -88,6 +92,9 @@ func NewVelaCliSpecList(ps ...*VelaCliSpec) []VelaCliSpec {
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *VelaCliWorkflowStep) Validate() error {
+	if o.Properties.AddonName == nil {
+		return errors.New("AddonName in VelaCliSpec must be set")
+	}
 	if o.Properties.Command == nil {
 		return errors.New("Command in VelaCliSpec must be set")
 	}
@@ -104,6 +111,31 @@ func (o *VelaCliWorkflowStep) Validate() error {
 		}
 	}
 	return nil
+}
+
+// GetAddonName returns the AddonName field value
+func (o *VelaCliWorkflowStep) GetAddonName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Properties.AddonName
+}
+
+// GetAddonNameOk returns a tuple with the AddonName field value
+// and a boolean to check if the value has been set.
+func (o *VelaCliWorkflowStep) GetAddonNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Properties.AddonName, true
+}
+
+// SetAddonName sets field value
+func (o *VelaCliWorkflowStep) SetAddonName(v string) *VelaCliWorkflowStep {
+	o.Properties.AddonName = &v
+	return o
 }
 
 // GetCommand returns the Command field value
@@ -225,6 +257,7 @@ func (o VelaCliSpec) MarshalJSON() ([]byte, error) {
 
 func (o VelaCliSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["addonName"] = o.AddonName
 	toSerialize["command"] = o.Command
 	toSerialize["image"] = o.Image
 	toSerialize["serviceAccountName"] = o.ServiceAccountName
@@ -290,33 +323,31 @@ func VelaCli(name string) *VelaCliWorkflowStep {
 	return v
 }
 
-func (v *VelaCliWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (v *VelaCliWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range v.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  v.Base.DependsOn,
-			If:         v.Base.If,
-			Inputs:     v.Base.Inputs,
-			Meta:       v.Base.Meta,
-			Name:       v.Base.Name,
-			Outputs:    v.Base.Outputs,
-			Properties: util.Object2RawExtension(v.Properties),
-			Timeout:    v.Base.Timeout,
-			Type:       VelaCliType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  v.Base.DependsOn,
+		If:         v.Base.If,
+		Inputs:     v.Base.Inputs,
+		Meta:       v.Base.Meta,
+		Name:       v.Base.Name,
+		Outputs:    v.Base.Outputs,
+		Properties: util.Object2RawExtension(v.Properties),
+		SubSteps:   subSteps,
+		Timeout:    v.Base.Timeout,
+		Type:       VelaCliType,
 	}
 	return res
 }
 
-func (v *VelaCliWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*VelaCliWorkflowStep, error) {
+func (v *VelaCliWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*VelaCliWorkflowStep, error) {
 	var properties VelaCliSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -345,12 +376,12 @@ func (v *VelaCliWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*Vel
 	return v, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	v := &VelaCliWorkflowStep{}
 	return v.FromWorkflowStep(from)
 }
 
-func (v *VelaCliWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*VelaCliWorkflowStep, error) {
+func (v *VelaCliWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*VelaCliWorkflowStep, error) {
 	var properties VelaCliSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -370,7 +401,7 @@ func (v *VelaCliWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase
 	return v, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	v := &VelaCliWorkflowStep{}
 	return v.FromWorkflowSubStep(from)
 }
@@ -403,12 +434,12 @@ func (v *VelaCliWorkflowStep) DependsOn(dependsOn []string) *VelaCliWorkflowStep
 	return v
 }
 
-func (v *VelaCliWorkflowStep) Inputs(input v1alpha1.StepInputs) *VelaCliWorkflowStep {
+func (v *VelaCliWorkflowStep) Inputs(input common.StepInputs) *VelaCliWorkflowStep {
 	v.Base.Inputs = input
 	return v
 }
 
-func (v *VelaCliWorkflowStep) Outputs(output v1alpha1.StepOutputs) *VelaCliWorkflowStep {
+func (v *VelaCliWorkflowStep) Outputs(output common.StepOutputs) *VelaCliWorkflowStep {
 	v.Base.Outputs = output
 	return v
 }

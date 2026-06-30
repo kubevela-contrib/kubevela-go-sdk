@@ -14,7 +14,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -218,33 +219,31 @@ func GenerateJdbcConnection(name string) *GenerateJdbcConnectionWorkflowStep {
 	return g
 }
 
-func (g *GenerateJdbcConnectionWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (g *GenerateJdbcConnectionWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range g.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  g.Base.DependsOn,
-			If:         g.Base.If,
-			Inputs:     g.Base.Inputs,
-			Meta:       g.Base.Meta,
-			Name:       g.Base.Name,
-			Outputs:    g.Base.Outputs,
-			Properties: util.Object2RawExtension(g.Properties),
-			Timeout:    g.Base.Timeout,
-			Type:       GenerateJdbcConnectionType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  g.Base.DependsOn,
+		If:         g.Base.If,
+		Inputs:     g.Base.Inputs,
+		Meta:       g.Base.Meta,
+		Name:       g.Base.Name,
+		Outputs:    g.Base.Outputs,
+		Properties: util.Object2RawExtension(g.Properties),
+		SubSteps:   subSteps,
+		Timeout:    g.Base.Timeout,
+		Type:       GenerateJdbcConnectionType,
 	}
 	return res
 }
 
-func (g *GenerateJdbcConnectionWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*GenerateJdbcConnectionWorkflowStep, error) {
+func (g *GenerateJdbcConnectionWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*GenerateJdbcConnectionWorkflowStep, error) {
 	var properties GenerateJdbcConnectionSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -273,12 +272,12 @@ func (g *GenerateJdbcConnectionWorkflowStep) FromWorkflowStep(from v1alpha1.Work
 	return g, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	g := &GenerateJdbcConnectionWorkflowStep{}
 	return g.FromWorkflowStep(from)
 }
 
-func (g *GenerateJdbcConnectionWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*GenerateJdbcConnectionWorkflowStep, error) {
+func (g *GenerateJdbcConnectionWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*GenerateJdbcConnectionWorkflowStep, error) {
 	var properties GenerateJdbcConnectionSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -298,7 +297,7 @@ func (g *GenerateJdbcConnectionWorkflowStep) FromWorkflowSubStep(from v1alpha1.W
 	return g, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	g := &GenerateJdbcConnectionWorkflowStep{}
 	return g.FromWorkflowSubStep(from)
 }
@@ -331,12 +330,12 @@ func (g *GenerateJdbcConnectionWorkflowStep) DependsOn(dependsOn []string) *Gene
 	return g
 }
 
-func (g *GenerateJdbcConnectionWorkflowStep) Inputs(input v1alpha1.StepInputs) *GenerateJdbcConnectionWorkflowStep {
+func (g *GenerateJdbcConnectionWorkflowStep) Inputs(input common.StepInputs) *GenerateJdbcConnectionWorkflowStep {
 	g.Base.Inputs = input
 	return g
 }
 
-func (g *GenerateJdbcConnectionWorkflowStep) Outputs(output v1alpha1.StepOutputs) *GenerateJdbcConnectionWorkflowStep {
+func (g *GenerateJdbcConnectionWorkflowStep) Outputs(output common.StepOutputs) *GenerateJdbcConnectionWorkflowStep {
 	g.Base.Outputs = output
 	return g
 }

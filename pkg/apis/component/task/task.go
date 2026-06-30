@@ -15,7 +15,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
@@ -780,12 +779,12 @@ func (t *TaskComponent) DependsOn(dependsOn []string) *TaskComponent {
 	return t
 }
 
-func (t *TaskComponent) Inputs(input v1alpha1.StepInputs) *TaskComponent {
+func (t *TaskComponent) Inputs(input common.StepInputs) *TaskComponent {
 	t.Base.Inputs = input
 	return t
 }
 
-func (t *TaskComponent) Outputs(output v1alpha1.StepOutputs) *TaskComponent {
+func (t *TaskComponent) Outputs(output common.StepOutputs) *TaskComponent {
 	t.Base.Outputs = output
 	return t
 }

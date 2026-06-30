@@ -15,7 +15,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
@@ -51,7 +50,6 @@ type WebserviceSpec struct {
 	ImagePullSecrets []string `json:"imagePullSecrets,omitempty"`
 	// Specify the labels in the workload
 	Labels        map[string]string `json:"labels,omitempty"`
-	Limit         *Limit            `json:"limit,omitempty"`
 	LivenessProbe *HealthProbe      `json:"livenessProbe,omitempty"`
 	// Specifies the attributes of the memory resource required for the container.
 	Memory *string `json:"memory,omitempty"`
@@ -126,11 +124,6 @@ func (o *WebserviceComponent) Validate() error {
 		return errors.New("Image in WebserviceSpec must be set")
 	}
 	// validate all nested properties
-	if o.Properties.Limit != nil {
-		if err := o.Properties.Limit.Validate(); err != nil {
-			return err
-		}
-	}
 	if o.Properties.LivenessProbe != nil {
 		if err := o.Properties.LivenessProbe.Validate(); err != nil {
 			return err
@@ -536,40 +529,6 @@ func (o *WebserviceComponent) SetLabels(v map[string]string) *WebserviceComponen
 	return o
 }
 
-// GetLimit returns the Limit field value if set, zero value otherwise.
-func (o *WebserviceComponent) GetLimit() Limit {
-	if o == nil || utils.IsNil(o.Properties.Limit) {
-		var ret Limit
-		return ret
-	}
-	return *o.Properties.Limit
-}
-
-// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *WebserviceComponent) GetLimitOk() (*Limit, bool) {
-	if o == nil || utils.IsNil(o.Properties.Limit) {
-		return nil, false
-	}
-	return o.Properties.Limit, true
-}
-
-// HasLimit returns a boolean if a field has been set.
-func (o *WebserviceComponent) HasLimit() bool {
-	if o != nil && !utils.IsNil(o.Properties.Limit) {
-		return true
-	}
-
-	return false
-}
-
-// SetLimit gets a reference to the given Limit and assigns it to the limit field.
-// Limit:
-func (o *WebserviceComponent) SetLimit(v Limit) *WebserviceComponent {
-	o.Properties.Limit = &v
-	return o
-}
-
 // GetLivenessProbe returns the LivenessProbe field value if set, zero value otherwise.
 func (o *WebserviceComponent) GetLivenessProbe() HealthProbe {
 	if o == nil || utils.IsNil(o.Properties.LivenessProbe) {
@@ -848,9 +807,6 @@ func (o WebserviceSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Labels) {
 		toSerialize["labels"] = o.Labels
 	}
-	if !utils.IsNil(o.Limit) {
-		toSerialize["limit"] = o.Limit
-	}
 	if !utils.IsNil(o.LivenessProbe) {
 		toSerialize["livenessProbe"] = o.LivenessProbe
 	}
@@ -1019,12 +975,12 @@ func (w *WebserviceComponent) DependsOn(dependsOn []string) *WebserviceComponent
 	return w
 }
 
-func (w *WebserviceComponent) Inputs(input v1alpha1.StepInputs) *WebserviceComponent {
+func (w *WebserviceComponent) Inputs(input common.StepInputs) *WebserviceComponent {
 	w.Base.Inputs = input
 	return w
 }
 
-func (w *WebserviceComponent) Outputs(output v1alpha1.StepOutputs) *WebserviceComponent {
+func (w *WebserviceComponent) Outputs(output common.StepOutputs) *WebserviceComponent {
 	w.Base.Outputs = output
 	return w
 }

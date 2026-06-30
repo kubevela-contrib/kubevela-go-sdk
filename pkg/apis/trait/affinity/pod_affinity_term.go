@@ -23,7 +23,6 @@ var _ utils.MappedNullable = &PodAffinityTerm{}
 // PodAffinityTerm struct for PodAffinityTerm
 type PodAffinityTerm struct {
 	LabelSelector     *LabelSelector `json:"labelSelector,omitempty"`
-	Namespace         *string        `json:"namespace,omitempty"`
 	NamespaceSelector *LabelSelector `json:"namespaceSelector,omitempty"`
 	Namespaces        []string       `json:"namespaces,omitempty"`
 	TopologyKey       *string        `json:"topologyKey"`
@@ -123,40 +122,6 @@ func (o *PodAffinityTerm) HasLabelSelector() bool {
 // LabelSelector:
 func (o *PodAffinityTerm) SetLabelSelector(v LabelSelector) *PodAffinityTerm {
 	o.LabelSelector = &v
-	return o
-}
-
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
-func (o *PodAffinityTerm) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Namespace) {
-		var ret string
-		return ret
-	}
-	return *o.Namespace
-}
-
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PodAffinityTerm) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Namespace) {
-		return nil, false
-	}
-	return o.Namespace, true
-}
-
-// HasNamespace returns a boolean if a field has been set.
-func (o *PodAffinityTerm) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:
-func (o *PodAffinityTerm) SetNamespace(v string) *PodAffinityTerm {
-	o.Namespace = &v
 	return o
 }
 
@@ -265,9 +230,6 @@ func (o PodAffinityTerm) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !utils.IsNil(o.LabelSelector) {
 		toSerialize["labelSelector"] = o.LabelSelector
-	}
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
 	}
 	if !utils.IsNil(o.NamespaceSelector) {
 		toSerialize["namespaceSelector"] = o.NamespaceSelector

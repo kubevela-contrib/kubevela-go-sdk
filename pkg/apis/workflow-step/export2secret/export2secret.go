@@ -14,7 +14,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/kubevela/pkg/apis/oam/v1alpha1"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
+	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -400,33 +401,31 @@ func Export2secret(name string) *Export2secretWorkflowStep {
 	return e
 }
 
-func (e *Export2secretWorkflowStep) Build() v1alpha1.WorkflowStep {
-	_subSteps := make([]v1alpha1.WorkflowStep, 0)
+func (e *Export2secretWorkflowStep) Build() v1beta1.WorkflowStep {
+	_subSteps := make([]v1beta1.WorkflowStep, 0)
 	for _, subStep := range e.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
+	subSteps := make([]common.WorkflowSubStep, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, _s.WorkflowStepBase)
+		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
 	}
-	res := v1alpha1.WorkflowStep{
-		SubSteps: subSteps,
-		WorkflowStepBase: v1alpha1.WorkflowStepBase{
-			DependsOn:  e.Base.DependsOn,
-			If:         e.Base.If,
-			Inputs:     e.Base.Inputs,
-			Meta:       e.Base.Meta,
-			Name:       e.Base.Name,
-			Outputs:    e.Base.Outputs,
-			Properties: util.Object2RawExtension(e.Properties),
-			Timeout:    e.Base.Timeout,
-			Type:       Export2secretType,
-		},
+	res := v1beta1.WorkflowStep{
+		DependsOn:  e.Base.DependsOn,
+		If:         e.Base.If,
+		Inputs:     e.Base.Inputs,
+		Meta:       e.Base.Meta,
+		Name:       e.Base.Name,
+		Outputs:    e.Base.Outputs,
+		Properties: util.Object2RawExtension(e.Properties),
+		SubSteps:   subSteps,
+		Timeout:    e.Base.Timeout,
+		Type:       Export2secretType,
 	}
 	return res
 }
 
-func (e *Export2secretWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*Export2secretWorkflowStep, error) {
+func (e *Export2secretWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*Export2secretWorkflowStep, error) {
 	var properties Export2secretSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -455,12 +454,12 @@ func (e *Export2secretWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep)
 	return e, nil
 }
 
-func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
 	e := &Export2secretWorkflowStep{}
 	return e.FromWorkflowStep(from)
 }
 
-func (e *Export2secretWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*Export2secretWorkflowStep, error) {
+func (e *Export2secretWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*Export2secretWorkflowStep, error) {
 	var properties Export2secretSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -480,7 +479,7 @@ func (e *Export2secretWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowSt
 	return e, nil
 }
 
-func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
 	e := &Export2secretWorkflowStep{}
 	return e.FromWorkflowSubStep(from)
 }
@@ -513,12 +512,12 @@ func (e *Export2secretWorkflowStep) DependsOn(dependsOn []string) *Export2secret
 	return e
 }
 
-func (e *Export2secretWorkflowStep) Inputs(input v1alpha1.StepInputs) *Export2secretWorkflowStep {
+func (e *Export2secretWorkflowStep) Inputs(input common.StepInputs) *Export2secretWorkflowStep {
 	e.Base.Inputs = input
 	return e
 }
 
-func (e *Export2secretWorkflowStep) Outputs(output v1alpha1.StepOutputs) *Export2secretWorkflowStep {
+func (e *Export2secretWorkflowStep) Outputs(output common.StepOutputs) *Export2secretWorkflowStep {
 	e.Base.Outputs = output
 	return e
 }

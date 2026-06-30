@@ -21,8 +21,8 @@ var _ utils.MappedNullable = &NodeSelectorTerm{}
 
 // NodeSelectorTerm struct for NodeSelectorTerm
 type NodeSelectorTerm struct {
-	MatchExpressions []NodeSelector `json:"matchExpressions,omitempty"`
-	MatchFields      []NodeSelector `json:"matchFields,omitempty"`
+	MatchExpressions []NodeSelecor `json:"matchExpressions,omitempty"`
+	MatchFields      []NodeSelecor `json:"matchFields,omitempty"`
 }
 
 // NewNodeSelectorTermWith instantiates a new NodeSelectorTerm object
@@ -75,9 +75,9 @@ func (o *NodeSelectorTerm) Validate() error {
 }
 
 // GetMatchExpressions returns the MatchExpressions field value if set, zero value otherwise.
-func (o *NodeSelectorTerm) GetMatchExpressions() []NodeSelector {
+func (o *NodeSelectorTerm) GetMatchExpressions() []NodeSelecor {
 	if o == nil || utils.IsNil(o.MatchExpressions) {
-		var ret []NodeSelector
+		var ret []NodeSelecor
 		return ret
 	}
 	return o.MatchExpressions
@@ -85,7 +85,7 @@ func (o *NodeSelectorTerm) GetMatchExpressions() []NodeSelector {
 
 // GetMatchExpressionsOk returns a tuple with the MatchExpressions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *NodeSelectorTerm) GetMatchExpressionsOk() ([]NodeSelector, bool) {
+func (o *NodeSelectorTerm) GetMatchExpressionsOk() ([]NodeSelecor, bool) {
 	if o == nil || utils.IsNil(o.MatchExpressions) {
 		return nil, false
 	}
@@ -101,17 +101,17 @@ func (o *NodeSelectorTerm) HasMatchExpressions() bool {
 	return false
 }
 
-// SetMatchExpressions gets a reference to the given []NodeSelector and assigns it to the matchExpressions field.
+// SetMatchExpressions gets a reference to the given []NodeSelecor and assigns it to the matchExpressions field.
 // MatchExpressions:
-func (o *NodeSelectorTerm) SetMatchExpressions(v []NodeSelector) *NodeSelectorTerm {
+func (o *NodeSelectorTerm) SetMatchExpressions(v []NodeSelecor) *NodeSelectorTerm {
 	o.MatchExpressions = v
 	return o
 }
 
 // GetMatchFields returns the MatchFields field value if set, zero value otherwise.
-func (o *NodeSelectorTerm) GetMatchFields() []NodeSelector {
+func (o *NodeSelectorTerm) GetMatchFields() []NodeSelecor {
 	if o == nil || utils.IsNil(o.MatchFields) {
-		var ret []NodeSelector
+		var ret []NodeSelecor
 		return ret
 	}
 	return o.MatchFields
@@ -119,7 +119,7 @@ func (o *NodeSelectorTerm) GetMatchFields() []NodeSelector {
 
 // GetMatchFieldsOk returns a tuple with the MatchFields field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *NodeSelectorTerm) GetMatchFieldsOk() ([]NodeSelector, bool) {
+func (o *NodeSelectorTerm) GetMatchFieldsOk() ([]NodeSelecor, bool) {
 	if o == nil || utils.IsNil(o.MatchFields) {
 		return nil, false
 	}
@@ -135,9 +135,9 @@ func (o *NodeSelectorTerm) HasMatchFields() bool {
 	return false
 }
 
-// SetMatchFields gets a reference to the given []NodeSelector and assigns it to the matchFields field.
+// SetMatchFields gets a reference to the given []NodeSelecor and assigns it to the matchFields field.
 // MatchFields:
-func (o *NodeSelectorTerm) SetMatchFields(v []NodeSelector) *NodeSelectorTerm {
+func (o *NodeSelectorTerm) SetMatchFields(v []NodeSelecor) *NodeSelectorTerm {
 	o.MatchFields = v
 	return o
 }
