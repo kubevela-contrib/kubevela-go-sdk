@@ -17,77 +17,77 @@ import (
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
 
-// checks if the NodeSelecor type satisfies the MappedNullable interface at compile time
-var _ utils.MappedNullable = &NodeSelecor{}
+// checks if the NodeSelector type satisfies the MappedNullable interface at compile time
+var _ utils.MappedNullable = &NodeSelector{}
 
-// NodeSelecor struct for NodeSelecor
-type NodeSelecor struct {
+// NodeSelector struct for NodeSelector
+type NodeSelector struct {
 	Key      *string  `json:"key"`
 	Operator *string  `json:"operator"`
 	Values   []string `json:"values,omitempty"`
 }
 
-// NewNodeSelecorWith instantiates a new NodeSelecor object
+// NewNodeSelectorWith instantiates a new NodeSelector object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewNodeSelecorWith(key string, operator string) *NodeSelecor {
-	this := NodeSelecor{}
+func NewNodeSelectorWith(key string, operator string) *NodeSelector {
+	this := NodeSelector{}
 	this.Key = &key
 	this.Operator = &operator
 	return &this
 }
 
-// NewNodeSelecorWithDefault instantiates a new NodeSelecor object
+// NewNodeSelectorWithDefault instantiates a new NodeSelector object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewNodeSelecorWithDefault() *NodeSelecor {
-	this := NodeSelecor{}
+func NewNodeSelectorWithDefault() *NodeSelector {
+	this := NodeSelector{}
 	var operator string = "In"
 	this.Operator = &operator
 	return &this
 }
 
-// NewNodeSelecor is short for NewNodeSelecorWithDefault which instantiates a new NodeSelecor object.
+// NewNodeSelector is short for NewNodeSelectorWithDefault which instantiates a new NodeSelector object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewNodeSelecor() *NodeSelecor {
-	return NewNodeSelecorWithDefault()
+func NewNodeSelector() *NodeSelector {
+	return NewNodeSelectorWithDefault()
 }
 
-// NewNodeSelecorEmpty instantiates a new NodeSelecor object with no properties set.
+// NewNodeSelectorEmpty instantiates a new NodeSelector object with no properties set.
 // This constructor will not assign any default values to properties.
-func NewNodeSelecorEmpty() *NodeSelecor {
-	this := NodeSelecor{}
+func NewNodeSelectorEmpty() *NodeSelector {
+	this := NodeSelector{}
 	return &this
 }
 
-// NewNodeSelecors converts a list NodeSelecor pointers to objects.
-// This is helpful when the SetNodeSelecor requires a list of objects
-func NewNodeSelecorList(ps ...*NodeSelecor) []NodeSelecor {
-	objs := []NodeSelecor{}
+// NewNodeSelectors converts a list NodeSelector pointers to objects.
+// This is helpful when the SetNodeSelector requires a list of objects
+func NewNodeSelectorList(ps ...*NodeSelector) []NodeSelector {
+	objs := []NodeSelector{}
 	for _, p := range ps {
 		objs = append(objs, *p)
 	}
 	return objs
 }
 
-// Validate validates this NodeSelecor
+// Validate validates this NodeSelector
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
-func (o *NodeSelecor) Validate() error {
+func (o *NodeSelector) Validate() error {
 	if o.Key == nil {
-		return errors.New("Key in NodeSelecor must be set")
+		return errors.New("Key in NodeSelector must be set")
 	}
 	if o.Operator == nil {
-		return errors.New("Operator in NodeSelecor must be set")
+		return errors.New("Operator in NodeSelector must be set")
 	}
 	// validate all nested properties
 	return nil
 }
 
 // GetKey returns the Key field value
-func (o *NodeSelecor) GetKey() string {
+func (o *NodeSelector) GetKey() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -98,7 +98,7 @@ func (o *NodeSelecor) GetKey() string {
 
 // GetKeyOk returns a tuple with the Key field value
 // and a boolean to check if the value has been set.
-func (o *NodeSelecor) GetKeyOk() (*string, bool) {
+func (o *NodeSelector) GetKeyOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -106,13 +106,13 @@ func (o *NodeSelecor) GetKeyOk() (*string, bool) {
 }
 
 // SetKey sets field value
-func (o *NodeSelecor) SetKey(v string) *NodeSelecor {
+func (o *NodeSelector) SetKey(v string) *NodeSelector {
 	o.Key = &v
 	return o
 }
 
 // GetOperator returns the Operator field value
-func (o *NodeSelecor) GetOperator() string {
+func (o *NodeSelector) GetOperator() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -123,7 +123,7 @@ func (o *NodeSelecor) GetOperator() string {
 
 // GetOperatorOk returns a tuple with the Operator field value
 // and a boolean to check if the value has been set.
-func (o *NodeSelecor) GetOperatorOk() (*string, bool) {
+func (o *NodeSelector) GetOperatorOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -131,13 +131,13 @@ func (o *NodeSelecor) GetOperatorOk() (*string, bool) {
 }
 
 // SetOperator sets field value
-func (o *NodeSelecor) SetOperator(v string) *NodeSelecor {
+func (o *NodeSelector) SetOperator(v string) *NodeSelector {
 	o.Operator = &v
 	return o
 }
 
 // GetValues returns the Values field value if set, zero value otherwise.
-func (o *NodeSelecor) GetValues() []string {
+func (o *NodeSelector) GetValues() []string {
 	if o == nil || utils.IsNil(o.Values) {
 		var ret []string
 		return ret
@@ -147,7 +147,7 @@ func (o *NodeSelecor) GetValues() []string {
 
 // GetValuesOk returns a tuple with the Values field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *NodeSelecor) GetValuesOk() ([]string, bool) {
+func (o *NodeSelector) GetValuesOk() ([]string, bool) {
 	if o == nil || utils.IsNil(o.Values) {
 		return nil, false
 	}
@@ -155,7 +155,7 @@ func (o *NodeSelecor) GetValuesOk() ([]string, bool) {
 }
 
 // HasValues returns a boolean if a field has been set.
-func (o *NodeSelecor) HasValues() bool {
+func (o *NodeSelector) HasValues() bool {
 	if o != nil && !utils.IsNil(o.Values) {
 		return true
 	}
@@ -165,12 +165,12 @@ func (o *NodeSelecor) HasValues() bool {
 
 // SetValues gets a reference to the given []string and assigns it to the values field.
 // Values:
-func (o *NodeSelecor) SetValues(v []string) *NodeSelecor {
+func (o *NodeSelector) SetValues(v []string) *NodeSelector {
 	o.Values = v
 	return o
 }
 
-func (o NodeSelecor) MarshalJSON() ([]byte, error) {
+func (o NodeSelector) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -178,7 +178,7 @@ func (o NodeSelecor) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o NodeSelecor) ToMap() (map[string]interface{}, error) {
+func (o NodeSelector) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["key"] = o.Key
 	toSerialize["operator"] = o.Operator
@@ -188,38 +188,38 @@ func (o NodeSelecor) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-type NullableNodeSelecor struct {
-	value *NodeSelecor
+type NullableNodeSelector struct {
+	value *NodeSelector
 	isSet bool
 }
 
-func (v *NullableNodeSelecor) Get() *NodeSelecor {
+func (v *NullableNodeSelector) Get() *NodeSelector {
 	return v.value
 }
 
-func (v *NullableNodeSelecor) Set(val *NodeSelecor) {
+func (v *NullableNodeSelector) Set(val *NodeSelector) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v *NullableNodeSelecor) IsSet() bool {
+func (v *NullableNodeSelector) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableNodeSelecor) Unset() {
+func (v *NullableNodeSelector) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableNodeSelecor(val *NodeSelecor) *NullableNodeSelecor {
-	return &NullableNodeSelecor{value: val, isSet: true}
+func NewNullableNodeSelector(val *NodeSelector) *NullableNodeSelector {
+	return &NullableNodeSelector{value: val, isSet: true}
 }
 
-func (v NullableNodeSelecor) MarshalJSON() ([]byte, error) {
+func (v NullableNodeSelector) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableNodeSelecor) UnmarshalJSON(src []byte) error {
+func (v *NullableNodeSelector) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

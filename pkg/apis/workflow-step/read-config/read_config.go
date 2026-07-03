@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/pkg/apis/oam/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -31,16 +30,17 @@ type ReadConfigSpec struct {
 	// Specify the name of the config.
 	Name *string `json:"name"`
 	// Specify the namespace of the config.
-	Namespace *string `json:"namespace,omitempty"`
+	Namespace *string `json:"namespace"`
 }
 
 // NewReadConfigSpecWith instantiates a new ReadConfigSpec object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewReadConfigSpecWith(name string) *ReadConfigSpec {
+func NewReadConfigSpecWith(name string, namespace string) *ReadConfigSpec {
 	this := ReadConfigSpec{}
 	this.Name = &name
+	this.Namespace = &namespace
 	return &this
 }
 
@@ -83,6 +83,9 @@ func (o *ReadConfigWorkflowStep) Validate() error {
 	if o.Properties.Name == nil {
 		return errors.New("Name in ReadConfigSpec must be set")
 	}
+	if o.Properties.Namespace == nil {
+		return errors.New("Namespace in ReadConfigSpec must be set")
+	}
 	// validate all nested properties
 	return nil
 }
@@ -112,35 +115,26 @@ func (o *ReadConfigWorkflowStep) SetName(v string) *ReadConfigWorkflowStep {
 	return o
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *ReadConfigWorkflowStep) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *ReadConfigWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *ReadConfigWorkflowStep) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Properties.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:  Specify the namespace of the config.
+// SetNamespace sets field value
 func (o *ReadConfigWorkflowStep) SetNamespace(v string) *ReadConfigWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -157,9 +151,7 @@ func (o ReadConfigSpec) MarshalJSON() ([]byte, error) {
 func (o ReadConfigSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["name"] = o.Name
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
-	}
+	toSerialize["namespace"] = o.Namespace
 	return toSerialize, nil
 }
 
@@ -219,31 +211,33 @@ func ReadConfig(name string) *ReadConfigWorkflowStep {
 	return r
 }
 
-func (r *ReadConfigWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (r *ReadConfigWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range r.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  r.Base.DependsOn,
-		If:         r.Base.If,
-		Inputs:     r.Base.Inputs,
-		Meta:       r.Base.Meta,
-		Name:       r.Base.Name,
-		Outputs:    r.Base.Outputs,
-		Properties: util.Object2RawExtension(r.Properties),
-		SubSteps:   subSteps,
-		Timeout:    r.Base.Timeout,
-		Type:       ReadConfigType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  r.Base.DependsOn,
+			If:         r.Base.If,
+			Inputs:     r.Base.Inputs,
+			Meta:       r.Base.Meta,
+			Name:       r.Base.Name,
+			Outputs:    r.Base.Outputs,
+			Properties: util.Object2RawExtension(r.Properties),
+			Timeout:    r.Base.Timeout,
+			Type:       ReadConfigType,
+		},
 	}
 	return res
 }
 
-func (r *ReadConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*ReadConfigWorkflowStep, error) {
+func (r *ReadConfigWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*ReadConfigWorkflowStep, error) {
 	var properties ReadConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -272,12 +266,12 @@ func (r *ReadConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*R
 	return r, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	r := &ReadConfigWorkflowStep{}
 	return r.FromWorkflowStep(from)
 }
 
-func (r *ReadConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*ReadConfigWorkflowStep, error) {
+func (r *ReadConfigWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*ReadConfigWorkflowStep, error) {
 	var properties ReadConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -297,7 +291,7 @@ func (r *ReadConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep
 	return r, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	r := &ReadConfigWorkflowStep{}
 	return r.FromWorkflowSubStep(from)
 }
@@ -330,12 +324,12 @@ func (r *ReadConfigWorkflowStep) DependsOn(dependsOn []string) *ReadConfigWorkfl
 	return r
 }
 
-func (r *ReadConfigWorkflowStep) Inputs(input common.StepInputs) *ReadConfigWorkflowStep {
+func (r *ReadConfigWorkflowStep) Inputs(input v1alpha1.StepInputs) *ReadConfigWorkflowStep {
 	r.Base.Inputs = input
 	return r
 }
 
-func (r *ReadConfigWorkflowStep) Outputs(output common.StepOutputs) *ReadConfigWorkflowStep {
+func (r *ReadConfigWorkflowStep) Outputs(output v1alpha1.StepOutputs) *ReadConfigWorkflowStep {
 	r.Base.Outputs = output
 	return r
 }

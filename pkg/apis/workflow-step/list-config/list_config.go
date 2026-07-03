@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/pkg/apis/oam/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -29,7 +28,7 @@ var _ utils.MappedNullable = &ListConfigSpec{}
 // ListConfigSpec struct for ListConfigSpec
 type ListConfigSpec struct {
 	// Specify the namespace of the config.
-	Namespace *string `json:"namespace,omitempty"`
+	Namespace *string `json:"namespace"`
 	// Specify the template of the config.
 	Template *string `json:"template"`
 }
@@ -38,8 +37,9 @@ type ListConfigSpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewListConfigSpecWith(template string) *ListConfigSpec {
+func NewListConfigSpecWith(namespace string, template string) *ListConfigSpec {
 	this := ListConfigSpec{}
+	this.Namespace = &namespace
 	this.Template = &template
 	return &this
 }
@@ -80,6 +80,9 @@ func NewListConfigSpecList(ps ...*ListConfigSpec) []ListConfigSpec {
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *ListConfigWorkflowStep) Validate() error {
+	if o.Properties.Namespace == nil {
+		return errors.New("Namespace in ListConfigSpec must be set")
+	}
 	if o.Properties.Template == nil {
 		return errors.New("Template in ListConfigSpec must be set")
 	}
@@ -87,35 +90,26 @@ func (o *ListConfigWorkflowStep) Validate() error {
 	return nil
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *ListConfigWorkflowStep) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *ListConfigWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *ListConfigWorkflowStep) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Properties.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:  Specify the namespace of the config.
+// SetNamespace sets field value
 func (o *ListConfigWorkflowStep) SetNamespace(v string) *ListConfigWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -156,9 +150,7 @@ func (o ListConfigSpec) MarshalJSON() ([]byte, error) {
 
 func (o ListConfigSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
-	}
+	toSerialize["namespace"] = o.Namespace
 	toSerialize["template"] = o.Template
 	return toSerialize, nil
 }
@@ -219,31 +211,33 @@ func ListConfig(name string) *ListConfigWorkflowStep {
 	return l
 }
 
-func (l *ListConfigWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (l *ListConfigWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range l.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  l.Base.DependsOn,
-		If:         l.Base.If,
-		Inputs:     l.Base.Inputs,
-		Meta:       l.Base.Meta,
-		Name:       l.Base.Name,
-		Outputs:    l.Base.Outputs,
-		Properties: util.Object2RawExtension(l.Properties),
-		SubSteps:   subSteps,
-		Timeout:    l.Base.Timeout,
-		Type:       ListConfigType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  l.Base.DependsOn,
+			If:         l.Base.If,
+			Inputs:     l.Base.Inputs,
+			Meta:       l.Base.Meta,
+			Name:       l.Base.Name,
+			Outputs:    l.Base.Outputs,
+			Properties: util.Object2RawExtension(l.Properties),
+			Timeout:    l.Base.Timeout,
+			Type:       ListConfigType,
+		},
 	}
 	return res
 }
 
-func (l *ListConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*ListConfigWorkflowStep, error) {
+func (l *ListConfigWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*ListConfigWorkflowStep, error) {
 	var properties ListConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -272,12 +266,12 @@ func (l *ListConfigWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*L
 	return l, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	l := &ListConfigWorkflowStep{}
 	return l.FromWorkflowStep(from)
 }
 
-func (l *ListConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*ListConfigWorkflowStep, error) {
+func (l *ListConfigWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*ListConfigWorkflowStep, error) {
 	var properties ListConfigSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -297,7 +291,7 @@ func (l *ListConfigWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep
 	return l, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	l := &ListConfigWorkflowStep{}
 	return l.FromWorkflowSubStep(from)
 }
@@ -330,12 +324,12 @@ func (l *ListConfigWorkflowStep) DependsOn(dependsOn []string) *ListConfigWorkfl
 	return l
 }
 
-func (l *ListConfigWorkflowStep) Inputs(input common.StepInputs) *ListConfigWorkflowStep {
+func (l *ListConfigWorkflowStep) Inputs(input v1alpha1.StepInputs) *ListConfigWorkflowStep {
 	l.Base.Inputs = input
 	return l
 }
 
-func (l *ListConfigWorkflowStep) Outputs(output common.StepOutputs) *ListConfigWorkflowStep {
+func (l *ListConfigWorkflowStep) Outputs(output v1alpha1.StepOutputs) *ListConfigWorkflowStep {
 	l.Base.Outputs = output
 	return l
 }

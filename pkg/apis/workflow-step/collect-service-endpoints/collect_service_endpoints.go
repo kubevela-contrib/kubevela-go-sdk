@@ -14,8 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/common"
-	"github.com/oam-dev/kubevela-core-api/apis/core.oam.dev/v1beta1"
+	"github.com/kubevela/pkg/apis/oam/v1alpha1"
 	"github.com/oam-dev/kubevela-core-api/pkg/oam/util"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis"
@@ -31,9 +30,9 @@ type CollectServiceEndpointsSpec struct {
 	// Filter the component of the endpoints
 	Components []string `json:"components,omitempty"`
 	// Specify the name of the application
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 	// Specify the namespace of the application
-	Namespace *string `json:"namespace,omitempty"`
+	Namespace *string `json:"namespace"`
 	// Filter the endpoint that are only outer
 	Outer *bool `json:"outer,omitempty"`
 	// Filter the port of the endpoints
@@ -48,8 +47,10 @@ type CollectServiceEndpointsSpec struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewCollectServiceEndpointsSpecWith(protocal string) *CollectServiceEndpointsSpec {
+func NewCollectServiceEndpointsSpecWith(name string, namespace string, protocal string) *CollectServiceEndpointsSpec {
 	this := CollectServiceEndpointsSpec{}
+	this.Name = &name
+	this.Namespace = &namespace
 	this.Protocal = &protocal
 	return &this
 }
@@ -92,6 +93,12 @@ func NewCollectServiceEndpointsSpecList(ps ...*CollectServiceEndpointsSpec) []Co
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *CollectServiceEndpointsWorkflowStep) Validate() error {
+	if o.Properties.Name == nil {
+		return errors.New("Name in CollectServiceEndpointsSpec must be set")
+	}
+	if o.Properties.Namespace == nil {
+		return errors.New("Namespace in CollectServiceEndpointsSpec must be set")
+	}
 	if o.Properties.Protocal == nil {
 		return errors.New("Protocal in CollectServiceEndpointsSpec must be set")
 	}
@@ -133,69 +140,51 @@ func (o *CollectServiceEndpointsWorkflowStep) SetComponents(v []string) *Collect
 	return o
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *CollectServiceEndpointsWorkflowStep) GetName() string {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *CollectServiceEndpointsWorkflowStep) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Name) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *CollectServiceEndpointsWorkflowStep) HasName() bool {
-	if o != nil && !utils.IsNil(o.Properties.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:  Specify the name of the application
+// SetName sets field value
 func (o *CollectServiceEndpointsWorkflowStep) SetName(v string) *CollectServiceEndpointsWorkflowStep {
 	o.Properties.Name = &v
 	return o
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
+// GetNamespace returns the Namespace field value
 func (o *CollectServiceEndpointsWorkflowStep) GetNamespace() string {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		var ret string
 		return ret
 	}
+
 	return *o.Properties.Namespace
 }
 
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
+// GetNamespaceOk returns a tuple with the Namespace field value
 // and a boolean to check if the value has been set.
 func (o *CollectServiceEndpointsWorkflowStep) GetNamespaceOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Properties.Namespace) {
+	if o == nil {
 		return nil, false
 	}
 	return o.Properties.Namespace, true
 }
 
-// HasNamespace returns a boolean if a field has been set.
-func (o *CollectServiceEndpointsWorkflowStep) HasNamespace() bool {
-	if o != nil && !utils.IsNil(o.Properties.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:  Specify the namespace of the application
+// SetNamespace sets field value
 func (o *CollectServiceEndpointsWorkflowStep) SetNamespace(v string) *CollectServiceEndpointsWorkflowStep {
 	o.Properties.Namespace = &v
 	return o
@@ -341,12 +330,8 @@ func (o CollectServiceEndpointsSpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Components) {
 		toSerialize["components"] = o.Components
 	}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
-	}
+	toSerialize["name"] = o.Name
+	toSerialize["namespace"] = o.Namespace
 	if !utils.IsNil(o.Outer) {
 		toSerialize["outer"] = o.Outer
 	}
@@ -416,31 +401,33 @@ func CollectServiceEndpoints(name string) *CollectServiceEndpointsWorkflowStep {
 	return c
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) Build() v1beta1.WorkflowStep {
-	_subSteps := make([]v1beta1.WorkflowStep, 0)
+func (c *CollectServiceEndpointsWorkflowStep) Build() v1alpha1.WorkflowStep {
+	_subSteps := make([]v1alpha1.WorkflowStep, 0)
 	for _, subStep := range c.Base.SubSteps {
 		_subSteps = append(_subSteps, subStep.Build())
 	}
-	subSteps := make([]common.WorkflowSubStep, 0)
+	subSteps := make([]v1alpha1.WorkflowStepBase, 0)
 	for _, _s := range _subSteps {
-		subSteps = append(subSteps, common.WorkflowSubStep{Name: _s.Name, DependsOn: _s.DependsOn, Inputs: _s.Inputs, Outputs: _s.Outputs, If: _s.If, Timeout: _s.Timeout, Meta: _s.Meta, Properties: _s.Properties, Type: _s.Type})
+		subSteps = append(subSteps, _s.WorkflowStepBase)
 	}
-	res := v1beta1.WorkflowStep{
-		DependsOn:  c.Base.DependsOn,
-		If:         c.Base.If,
-		Inputs:     c.Base.Inputs,
-		Meta:       c.Base.Meta,
-		Name:       c.Base.Name,
-		Outputs:    c.Base.Outputs,
-		Properties: util.Object2RawExtension(c.Properties),
-		SubSteps:   subSteps,
-		Timeout:    c.Base.Timeout,
-		Type:       CollectServiceEndpointsType,
+	res := v1alpha1.WorkflowStep{
+		SubSteps: subSteps,
+		WorkflowStepBase: v1alpha1.WorkflowStepBase{
+			DependsOn:  c.Base.DependsOn,
+			If:         c.Base.If,
+			Inputs:     c.Base.Inputs,
+			Meta:       c.Base.Meta,
+			Name:       c.Base.Name,
+			Outputs:    c.Base.Outputs,
+			Properties: util.Object2RawExtension(c.Properties),
+			Timeout:    c.Base.Timeout,
+			Type:       CollectServiceEndpointsType,
+		},
 	}
 	return res
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowStep(from v1beta1.WorkflowStep) (*CollectServiceEndpointsWorkflowStep, error) {
+func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowStep(from v1alpha1.WorkflowStep) (*CollectServiceEndpointsWorkflowStep, error) {
 	var properties CollectServiceEndpointsSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -469,12 +456,12 @@ func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowStep(from v1beta1.Work
 	return c, nil
 }
 
-func FromWorkflowStep(from v1beta1.WorkflowStep) (apis.WorkflowStep, error) {
+func FromWorkflowStep(from v1alpha1.WorkflowStep) (apis.WorkflowStep, error) {
 	c := &CollectServiceEndpointsWorkflowStep{}
 	return c.FromWorkflowStep(from)
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowSubStep(from common.WorkflowSubStep) (*CollectServiceEndpointsWorkflowStep, error) {
+func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (*CollectServiceEndpointsWorkflowStep, error) {
 	var properties CollectServiceEndpointsSpec
 	if from.Properties != nil {
 		err := json.Unmarshal(from.Properties.Raw, &properties)
@@ -494,7 +481,7 @@ func (c *CollectServiceEndpointsWorkflowStep) FromWorkflowSubStep(from common.Wo
 	return c, nil
 }
 
-func FromWorkflowSubStep(from common.WorkflowSubStep) (apis.WorkflowStep, error) {
+func FromWorkflowSubStep(from v1alpha1.WorkflowStepBase) (apis.WorkflowStep, error) {
 	c := &CollectServiceEndpointsWorkflowStep{}
 	return c.FromWorkflowSubStep(from)
 }
@@ -527,12 +514,12 @@ func (c *CollectServiceEndpointsWorkflowStep) DependsOn(dependsOn []string) *Col
 	return c
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) Inputs(input common.StepInputs) *CollectServiceEndpointsWorkflowStep {
+func (c *CollectServiceEndpointsWorkflowStep) Inputs(input v1alpha1.StepInputs) *CollectServiceEndpointsWorkflowStep {
 	c.Base.Inputs = input
 	return c
 }
 
-func (c *CollectServiceEndpointsWorkflowStep) Outputs(output common.StepOutputs) *CollectServiceEndpointsWorkflowStep {
+func (c *CollectServiceEndpointsWorkflowStep) Outputs(output v1alpha1.StepOutputs) *CollectServiceEndpointsWorkflowStep {
 	c.Base.Outputs = output
 	return c
 }
