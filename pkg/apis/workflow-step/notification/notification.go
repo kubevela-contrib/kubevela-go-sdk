@@ -30,6 +30,8 @@ type NotificationSpec struct {
 	Email    *Email    `json:"email,omitempty"`
 	Lark     *Lark     `json:"lark,omitempty"`
 	Slack    *Slack    `json:"slack,omitempty"`
+	// The timeout of HTTP notifications (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
+	Timeout *string `json:"timeout,omitempty"`
 }
 
 // NewNotificationSpecWith instantiates a new NotificationSpec object
@@ -237,6 +239,40 @@ func (o *NotificationWorkflowStep) SetSlack(v Slack) *NotificationWorkflowStep {
 	return o
 }
 
+// GetTimeout returns the Timeout field value if set, zero value otherwise.
+func (o *NotificationWorkflowStep) GetTimeout() string {
+	if o == nil || utils.IsNil(o.Properties.Timeout) {
+		var ret string
+		return ret
+	}
+	return *o.Properties.Timeout
+}
+
+// GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NotificationWorkflowStep) GetTimeoutOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Properties.Timeout) {
+		return nil, false
+	}
+	return o.Properties.Timeout, true
+}
+
+// HasTimeout returns a boolean if a field has been set.
+func (o *NotificationWorkflowStep) HasTimeout() bool {
+	if o != nil && !utils.IsNil(o.Properties.Timeout) {
+		return true
+	}
+
+	return false
+}
+
+// SetTimeout gets a reference to the given string and assigns it to the timeout field.
+// Timeout:  The timeout of HTTP notifications (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
+func (o *NotificationWorkflowStep) SetTimeout(v string) *NotificationWorkflowStep {
+	o.Properties.Timeout = &v
+	return o
+}
+
 func (o NotificationSpec) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -258,6 +294,9 @@ func (o NotificationSpec) ToMap() (map[string]interface{}, error) {
 	}
 	if !utils.IsNil(o.Slack) {
 		toSerialize["slack"] = o.Slack
+	}
+	if !utils.IsNil(o.Timeout) {
+		toSerialize["timeout"] = o.Timeout
 	}
 	return toSerialize, nil
 }

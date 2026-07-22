@@ -30,7 +30,9 @@ type RequestSpec struct {
 	Body   map[string]interface{} `json:"body,omitempty"`
 	Header map[string]string      `json:"header,omitempty"`
 	Method *string                `json:"method"`
-	Url    *string                `json:"url"`
+	// The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
+	Timeout *string `json:"timeout,omitempty"`
+	Url     *string `json:"url"`
 }
 
 // NewRequestSpecWith instantiates a new RequestSpec object
@@ -185,6 +187,40 @@ func (o *RequestWorkflowStep) SetMethod(v string) *RequestWorkflowStep {
 	return o
 }
 
+// GetTimeout returns the Timeout field value if set, zero value otherwise.
+func (o *RequestWorkflowStep) GetTimeout() string {
+	if o == nil || utils.IsNil(o.Properties.Timeout) {
+		var ret string
+		return ret
+	}
+	return *o.Properties.Timeout
+}
+
+// GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RequestWorkflowStep) GetTimeoutOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Properties.Timeout) {
+		return nil, false
+	}
+	return o.Properties.Timeout, true
+}
+
+// HasTimeout returns a boolean if a field has been set.
+func (o *RequestWorkflowStep) HasTimeout() bool {
+	if o != nil && !utils.IsNil(o.Properties.Timeout) {
+		return true
+	}
+
+	return false
+}
+
+// SetTimeout gets a reference to the given string and assigns it to the timeout field.
+// Timeout:  The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
+func (o *RequestWorkflowStep) SetTimeout(v string) *RequestWorkflowStep {
+	o.Properties.Timeout = &v
+	return o
+}
+
 // GetUrl returns the Url field value
 func (o *RequestWorkflowStep) GetUrl() string {
 	if o == nil {
@@ -227,6 +263,9 @@ func (o RequestSpec) ToMap() (map[string]interface{}, error) {
 		toSerialize["header"] = o.Header
 	}
 	toSerialize["method"] = o.Method
+	if !utils.IsNil(o.Timeout) {
+		toSerialize["timeout"] = o.Timeout
+	}
 	toSerialize["url"] = o.Url
 	return toSerialize, nil
 }

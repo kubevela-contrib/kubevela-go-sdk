@@ -29,7 +29,9 @@ var _ utils.MappedNullable = &WebhookSpec{}
 type WebhookSpec struct {
 	// Specify the data you want to send
 	Data map[string]interface{} `json:"data,omitempty"`
-	Url  *Url                   `json:"url"`
+	// The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
+	Timeout *string `json:"timeout,omitempty"`
+	Url     *Url    `json:"url"`
 }
 
 // NewWebhookSpecWith instantiates a new WebhookSpec object
@@ -124,6 +126,40 @@ func (o *WebhookWorkflowStep) SetData(v map[string]interface{}) *WebhookWorkflow
 	return o
 }
 
+// GetTimeout returns the Timeout field value if set, zero value otherwise.
+func (o *WebhookWorkflowStep) GetTimeout() string {
+	if o == nil || utils.IsNil(o.Properties.Timeout) {
+		var ret string
+		return ret
+	}
+	return *o.Properties.Timeout
+}
+
+// GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WebhookWorkflowStep) GetTimeoutOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Properties.Timeout) {
+		return nil, false
+	}
+	return o.Properties.Timeout, true
+}
+
+// HasTimeout returns a boolean if a field has been set.
+func (o *WebhookWorkflowStep) HasTimeout() bool {
+	if o != nil && !utils.IsNil(o.Properties.Timeout) {
+		return true
+	}
+
+	return false
+}
+
+// SetTimeout gets a reference to the given string and assigns it to the timeout field.
+// Timeout:  The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
+func (o *WebhookWorkflowStep) SetTimeout(v string) *WebhookWorkflowStep {
+	o.Properties.Timeout = &v
+	return o
+}
+
 // GetUrl returns the Url field value
 func (o *WebhookWorkflowStep) GetUrl() Url {
 	if o == nil {
@@ -161,6 +197,9 @@ func (o WebhookSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !utils.IsNil(o.Data) {
 		toSerialize["data"] = o.Data
+	}
+	if !utils.IsNil(o.Timeout) {
+		toSerialize["timeout"] = o.Timeout
 	}
 	toSerialize["url"] = o.Url
 	return toSerialize, nil
