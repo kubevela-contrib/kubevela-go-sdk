@@ -29,7 +29,9 @@ var _ utils.MappedNullable = &RequestSpec{}
 type RequestSpec struct {
 	Body   map[string]interface{} `json:"body,omitempty"`
 	Header map[string]string      `json:"header,omitempty"`
-	Method *string                `json:"method"`
+	// Headers whose values are sourced from Kubernetes Secrets
+	HeadersFromSecret []HeadersFromSecret `json:"headersFromSecret,omitempty"`
+	Method            *string             `json:"method"`
 	// The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
 	Timeout *string `json:"timeout,omitempty"`
 	Url     *string `json:"url"`
@@ -162,6 +164,40 @@ func (o *RequestWorkflowStep) SetHeader(v map[string]string) *RequestWorkflowSte
 	return o
 }
 
+// GetHeadersFromSecret returns the HeadersFromSecret field value if set, zero value otherwise.
+func (o *RequestWorkflowStep) GetHeadersFromSecret() []HeadersFromSecret {
+	if o == nil || utils.IsNil(o.Properties.HeadersFromSecret) {
+		var ret []HeadersFromSecret
+		return ret
+	}
+	return o.Properties.HeadersFromSecret
+}
+
+// GetHeadersFromSecretOk returns a tuple with the HeadersFromSecret field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RequestWorkflowStep) GetHeadersFromSecretOk() ([]HeadersFromSecret, bool) {
+	if o == nil || utils.IsNil(o.Properties.HeadersFromSecret) {
+		return nil, false
+	}
+	return o.Properties.HeadersFromSecret, true
+}
+
+// HasHeadersFromSecret returns a boolean if a field has been set.
+func (o *RequestWorkflowStep) HasHeadersFromSecret() bool {
+	if o != nil && !utils.IsNil(o.Properties.HeadersFromSecret) {
+		return true
+	}
+
+	return false
+}
+
+// SetHeadersFromSecret gets a reference to the given []HeadersFromSecret and assigns it to the headersFromSecret field.
+// HeadersFromSecret:  Headers whose values are sourced from Kubernetes Secrets
+func (o *RequestWorkflowStep) SetHeadersFromSecret(v []HeadersFromSecret) *RequestWorkflowStep {
+	o.Properties.HeadersFromSecret = v
+	return o
+}
+
 // GetMethod returns the Method field value
 func (o *RequestWorkflowStep) GetMethod() string {
 	if o == nil {
@@ -261,6 +297,9 @@ func (o RequestSpec) ToMap() (map[string]interface{}, error) {
 	}
 	if !utils.IsNil(o.Header) {
 		toSerialize["header"] = o.Header
+	}
+	if !utils.IsNil(o.HeadersFromSecret) {
+		toSerialize["headersFromSecret"] = o.HeadersFromSecret
 	}
 	toSerialize["method"] = o.Method
 	if !utils.IsNil(o.Timeout) {
