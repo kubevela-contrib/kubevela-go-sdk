@@ -37,7 +37,9 @@ type SidecarSpec struct {
 	Image         *string      `json:"image"`
 	LivenessProbe *HealthProbe `json:"livenessProbe,omitempty"`
 	// Specify the name of sidecar container
-	Name           *string      `json:"name"`
+	Name *string `json:"name"`
+	// Specify the ports of the sidecar container
+	Ports          []Ports      `json:"ports,omitempty"`
 	ReadinessProbe *HealthProbe `json:"readinessProbe,omitempty"`
 	// Specify the shared volume path
 	Volumes []Volumes `json:"volumes,omitempty"`
@@ -296,6 +298,40 @@ func (o *SidecarTrait) SetName(v string) *SidecarTrait {
 	return o
 }
 
+// GetPorts returns the Ports field value if set, zero value otherwise.
+func (o *SidecarTrait) GetPorts() []Ports {
+	if o == nil || utils.IsNil(o.Properties.Ports) {
+		var ret []Ports
+		return ret
+	}
+	return o.Properties.Ports
+}
+
+// GetPortsOk returns a tuple with the Ports field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SidecarTrait) GetPortsOk() ([]Ports, bool) {
+	if o == nil || utils.IsNil(o.Properties.Ports) {
+		return nil, false
+	}
+	return o.Properties.Ports, true
+}
+
+// HasPorts returns a boolean if a field has been set.
+func (o *SidecarTrait) HasPorts() bool {
+	if o != nil && !utils.IsNil(o.Properties.Ports) {
+		return true
+	}
+
+	return false
+}
+
+// SetPorts gets a reference to the given []Ports and assigns it to the ports field.
+// Ports:  Specify the ports of the sidecar container
+func (o *SidecarTrait) SetPorts(v []Ports) *SidecarTrait {
+	o.Properties.Ports = v
+	return o
+}
+
 // GetReadinessProbe returns the ReadinessProbe field value if set, zero value otherwise.
 func (o *SidecarTrait) GetReadinessProbe() HealthProbe {
 	if o == nil || utils.IsNil(o.Properties.ReadinessProbe) {
@@ -388,6 +424,9 @@ func (o SidecarSpec) ToMap() (map[string]interface{}, error) {
 		toSerialize["livenessProbe"] = o.LivenessProbe
 	}
 	toSerialize["name"] = o.Name
+	if !utils.IsNil(o.Ports) {
+		toSerialize["ports"] = o.Ports
+	}
 	if !utils.IsNil(o.ReadinessProbe) {
 		toSerialize["readinessProbe"] = o.ReadinessProbe
 	}
