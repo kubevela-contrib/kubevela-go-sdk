@@ -22,23 +22,26 @@ var _ utils.MappedNullable = &AWSProvider{}
 
 // AWSProvider struct for AWSProvider
 type AWSProvider struct {
-	Name      *string `json:"name,omitempty"`
-	Token     *string `json:"token,omitempty"`
-	Type      *string `json:"type,omitempty"`
 	AccessKey *string `json:"accessKey"`
+	Name      *string `json:"name"`
 	Region    *string `json:"region"`
 	SecretKey *string `json:"secretKey"`
+	Token     *string `json:"token"`
+	Type      *string `json:"type"`
 }
 
 // NewAWSProviderWith instantiates a new AWSProvider object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewAWSProviderWith(accessKey string, region string, secretKey string) *AWSProvider {
+func NewAWSProviderWith(accessKey string, name string, region string, secretKey string, token string, type_ string) *AWSProvider {
 	this := AWSProvider{}
 	this.AccessKey = &accessKey
+	this.Name = &name
 	this.Region = &region
 	this.SecretKey = &secretKey
+	this.Token = &token
+	this.Type = &type_
 	return &this
 }
 
@@ -85,116 +88,23 @@ func (o *AWSProvider) Validate() error {
 	if o.AccessKey == nil {
 		return errors.New("AccessKey in AWSProvider must be set")
 	}
+	if o.Name == nil {
+		return errors.New("Name in AWSProvider must be set")
+	}
 	if o.Region == nil {
 		return errors.New("Region in AWSProvider must be set")
 	}
 	if o.SecretKey == nil {
 		return errors.New("SecretKey in AWSProvider must be set")
 	}
+	if o.Token == nil {
+		return errors.New("Token in AWSProvider must be set")
+	}
+	if o.Type == nil {
+		return errors.New("Type in AWSProvider must be set")
+	}
 	// validate all nested properties
 	return nil
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *AWSProvider) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AWSProvider) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *AWSProvider) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
-func (o *AWSProvider) SetName(v string) *AWSProvider {
-	o.Name = &v
-	return o
-}
-
-// GetToken returns the Token field value if set, zero value otherwise.
-func (o *AWSProvider) GetToken() string {
-	if o == nil || utils.IsNil(o.Token) {
-		var ret string
-		return ret
-	}
-	return *o.Token
-}
-
-// GetTokenOk returns a tuple with the Token field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AWSProvider) GetTokenOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Token) {
-		return nil, false
-	}
-	return o.Token, true
-}
-
-// HasToken returns a boolean if a field has been set.
-func (o *AWSProvider) HasToken() bool {
-	if o != nil && !utils.IsNil(o.Token) {
-		return true
-	}
-
-	return false
-}
-
-// SetToken gets a reference to the given string and assigns it to the token field.
-// Token:
-func (o *AWSProvider) SetToken(v string) *AWSProvider {
-	o.Token = &v
-	return o
-}
-
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *AWSProvider) GetType() string {
-	if o == nil || utils.IsNil(o.Type) {
-		var ret string
-		return ret
-	}
-	return *o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AWSProvider) GetTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Type) {
-		return nil, false
-	}
-	return o.Type, true
-}
-
-// HasType returns a boolean if a field has been set.
-func (o *AWSProvider) HasType() bool {
-	if o != nil && !utils.IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the type_ field.
-// Type:
-func (o *AWSProvider) SetType(v string) *AWSProvider {
-	o.Type = &v
-	return o
 }
 
 // GetAccessKey returns the AccessKey field value
@@ -219,6 +129,31 @@ func (o *AWSProvider) GetAccessKeyOk() (*string, bool) {
 // SetAccessKey sets field value
 func (o *AWSProvider) SetAccessKey(v string) *AWSProvider {
 	o.AccessKey = &v
+	return o
+}
+
+// GetName returns the Name field value
+func (o *AWSProvider) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *AWSProvider) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *AWSProvider) SetName(v string) *AWSProvider {
+	o.Name = &v
 	return o
 }
 
@@ -272,6 +207,56 @@ func (o *AWSProvider) SetSecretKey(v string) *AWSProvider {
 	return o
 }
 
+// GetToken returns the Token field value
+func (o *AWSProvider) GetToken() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Token
+}
+
+// GetTokenOk returns a tuple with the Token field value
+// and a boolean to check if the value has been set.
+func (o *AWSProvider) GetTokenOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Token, true
+}
+
+// SetToken sets field value
+func (o *AWSProvider) SetToken(v string) *AWSProvider {
+	o.Token = &v
+	return o
+}
+
+// GetType returns the Type field value
+func (o *AWSProvider) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *AWSProvider) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *AWSProvider) SetType(v string) *AWSProvider {
+	o.Type = &v
+	return o
+}
+
 func (o AWSProvider) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -282,18 +267,12 @@ func (o AWSProvider) MarshalJSON() ([]byte, error) {
 
 func (o AWSProvider) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Token) {
-		toSerialize["token"] = o.Token
-	}
-	if !utils.IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
 	toSerialize["accessKey"] = o.AccessKey
+	toSerialize["name"] = o.Name
 	toSerialize["region"] = o.Region
 	toSerialize["secretKey"] = o.SecretKey
+	toSerialize["token"] = o.Token
+	toSerialize["type"] = o.Type
 	return toSerialize, nil
 }
 

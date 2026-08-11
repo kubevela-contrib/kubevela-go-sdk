@@ -22,22 +22,24 @@ var _ utils.MappedNullable = &BaiduProvider{}
 
 // BaiduProvider struct for BaiduProvider
 type BaiduProvider struct {
-	Name      *string `json:"name,omitempty"`
-	Type      *string `json:"type,omitempty"`
 	AccessKey *string `json:"accessKey"`
+	Name      *string `json:"name"`
 	Region    *string `json:"region"`
 	SecretKey *string `json:"secretKey"`
+	Type      *string `json:"type"`
 }
 
 // NewBaiduProviderWith instantiates a new BaiduProvider object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewBaiduProviderWith(accessKey string, region string, secretKey string) *BaiduProvider {
+func NewBaiduProviderWith(accessKey string, name string, region string, secretKey string, type_ string) *BaiduProvider {
 	this := BaiduProvider{}
 	this.AccessKey = &accessKey
+	this.Name = &name
 	this.Region = &region
 	this.SecretKey = &secretKey
+	this.Type = &type_
 	return &this
 }
 
@@ -82,82 +84,20 @@ func (o *BaiduProvider) Validate() error {
 	if o.AccessKey == nil {
 		return errors.New("AccessKey in BaiduProvider must be set")
 	}
+	if o.Name == nil {
+		return errors.New("Name in BaiduProvider must be set")
+	}
 	if o.Region == nil {
 		return errors.New("Region in BaiduProvider must be set")
 	}
 	if o.SecretKey == nil {
 		return errors.New("SecretKey in BaiduProvider must be set")
 	}
+	if o.Type == nil {
+		return errors.New("Type in BaiduProvider must be set")
+	}
 	// validate all nested properties
 	return nil
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *BaiduProvider) GetName() string {
-	if o == nil || utils.IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BaiduProvider) GetNameOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *BaiduProvider) HasName() bool {
-	if o != nil && !utils.IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the name field.
-// Name:
-func (o *BaiduProvider) SetName(v string) *BaiduProvider {
-	o.Name = &v
-	return o
-}
-
-// GetType returns the Type field value if set, zero value otherwise.
-func (o *BaiduProvider) GetType() string {
-	if o == nil || utils.IsNil(o.Type) {
-		var ret string
-		return ret
-	}
-	return *o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BaiduProvider) GetTypeOk() (*string, bool) {
-	if o == nil || utils.IsNil(o.Type) {
-		return nil, false
-	}
-	return o.Type, true
-}
-
-// HasType returns a boolean if a field has been set.
-func (o *BaiduProvider) HasType() bool {
-	if o != nil && !utils.IsNil(o.Type) {
-		return true
-	}
-
-	return false
-}
-
-// SetType gets a reference to the given string and assigns it to the type_ field.
-// Type:
-func (o *BaiduProvider) SetType(v string) *BaiduProvider {
-	o.Type = &v
-	return o
 }
 
 // GetAccessKey returns the AccessKey field value
@@ -182,6 +122,31 @@ func (o *BaiduProvider) GetAccessKeyOk() (*string, bool) {
 // SetAccessKey sets field value
 func (o *BaiduProvider) SetAccessKey(v string) *BaiduProvider {
 	o.AccessKey = &v
+	return o
+}
+
+// GetName returns the Name field value
+func (o *BaiduProvider) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *BaiduProvider) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *BaiduProvider) SetName(v string) *BaiduProvider {
+	o.Name = &v
 	return o
 }
 
@@ -235,6 +200,31 @@ func (o *BaiduProvider) SetSecretKey(v string) *BaiduProvider {
 	return o
 }
 
+// GetType returns the Type field value
+func (o *BaiduProvider) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *BaiduProvider) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *BaiduProvider) SetType(v string) *BaiduProvider {
+	o.Type = &v
+	return o
+}
+
 func (o BaiduProvider) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -245,15 +235,11 @@ func (o BaiduProvider) MarshalJSON() ([]byte, error) {
 
 func (o BaiduProvider) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !utils.IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !utils.IsNil(o.Type) {
-		toSerialize["type"] = o.Type
-	}
 	toSerialize["accessKey"] = o.AccessKey
+	toSerialize["name"] = o.Name
 	toSerialize["region"] = o.Region
 	toSerialize["secretKey"] = o.SecretKey
+	toSerialize["type"] = o.Type
 	return toSerialize, nil
 }
 
