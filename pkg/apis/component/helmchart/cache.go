@@ -33,10 +33,6 @@ type Cache struct {
 // The set of arguments will change when the set of required properties is changed
 func NewCacheWith() *Cache {
 	this := Cache{}
-	var immutableTTL string = "24h"
-	this.ImmutableTTL = &immutableTTL
-	var mutableTTL string = "5m"
-	this.MutableTTL = &mutableTTL
 	return &this
 }
 
@@ -45,10 +41,6 @@ func NewCacheWith() *Cache {
 // but it doesn't guarantee that properties required by API are set
 func NewCacheWithDefault() *Cache {
 	this := Cache{}
-	var immutableTTL string = "24h"
-	this.ImmutableTTL = &immutableTTL
-	var mutableTTL string = "5m"
-	this.MutableTTL = &mutableTTL
 	return &this
 }
 

@@ -32,6 +32,7 @@ type RequestSpec struct {
 	// Headers whose values are sourced from Kubernetes Secrets
 	HeadersFromSecret []HeadersFromSecret `json:"headersFromSecret,omitempty"`
 	Method            *string             `json:"method"`
+	Ratelimiter       *Ratelimiter        `json:"ratelimiter,omitempty"`
 	// The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
 	Timeout *string `json:"timeout,omitempty"`
 	Url     *string `json:"url"`
@@ -93,6 +94,11 @@ func (o *RequestWorkflowStep) Validate() error {
 		return errors.New("Url in RequestSpec must be set")
 	}
 	// validate all nested properties
+	if o.Properties.Ratelimiter != nil {
+		if err := o.Properties.Ratelimiter.Validate(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -223,6 +229,40 @@ func (o *RequestWorkflowStep) SetMethod(v string) *RequestWorkflowStep {
 	return o
 }
 
+// GetRatelimiter returns the Ratelimiter field value if set, zero value otherwise.
+func (o *RequestWorkflowStep) GetRatelimiter() Ratelimiter {
+	if o == nil || utils.IsNil(o.Properties.Ratelimiter) {
+		var ret Ratelimiter
+		return ret
+	}
+	return *o.Properties.Ratelimiter
+}
+
+// GetRatelimiterOk returns a tuple with the Ratelimiter field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RequestWorkflowStep) GetRatelimiterOk() (*Ratelimiter, bool) {
+	if o == nil || utils.IsNil(o.Properties.Ratelimiter) {
+		return nil, false
+	}
+	return o.Properties.Ratelimiter, true
+}
+
+// HasRatelimiter returns a boolean if a field has been set.
+func (o *RequestWorkflowStep) HasRatelimiter() bool {
+	if o != nil && !utils.IsNil(o.Properties.Ratelimiter) {
+		return true
+	}
+
+	return false
+}
+
+// SetRatelimiter gets a reference to the given Ratelimiter and assigns it to the ratelimiter field.
+// Ratelimiter:
+func (o *RequestWorkflowStep) SetRatelimiter(v Ratelimiter) *RequestWorkflowStep {
+	o.Properties.Ratelimiter = &v
+	return o
+}
+
 // GetTimeout returns the Timeout field value if set, zero value otherwise.
 func (o *RequestWorkflowStep) GetTimeout() string {
 	if o == nil || utils.IsNil(o.Properties.Timeout) {
@@ -302,6 +342,9 @@ func (o RequestSpec) ToMap() (map[string]interface{}, error) {
 		toSerialize["headersFromSecret"] = o.HeadersFromSecret
 	}
 	toSerialize["method"] = o.Method
+	if !utils.IsNil(o.Ratelimiter) {
+		toSerialize["ratelimiter"] = o.Ratelimiter
+	}
 	if !utils.IsNil(o.Timeout) {
 		toSerialize["timeout"] = o.Timeout
 	}
