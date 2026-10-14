@@ -27,19 +27,21 @@ type AzureProvider struct {
 	Name           *string `json:"name"`
 	SubscriptionID *string `json:"subscriptionID"`
 	TenantID       *string `json:"tenantID"`
+	Type           *string `json:"type"`
 }
 
 // NewAzureProviderWith instantiates a new AzureProvider object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewAzureProviderWith(clientID string, clientSecret string, name string, subscriptionID string, tenantID string) *AzureProvider {
+func NewAzureProviderWith(clientID string, clientSecret string, name string, subscriptionID string, tenantID string, type_ string) *AzureProvider {
 	this := AzureProvider{}
 	this.ClientID = &clientID
 	this.ClientSecret = &clientSecret
 	this.Name = &name
 	this.SubscriptionID = &subscriptionID
 	this.TenantID = &tenantID
+	this.Type = &type_
 	return &this
 }
 
@@ -95,6 +97,9 @@ func (o *AzureProvider) Validate() error {
 	}
 	if o.TenantID == nil {
 		return errors.New("TenantID in AzureProvider must be set")
+	}
+	if o.Type == nil {
+		return errors.New("Type in AzureProvider must be set")
 	}
 	// validate all nested properties
 	return nil
@@ -225,6 +230,31 @@ func (o *AzureProvider) SetTenantID(v string) *AzureProvider {
 	return o
 }
 
+// GetType returns the Type field value
+func (o *AzureProvider) GetType() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *AzureProvider) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *AzureProvider) SetType(v string) *AzureProvider {
+	o.Type = &v
+	return o
+}
+
 func (o AzureProvider) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -240,6 +270,7 @@ func (o AzureProvider) ToMap() (map[string]interface{}, error) {
 	toSerialize["name"] = o.Name
 	toSerialize["subscriptionID"] = o.SubscriptionID
 	toSerialize["tenantID"] = o.TenantID
+	toSerialize["type"] = o.Type
 	return toSerialize, nil
 }
 

@@ -21,8 +21,8 @@ var _ utils.MappedNullable = &Selector{}
 
 // Selector struct for Selector
 type Selector struct {
-	MatchExpressions *MatchExpressions `json:"matchExpressions,omitempty"`
-	MatchLabels      map[string]string `json:"matchLabels,omitempty"`
+	MatchExpressions []MatchExpressions `json:"matchExpressions,omitempty"`
+	MatchLabels      map[string]string  `json:"matchLabels,omitempty"`
 }
 
 // NewSelectorWith instantiates a new Selector object
@@ -71,26 +71,21 @@ func NewSelectorList(ps ...*Selector) []Selector {
 // 2. If properties are set, will check if nested required properties are set
 func (o *Selector) Validate() error {
 	// validate all nested properties
-	if o.MatchExpressions != nil {
-		if err := o.MatchExpressions.Validate(); err != nil {
-			return err
-		}
-	}
 	return nil
 }
 
 // GetMatchExpressions returns the MatchExpressions field value if set, zero value otherwise.
-func (o *Selector) GetMatchExpressions() MatchExpressions {
+func (o *Selector) GetMatchExpressions() []MatchExpressions {
 	if o == nil || utils.IsNil(o.MatchExpressions) {
-		var ret MatchExpressions
+		var ret []MatchExpressions
 		return ret
 	}
-	return *o.MatchExpressions
+	return o.MatchExpressions
 }
 
 // GetMatchExpressionsOk returns a tuple with the MatchExpressions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Selector) GetMatchExpressionsOk() (*MatchExpressions, bool) {
+func (o *Selector) GetMatchExpressionsOk() ([]MatchExpressions, bool) {
 	if o == nil || utils.IsNil(o.MatchExpressions) {
 		return nil, false
 	}
@@ -106,10 +101,10 @@ func (o *Selector) HasMatchExpressions() bool {
 	return false
 }
 
-// SetMatchExpressions gets a reference to the given MatchExpressions and assigns it to the matchExpressions field.
+// SetMatchExpressions gets a reference to the given []MatchExpressions and assigns it to the matchExpressions field.
 // MatchExpressions:
-func (o *Selector) SetMatchExpressions(v MatchExpressions) *Selector {
-	o.MatchExpressions = &v
+func (o *Selector) SetMatchExpressions(v []MatchExpressions) *Selector {
+	o.MatchExpressions = v
 	return o
 }
 

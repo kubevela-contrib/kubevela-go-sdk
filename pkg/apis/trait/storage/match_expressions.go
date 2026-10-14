@@ -24,18 +24,17 @@ var _ utils.MappedNullable = &MatchExpressions{}
 type MatchExpressions struct {
 	Key      *string  `json:"key"`
 	Operator *string  `json:"operator"`
-	Values   []string `json:"values"`
+	Values   []string `json:"values,omitempty"`
 }
 
 // NewMatchExpressionsWith instantiates a new MatchExpressions object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewMatchExpressionsWith(key string, operator string, values []string) *MatchExpressions {
+func NewMatchExpressionsWith(key string, operator string) *MatchExpressions {
 	this := MatchExpressions{}
 	this.Key = &key
 	this.Operator = &operator
-	this.Values = values
 	return &this
 }
 
@@ -80,9 +79,6 @@ func (o *MatchExpressions) Validate() error {
 	}
 	if o.Operator == nil {
 		return errors.New("Operator in MatchExpressions must be set")
-	}
-	if o.Values == nil {
-		return errors.New("Values in MatchExpressions must be set")
 	}
 	// validate all nested properties
 	return nil
@@ -138,26 +134,35 @@ func (o *MatchExpressions) SetOperator(v string) *MatchExpressions {
 	return o
 }
 
-// GetValues returns the Values field value
+// GetValues returns the Values field value if set, zero value otherwise.
 func (o *MatchExpressions) GetValues() []string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Values) {
 		var ret []string
 		return ret
 	}
-
 	return o.Values
 }
 
-// GetValuesOk returns a tuple with the Values field value
+// GetValuesOk returns a tuple with the Values field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MatchExpressions) GetValuesOk() ([]string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Values) {
 		return nil, false
 	}
 	return o.Values, true
 }
 
-// SetValues sets field value
+// HasValues returns a boolean if a field has been set.
+func (o *MatchExpressions) HasValues() bool {
+	if o != nil && !utils.IsNil(o.Values) {
+		return true
+	}
+
+	return false
+}
+
+// SetValues gets a reference to the given []string and assigns it to the values field.
+// Values:
 func (o *MatchExpressions) SetValues(v []string) *MatchExpressions {
 	o.Values = v
 	return o
@@ -175,7 +180,9 @@ func (o MatchExpressions) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["key"] = o.Key
 	toSerialize["operator"] = o.Operator
-	toSerialize["values"] = o.Values
+	if !utils.IsNil(o.Values) {
+		toSerialize["values"] = o.Values
+	}
 	return toSerialize, nil
 }
 
