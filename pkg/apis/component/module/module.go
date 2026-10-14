@@ -29,20 +29,18 @@ var _ utils.MappedNullable = &ModuleSpec{}
 
 // ModuleSpec struct for ModuleSpec
 type ModuleSpec struct {
-	Module    *string `json:"module"`
-	Namespace *string `json:"namespace"`
-	Registry  *string `json:"registry"`
-	Version   *string `json:"version"`
+	Module   *string `json:"module"`
+	Registry *string `json:"registry"`
+	Version  *string `json:"version"`
 }
 
 // NewModuleSpecWith instantiates a new ModuleSpec object
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewModuleSpecWith(module string, namespace string, registry string, version string) *ModuleSpec {
+func NewModuleSpecWith(module string, registry string, version string) *ModuleSpec {
 	this := ModuleSpec{}
 	this.Module = &module
-	this.Namespace = &namespace
 	this.Registry = &registry
 	this.Version = &version
 	return &this
@@ -53,8 +51,6 @@ func NewModuleSpecWith(module string, namespace string, registry string, version
 // but it doesn't guarantee that properties required by API are set
 func NewModuleSpecWithDefault() *ModuleSpec {
 	this := ModuleSpec{}
-	var namespace string = ""
-	this.Namespace = &namespace
 	var registry string = ""
 	this.Registry = &registry
 	var version string = ""
@@ -92,9 +88,6 @@ func NewModuleSpecList(ps ...*ModuleSpec) []ModuleSpec {
 func (o *ModuleComponent) Validate() error {
 	if o.Properties.Module == nil {
 		return errors.New("Module in ModuleSpec must be set")
-	}
-	if o.Properties.Namespace == nil {
-		return errors.New("Namespace in ModuleSpec must be set")
 	}
 	if o.Properties.Registry == nil {
 		return errors.New("Registry in ModuleSpec must be set")
@@ -134,31 +127,6 @@ func (o *ModuleComponent) GetModuleOk() (*string, bool) {
 // SetModule sets field value
 func (o *ModuleComponent) SetModule(v string) *ModuleComponent {
 	o.Properties.Module = &v
-	return o
-}
-
-// GetNamespace returns the Namespace field value
-func (o *ModuleComponent) GetNamespace() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return *o.Properties.Namespace
-}
-
-// GetNamespaceOk returns a tuple with the Namespace field value
-// and a boolean to check if the value has been set.
-func (o *ModuleComponent) GetNamespaceOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Properties.Namespace, true
-}
-
-// SetNamespace sets field value
-func (o *ModuleComponent) SetNamespace(v string) *ModuleComponent {
-	o.Properties.Namespace = &v
 	return o
 }
 
@@ -223,7 +191,6 @@ func (o ModuleSpec) MarshalJSON() ([]byte, error) {
 func (o ModuleSpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["module"] = o.Module
-	toSerialize["namespace"] = o.Namespace
 	toSerialize["registry"] = o.Registry
 	toSerialize["version"] = o.Version
 	return toSerialize, nil
