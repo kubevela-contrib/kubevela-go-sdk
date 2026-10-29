@@ -23,8 +23,7 @@ var _ utils.MappedNullable = &Preferred1{}
 // Preferred1 struct for Preferred1
 type Preferred1 struct {
 	PodAffinityTerm *PodAffinityTerm `json:"podAffinityTerm"`
-	// Specify weight associated with matching the corresponding podAffinityTerm
-	Weight *int32 `json:"weight"`
+	Weight          *int32           `json:"weight"`
 }
 
 // NewPreferred1With instantiates a new Preferred1 object
