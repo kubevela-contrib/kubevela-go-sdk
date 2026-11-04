@@ -20,8 +20,9 @@ import (
 // checks if the Required type satisfies the MappedNullable interface at compile time
 var _ utils.MappedNullable = &Required{}
 
-// Required struct for Required
+// Required Specify the required during scheduling ignored during execution
 type Required struct {
+	// Specify a list of node selector
 	NodeSelectorTerms []NodeSelectorTerm `json:"nodeSelectorTerms"`
 }
 
