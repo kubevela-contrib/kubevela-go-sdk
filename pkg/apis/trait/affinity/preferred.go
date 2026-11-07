@@ -23,7 +23,8 @@ var _ utils.MappedNullable = &Preferred{}
 // Preferred struct for Preferred
 type Preferred struct {
 	Preference *NodeSelectorTerm `json:"preference"`
-	Weight     *int32            `json:"weight"`
+	// Specify weight associated with matching the corresponding nodeSelector
+	Weight *int32 `json:"weight"`
 }
 
 // NewPreferredWith instantiates a new Preferred object
