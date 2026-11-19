@@ -35,7 +35,7 @@ type BuildPushImageSpec struct {
 	Dockerfile *string `json:"dockerfile"`
 	// Specify the image
 	Image *string `json:"image"`
-	// Specify the kaniko executor image, default to oamdev/kaniko-executor:v1.9.1
+	// Specify the kaniko executor image, default to ghcr.io/osscontainertools/kaniko:v1.29.1@sha256:e7cba1f7e70c01c8ee1cbe622d07990c04dea550430c4c81319d26679226cd37
 	KanikoExecutor *string `json:"kanikoExecutor"`
 	// Specify the platform to build
 	Platform *string `json:"platform,omitempty"`
@@ -64,7 +64,7 @@ func NewBuildPushImageSpecWithDefault() *BuildPushImageSpec {
 	this := BuildPushImageSpec{}
 	var dockerfile string = "./Dockerfile"
 	this.Dockerfile = &dockerfile
-	var kanikoExecutor string = "oamdev/kaniko-executor:v1.9.1"
+	var kanikoExecutor string = "ghcr.io/osscontainertools/kaniko:v1.29.1@sha256:e7cba1f7e70c01c8ee1cbe622d07990c04dea550430c4c81319d26679226cd37"
 	this.KanikoExecutor = &kanikoExecutor
 	var verbosity string = "info"
 	this.Verbosity = &verbosity

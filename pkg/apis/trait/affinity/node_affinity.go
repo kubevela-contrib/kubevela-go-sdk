@@ -19,9 +19,8 @@ import (
 // checks if the NodeAffinity type satisfies the MappedNullable interface at compile time
 var _ utils.MappedNullable = &NodeAffinity{}
 
-// NodeAffinity Specify the node affinity scheduling rules for the pod
+// NodeAffinity Specify the node affinity scheduling rules (ignored when affinity is set)
 type NodeAffinity struct {
-	// Specify the preferred during scheduling ignored during execution
 	Preferred []Preferred `json:"preferred,omitempty"`
 	Required  *Required   `json:"required,omitempty"`
 }
@@ -108,7 +107,7 @@ func (o *NodeAffinity) HasPreferred() bool {
 }
 
 // SetPreferred gets a reference to the given []Preferred and assigns it to the preferred field.
-// Preferred:  Specify the preferred during scheduling ignored during execution
+// Preferred:
 func (o *NodeAffinity) SetPreferred(v []Preferred) *NodeAffinity {
 	o.Preferred = v
 	return o
