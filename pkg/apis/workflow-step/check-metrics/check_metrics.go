@@ -32,9 +32,8 @@ type CheckMetricsSpec struct {
 	// Duration defines the duration of time required for this step to be considered successful.
 	Duration *string `json:"duration,omitempty"`
 	// FailDuration is the duration of time that, if the check fails, will result in the step being marked as failed.
-	FailDuration *string `json:"failDuration,omitempty"`
-	// The HTTP address and port of the prometheus server
-	MetricEndpoint *string `json:"metricEndpoint,omitempty"`
+	FailDuration   *string         `json:"failDuration,omitempty"`
+	MetricEndpoint *MetricEndpoint `json:"metricEndpoint,omitempty"`
 	// Query is a raw prometheus query to perform
 	Query *string `json:"query"`
 }
@@ -50,8 +49,6 @@ func NewCheckMetricsSpecWith(condition string, query string) *CheckMetricsSpec {
 	this.Duration = &duration
 	var failDuration string = "2m"
 	this.FailDuration = &failDuration
-	var metricEndpoint string = "http://prometheus-server.o11y-system.svc:9090"
-	this.MetricEndpoint = &metricEndpoint
 	this.Query = &query
 	return &this
 }
@@ -65,8 +62,6 @@ func NewCheckMetricsSpecWithDefault() *CheckMetricsSpec {
 	this.Duration = &duration
 	var failDuration string = "2m"
 	this.FailDuration = &failDuration
-	var metricEndpoint string = "http://prometheus-server.o11y-system.svc:9090"
-	this.MetricEndpoint = &metricEndpoint
 	return &this
 }
 
@@ -105,6 +100,11 @@ func (o *CheckMetricsWorkflowStep) Validate() error {
 		return errors.New("Query in CheckMetricsSpec must be set")
 	}
 	// validate all nested properties
+	if o.Properties.MetricEndpoint != nil {
+		if err := o.Properties.MetricEndpoint.Validate(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -202,9 +202,9 @@ func (o *CheckMetricsWorkflowStep) SetFailDuration(v string) *CheckMetricsWorkfl
 }
 
 // GetMetricEndpoint returns the MetricEndpoint field value if set, zero value otherwise.
-func (o *CheckMetricsWorkflowStep) GetMetricEndpoint() string {
+func (o *CheckMetricsWorkflowStep) GetMetricEndpoint() MetricEndpoint {
 	if o == nil || utils.IsNil(o.Properties.MetricEndpoint) {
-		var ret string
+		var ret MetricEndpoint
 		return ret
 	}
 	return *o.Properties.MetricEndpoint
@@ -212,7 +212,7 @@ func (o *CheckMetricsWorkflowStep) GetMetricEndpoint() string {
 
 // GetMetricEndpointOk returns a tuple with the MetricEndpoint field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CheckMetricsWorkflowStep) GetMetricEndpointOk() (*string, bool) {
+func (o *CheckMetricsWorkflowStep) GetMetricEndpointOk() (*MetricEndpoint, bool) {
 	if o == nil || utils.IsNil(o.Properties.MetricEndpoint) {
 		return nil, false
 	}
@@ -228,9 +228,9 @@ func (o *CheckMetricsWorkflowStep) HasMetricEndpoint() bool {
 	return false
 }
 
-// SetMetricEndpoint gets a reference to the given string and assigns it to the metricEndpoint field.
-// MetricEndpoint:  The HTTP address and port of the prometheus server
-func (o *CheckMetricsWorkflowStep) SetMetricEndpoint(v string) *CheckMetricsWorkflowStep {
+// SetMetricEndpoint gets a reference to the given MetricEndpoint and assigns it to the metricEndpoint field.
+// MetricEndpoint:
+func (o *CheckMetricsWorkflowStep) SetMetricEndpoint(v MetricEndpoint) *CheckMetricsWorkflowStep {
 	o.Properties.MetricEndpoint = &v
 	return o
 }
