@@ -26,11 +26,20 @@ var _ utils.MappedNullable = &AffinitySpec{}
 
 // AffinitySpec struct for AffinitySpec
 type AffinitySpec struct {
-	NodeAffinity    *NodeAffinity    `json:"nodeAffinity,omitempty"`
-	PodAffinity     *PodAffinity     `json:"podAffinity,omitempty"`
-	PodAntiAffinity *PodAntiAffinity `json:"podAntiAffinity,omitempty"`
-	// Specify tolerant taint
+	Affinity     *AffinityRules `json:"affinity,omitempty"`
+	NodeAffinity *NodeAffinity  `json:"nodeAffinity,omitempty"`
+	// Standard Kubernetes nodeSelector; overlays any existing nodeSelector (e.g. from Helm values)
+	NodeSelector    map[string]string `json:"nodeSelector,omitempty"`
+	PodAffinity     *PodAffinity      `json:"podAffinity,omitempty"`
+	PodAntiAffinity *PodAntiAffinity  `json:"podAntiAffinity,omitempty"`
+	// PriorityClass name for the pod
+	PriorityClassName *string `json:"priorityClassName,omitempty"`
+	// Name of the scheduler to use
+	SchedulerName *string `json:"schedulerName,omitempty"`
+	// Standard Kubernetes tolerations; overlays any existing tolerations
 	Tolerations []Tolerations `json:"tolerations,omitempty"`
+	// Standard Kubernetes topologySpreadConstraints; overlays any existing constraints
+	TopologySpreadConstraints []TopologySpreadConstraints `json:"topologySpreadConstraints,omitempty"`
 }
 
 // NewAffinitySpecWith instantiates a new AffinitySpec object
@@ -79,6 +88,11 @@ func NewAffinitySpecList(ps ...*AffinitySpec) []AffinitySpec {
 // 2. If properties are set, will check if nested required properties are set
 func (o *AffinityTrait) Validate() error {
 	// validate all nested properties
+	if o.Properties.Affinity != nil {
+		if err := o.Properties.Affinity.Validate(); err != nil {
+			return err
+		}
+	}
 	if o.Properties.NodeAffinity != nil {
 		if err := o.Properties.NodeAffinity.Validate(); err != nil {
 			return err
@@ -95,6 +109,40 @@ func (o *AffinityTrait) Validate() error {
 		}
 	}
 	return nil
+}
+
+// GetAffinity returns the Affinity field value if set, zero value otherwise.
+func (o *AffinityTrait) GetAffinity() AffinityRules {
+	if o == nil || utils.IsNil(o.Properties.Affinity) {
+		var ret AffinityRules
+		return ret
+	}
+	return *o.Properties.Affinity
+}
+
+// GetAffinityOk returns a tuple with the Affinity field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AffinityTrait) GetAffinityOk() (*AffinityRules, bool) {
+	if o == nil || utils.IsNil(o.Properties.Affinity) {
+		return nil, false
+	}
+	return o.Properties.Affinity, true
+}
+
+// HasAffinity returns a boolean if a field has been set.
+func (o *AffinityTrait) HasAffinity() bool {
+	if o != nil && !utils.IsNil(o.Properties.Affinity) {
+		return true
+	}
+
+	return false
+}
+
+// SetAffinity gets a reference to the given AffinityRules and assigns it to the affinity field.
+// Affinity:
+func (o *AffinityTrait) SetAffinity(v AffinityRules) *AffinityTrait {
+	o.Properties.Affinity = &v
+	return o
 }
 
 // GetNodeAffinity returns the NodeAffinity field value if set, zero value otherwise.
@@ -128,6 +176,40 @@ func (o *AffinityTrait) HasNodeAffinity() bool {
 // NodeAffinity:
 func (o *AffinityTrait) SetNodeAffinity(v NodeAffinity) *AffinityTrait {
 	o.Properties.NodeAffinity = &v
+	return o
+}
+
+// GetNodeSelector returns the NodeSelector field value if set, zero value otherwise.
+func (o *AffinityTrait) GetNodeSelector() map[string]string {
+	if o == nil || utils.IsNil(o.Properties.NodeSelector) {
+		var ret map[string]string
+		return ret
+	}
+	return o.Properties.NodeSelector
+}
+
+// GetNodeSelectorOk returns a tuple with the NodeSelector field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AffinityTrait) GetNodeSelectorOk() (map[string]string, bool) {
+	if o == nil || utils.IsNil(o.Properties.NodeSelector) {
+		return nil, false
+	}
+	return o.Properties.NodeSelector, true
+}
+
+// HasNodeSelector returns a boolean if a field has been set.
+func (o *AffinityTrait) HasNodeSelector() bool {
+	if o != nil && !utils.IsNil(o.Properties.NodeSelector) {
+		return true
+	}
+
+	return false
+}
+
+// SetNodeSelector gets a reference to the given map[string]string and assigns it to the nodeSelector field.
+// NodeSelector:  Standard Kubernetes nodeSelector; overlays any existing nodeSelector (e.g. from Helm values)
+func (o *AffinityTrait) SetNodeSelector(v map[string]string) *AffinityTrait {
+	o.Properties.NodeSelector = v
 	return o
 }
 
@@ -199,6 +281,74 @@ func (o *AffinityTrait) SetPodAntiAffinity(v PodAntiAffinity) *AffinityTrait {
 	return o
 }
 
+// GetPriorityClassName returns the PriorityClassName field value if set, zero value otherwise.
+func (o *AffinityTrait) GetPriorityClassName() string {
+	if o == nil || utils.IsNil(o.Properties.PriorityClassName) {
+		var ret string
+		return ret
+	}
+	return *o.Properties.PriorityClassName
+}
+
+// GetPriorityClassNameOk returns a tuple with the PriorityClassName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AffinityTrait) GetPriorityClassNameOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Properties.PriorityClassName) {
+		return nil, false
+	}
+	return o.Properties.PriorityClassName, true
+}
+
+// HasPriorityClassName returns a boolean if a field has been set.
+func (o *AffinityTrait) HasPriorityClassName() bool {
+	if o != nil && !utils.IsNil(o.Properties.PriorityClassName) {
+		return true
+	}
+
+	return false
+}
+
+// SetPriorityClassName gets a reference to the given string and assigns it to the priorityClassName field.
+// PriorityClassName:  PriorityClass name for the pod
+func (o *AffinityTrait) SetPriorityClassName(v string) *AffinityTrait {
+	o.Properties.PriorityClassName = &v
+	return o
+}
+
+// GetSchedulerName returns the SchedulerName field value if set, zero value otherwise.
+func (o *AffinityTrait) GetSchedulerName() string {
+	if o == nil || utils.IsNil(o.Properties.SchedulerName) {
+		var ret string
+		return ret
+	}
+	return *o.Properties.SchedulerName
+}
+
+// GetSchedulerNameOk returns a tuple with the SchedulerName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AffinityTrait) GetSchedulerNameOk() (*string, bool) {
+	if o == nil || utils.IsNil(o.Properties.SchedulerName) {
+		return nil, false
+	}
+	return o.Properties.SchedulerName, true
+}
+
+// HasSchedulerName returns a boolean if a field has been set.
+func (o *AffinityTrait) HasSchedulerName() bool {
+	if o != nil && !utils.IsNil(o.Properties.SchedulerName) {
+		return true
+	}
+
+	return false
+}
+
+// SetSchedulerName gets a reference to the given string and assigns it to the schedulerName field.
+// SchedulerName:  Name of the scheduler to use
+func (o *AffinityTrait) SetSchedulerName(v string) *AffinityTrait {
+	o.Properties.SchedulerName = &v
+	return o
+}
+
 // GetTolerations returns the Tolerations field value if set, zero value otherwise.
 func (o *AffinityTrait) GetTolerations() []Tolerations {
 	if o == nil || utils.IsNil(o.Properties.Tolerations) {
@@ -227,9 +377,43 @@ func (o *AffinityTrait) HasTolerations() bool {
 }
 
 // SetTolerations gets a reference to the given []Tolerations and assigns it to the tolerations field.
-// Tolerations:  Specify tolerant taint
+// Tolerations:  Standard Kubernetes tolerations; overlays any existing tolerations
 func (o *AffinityTrait) SetTolerations(v []Tolerations) *AffinityTrait {
 	o.Properties.Tolerations = v
+	return o
+}
+
+// GetTopologySpreadConstraints returns the TopologySpreadConstraints field value if set, zero value otherwise.
+func (o *AffinityTrait) GetTopologySpreadConstraints() []TopologySpreadConstraints {
+	if o == nil || utils.IsNil(o.Properties.TopologySpreadConstraints) {
+		var ret []TopologySpreadConstraints
+		return ret
+	}
+	return o.Properties.TopologySpreadConstraints
+}
+
+// GetTopologySpreadConstraintsOk returns a tuple with the TopologySpreadConstraints field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AffinityTrait) GetTopologySpreadConstraintsOk() ([]TopologySpreadConstraints, bool) {
+	if o == nil || utils.IsNil(o.Properties.TopologySpreadConstraints) {
+		return nil, false
+	}
+	return o.Properties.TopologySpreadConstraints, true
+}
+
+// HasTopologySpreadConstraints returns a boolean if a field has been set.
+func (o *AffinityTrait) HasTopologySpreadConstraints() bool {
+	if o != nil && !utils.IsNil(o.Properties.TopologySpreadConstraints) {
+		return true
+	}
+
+	return false
+}
+
+// SetTopologySpreadConstraints gets a reference to the given []TopologySpreadConstraints and assigns it to the topologySpreadConstraints field.
+// TopologySpreadConstraints:  Standard Kubernetes topologySpreadConstraints; overlays any existing constraints
+func (o *AffinityTrait) SetTopologySpreadConstraints(v []TopologySpreadConstraints) *AffinityTrait {
+	o.Properties.TopologySpreadConstraints = v
 	return o
 }
 
@@ -243,8 +427,14 @@ func (o AffinitySpec) MarshalJSON() ([]byte, error) {
 
 func (o AffinitySpec) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !utils.IsNil(o.Affinity) {
+		toSerialize["affinity"] = o.Affinity
+	}
 	if !utils.IsNil(o.NodeAffinity) {
 		toSerialize["nodeAffinity"] = o.NodeAffinity
+	}
+	if !utils.IsNil(o.NodeSelector) {
+		toSerialize["nodeSelector"] = o.NodeSelector
 	}
 	if !utils.IsNil(o.PodAffinity) {
 		toSerialize["podAffinity"] = o.PodAffinity
@@ -252,8 +442,17 @@ func (o AffinitySpec) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.PodAntiAffinity) {
 		toSerialize["podAntiAffinity"] = o.PodAntiAffinity
 	}
+	if !utils.IsNil(o.PriorityClassName) {
+		toSerialize["priorityClassName"] = o.PriorityClassName
+	}
+	if !utils.IsNil(o.SchedulerName) {
+		toSerialize["schedulerName"] = o.SchedulerName
+	}
 	if !utils.IsNil(o.Tolerations) {
 		toSerialize["tolerations"] = o.Tolerations
+	}
+	if !utils.IsNil(o.TopologySpreadConstraints) {
+		toSerialize["topologySpreadConstraints"] = o.TopologySpreadConstraints
 	}
 	return toSerialize, nil
 }
