@@ -28,7 +28,7 @@ type ValuesFrom struct {
 	Kind *string `json:"kind"`
 	// Name of the Secret or ConfigMap.
 	Name *string `json:"name"`
-	// Namespace of the Secret or ConfigMap. Defaults to the chart release namespace, which itself defaults to the Application's own namespace when release.namespace is unset. Cross-namespace references are rejected to prevent cross-tenant reads via the controller's cluster-wide RBAC.
+	// Namespace of the Secret or ConfigMap. Defaults to, and MUST be, the Application's own namespace. Any other is rejected, the release namespace included, to prevent cross-tenant reads via the controller's cluster-wide RBAC.
 	Namespace *string `json:"namespace,omitempty"`
 	// If true, a missing Secret/ConfigMap or missing key is skipped silently. Parse errors and permission errors still fail the render.
 	Optional *bool `json:"optional,omitempty"`
@@ -207,7 +207,7 @@ func (o *ValuesFrom) HasNamespace() bool {
 }
 
 // SetNamespace gets a reference to the given string and assigns it to the namespace field.
-// Namespace:  Namespace of the Secret or ConfigMap. Defaults to the chart release namespace, which itself defaults to the Application's own namespace when release.namespace is unset. Cross-namespace references are rejected to prevent cross-tenant reads via the controller's cluster-wide RBAC.
+// Namespace:  Namespace of the Secret or ConfigMap. Defaults to, and MUST be, the Application's own namespace. Any other is rejected, the release namespace included, to prevent cross-tenant reads via the controller's cluster-wide RBAC.
 func (o *ValuesFrom) SetNamespace(v string) *ValuesFrom {
 	o.Namespace = &v
 	return o

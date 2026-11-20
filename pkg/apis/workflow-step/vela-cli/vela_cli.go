@@ -31,7 +31,7 @@ type VelaCliSpec struct {
 	Command []string `json:"command"`
 	// Specify the image
 	Image *string `json:"image"`
-	// specify serviceAccountName want to use
+	// The service account the Job runs as, in the Application's namespace
 	ServiceAccountName *string  `json:"serviceAccountName"`
 	Storage            *Storage `json:"storage,omitempty"`
 }
@@ -55,7 +55,7 @@ func NewVelaCliSpecWithDefault() *VelaCliSpec {
 	this := VelaCliSpec{}
 	var image string = "oamdev/vela-cli:v1.6.4"
 	this.Image = &image
-	var serviceAccountName string = "kubevela-vela-core"
+	var serviceAccountName string = "default"
 	this.ServiceAccountName = &serviceAccountName
 	return &this
 }

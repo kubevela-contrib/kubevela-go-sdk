@@ -33,7 +33,7 @@ type RequestSpec struct {
 	HeadersFromSecret []HeadersFromSecret `json:"headersFromSecret,omitempty"`
 	Method            *string             `json:"method"`
 	Ratelimiter       *Ratelimiter        `json:"ratelimiter,omitempty"`
-	// The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
+	// The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted; must be greater than 0 and at most the controller's maximum, 60s by default. Invalid values fail when the step runs.
 	Timeout *string `json:"timeout,omitempty"`
 	Url     *string `json:"url"`
 }
@@ -291,7 +291,7 @@ func (o *RequestWorkflowStep) HasTimeout() bool {
 }
 
 // SetTimeout gets a reference to the given string and assigns it to the timeout field.
-// Timeout:  The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted. Invalid values fail when the step runs.
+// Timeout:  The timeout of this request (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted; must be greater than 0 and at most the controller's maximum, 60s by default. Invalid values fail when the step runs.
 func (o *RequestWorkflowStep) SetTimeout(v string) *RequestWorkflowStep {
 	o.Properties.Timeout = &v
 	return o
