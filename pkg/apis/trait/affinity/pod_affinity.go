@@ -19,10 +19,12 @@ import (
 // checks if the PodAffinity type satisfies the MappedNullable interface at compile time
 var _ utils.MappedNullable = &PodAffinity{}
 
-// PodAffinity Specify the pod affinity scheduling rules (ignored when affinity is set)
+// PodAffinity Specify the pod affinity scheduling rules
 type PodAffinity struct {
-	Preferred []Preferred1      `json:"preferred,omitempty"`
-	Required  []PodAffinityTerm `json:"required,omitempty"`
+	// Specify the preferred during scheduling ignored during execution
+	Preferred []Preferred1 `json:"preferred,omitempty"`
+	// Specify the required during scheduling ignored during execution
+	Required []PodAffinityTerm `json:"required,omitempty"`
 }
 
 // NewPodAffinityWith instantiates a new PodAffinity object
@@ -102,7 +104,7 @@ func (o *PodAffinity) HasPreferred() bool {
 }
 
 // SetPreferred gets a reference to the given []Preferred1 and assigns it to the preferred field.
-// Preferred:
+// Preferred:  Specify the preferred during scheduling ignored during execution
 func (o *PodAffinity) SetPreferred(v []Preferred1) *PodAffinity {
 	o.Preferred = v
 	return o
@@ -136,7 +138,7 @@ func (o *PodAffinity) HasRequired() bool {
 }
 
 // SetRequired gets a reference to the given []PodAffinityTerm and assigns it to the required field.
-// Required:
+// Required:  Specify the required during scheduling ignored during execution
 func (o *PodAffinity) SetRequired(v []PodAffinityTerm) *PodAffinity {
 	o.Required = v
 	return o
