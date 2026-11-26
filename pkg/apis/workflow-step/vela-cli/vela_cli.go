@@ -53,7 +53,7 @@ func NewVelaCliSpecWith(command []string, image string, serviceAccountName strin
 // but it doesn't guarantee that properties required by API are set
 func NewVelaCliSpecWithDefault() *VelaCliSpec {
 	this := VelaCliSpec{}
-	var image string = "oamdev/vela-cli:v1.12.0-alpha.2"
+	var image string = "oamdev/vela-cli:v1.6.4"
 	this.Image = &image
 	var serviceAccountName string = "default"
 	this.ServiceAccountName = &serviceAccountName
