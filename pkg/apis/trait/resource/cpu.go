@@ -17,7 +17,7 @@ import (
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
 
-// Cpu - Specify the amount of cpu for requests and limits
+// Cpu - Specify the amount of cpu for requests and limits; set alone, memory is left as the workload sets it
 type Cpu struct {
 	Float32 *float32
 	String  *string

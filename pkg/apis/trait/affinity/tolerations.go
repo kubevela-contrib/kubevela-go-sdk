@@ -12,7 +12,6 @@ package affinity
 
 import (
 	"encoding/json"
-	"errors"
 
 	"github.com/kubevela-contrib/kubevela-go-sdk/pkg/apis/utils"
 )
@@ -24,7 +23,7 @@ var _ utils.MappedNullable = &Tolerations{}
 type Tolerations struct {
 	Effect   *string `json:"effect,omitempty"`
 	Key      *string `json:"key,omitempty"`
-	Operator *string `json:"operator"`
+	Operator *string `json:"operator,omitempty"`
 	// Specify the period of time the toleration
 	TolerationSeconds *int32  `json:"tolerationSeconds,omitempty"`
 	Value             *string `json:"value,omitempty"`
@@ -34,8 +33,9 @@ type Tolerations struct {
 // This constructor will make sure properties required by API are set.
 // For optional properties, it will set default values if they have been defined.
 // The set of arguments will change when the set of required properties is changed
-func NewTolerationsWith(operator string) *Tolerations {
+func NewTolerationsWith() *Tolerations {
 	this := Tolerations{}
+	var operator string = "equal"
 	this.Operator = &operator
 	return &this
 }
@@ -45,7 +45,7 @@ func NewTolerationsWith(operator string) *Tolerations {
 // but it doesn't guarantee that properties required by API are set
 func NewTolerationsWithDefault() *Tolerations {
 	this := Tolerations{}
-	var operator string = "Equal"
+	var operator string = "equal"
 	this.Operator = &operator
 	return &this
 }
@@ -78,9 +78,6 @@ func NewTolerationsList(ps ...*Tolerations) []Tolerations {
 // 1. If the required properties are not set, this will return an error
 // 2. If properties are set, will check if nested required properties are set
 func (o *Tolerations) Validate() error {
-	if o.Operator == nil {
-		return errors.New("Operator in Tolerations must be set")
-	}
 	// validate all nested properties
 	return nil
 }
@@ -153,26 +150,35 @@ func (o *Tolerations) SetKey(v string) *Tolerations {
 	return o
 }
 
-// GetOperator returns the Operator field value
+// GetOperator returns the Operator field value if set, zero value otherwise.
 func (o *Tolerations) GetOperator() string {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Operator) {
 		var ret string
 		return ret
 	}
-
 	return *o.Operator
 }
 
-// GetOperatorOk returns a tuple with the Operator field value
+// GetOperatorOk returns a tuple with the Operator field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Tolerations) GetOperatorOk() (*string, bool) {
-	if o == nil {
+	if o == nil || utils.IsNil(o.Operator) {
 		return nil, false
 	}
 	return o.Operator, true
 }
 
-// SetOperator sets field value
+// HasOperator returns a boolean if a field has been set.
+func (o *Tolerations) HasOperator() bool {
+	if o != nil && !utils.IsNil(o.Operator) {
+		return true
+	}
+
+	return false
+}
+
+// SetOperator gets a reference to the given string and assigns it to the operator field.
+// Operator:
 func (o *Tolerations) SetOperator(v string) *Tolerations {
 	o.Operator = &v
 	return o
@@ -262,7 +268,9 @@ func (o Tolerations) ToMap() (map[string]interface{}, error) {
 	if !utils.IsNil(o.Key) {
 		toSerialize["key"] = o.Key
 	}
-	toSerialize["operator"] = o.Operator
+	if !utils.IsNil(o.Operator) {
+		toSerialize["operator"] = o.Operator
+	}
 	if !utils.IsNil(o.TolerationSeconds) {
 		toSerialize["tolerationSeconds"] = o.TolerationSeconds
 	}

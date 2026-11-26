@@ -28,7 +28,7 @@ var _ utils.MappedNullable = &ResourceSpec{}
 type ResourceSpec struct {
 	Cpu    *Cpu    `json:"cpu,omitempty"`
 	Limits *Limits `json:"limits,omitempty"`
-	// Specify the amount of memory for requests and limits
+	// Specify the amount of memory for requests and limits; set alone, cpu is left as the workload sets it
 	Memory   *string   `json:"memory,omitempty"`
 	Requests *Requests `json:"requests,omitempty"`
 }
@@ -197,7 +197,7 @@ func (o *ResourceTrait) HasMemory() bool {
 }
 
 // SetMemory gets a reference to the given string and assigns it to the memory field.
-// Memory:  Specify the amount of memory for requests and limits
+// Memory:  Specify the amount of memory for requests and limits; set alone, cpu is left as the workload sets it
 func (o *ResourceTrait) SetMemory(v string) *ResourceTrait {
 	o.Properties.Memory = &v
 	return o
