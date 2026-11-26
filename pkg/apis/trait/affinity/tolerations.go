@@ -35,7 +35,7 @@ type Tolerations struct {
 // The set of arguments will change when the set of required properties is changed
 func NewTolerationsWith() *Tolerations {
 	this := Tolerations{}
-	var operator string = "equal"
+	var operator string = "Equal"
 	this.Operator = &operator
 	return &this
 }
@@ -45,7 +45,7 @@ func NewTolerationsWith() *Tolerations {
 // but it doesn't guarantee that properties required by API are set
 func NewTolerationsWithDefault() *Tolerations {
 	this := Tolerations{}
-	var operator string = "equal"
+	var operator string = "Equal"
 	this.Operator = &operator
 	return &this
 }
