@@ -21,8 +21,10 @@ var _ utils.MappedNullable = &ValueFrom{}
 
 // ValueFrom Specifies a source the value of this var should come from
 type ValueFrom struct {
-	ConfigMapKeyRef *ConfigMapKeyRef `json:"configMapKeyRef,omitempty"`
-	SecretKeyRef    *SecretKeyRef    `json:"secretKeyRef,omitempty"`
+	ConfigMapKeyRef  *ConfigMapKeyRef  `json:"configMapKeyRef,omitempty"`
+	FieldRef         *FieldRef         `json:"fieldRef,omitempty"`
+	ResourceFieldRef *ResourceFieldRef `json:"resourceFieldRef,omitempty"`
+	SecretKeyRef     *SecretKeyRef     `json:"secretKeyRef,omitempty"`
 }
 
 // NewValueFromWith instantiates a new ValueFrom object
@@ -76,6 +78,16 @@ func (o *ValueFrom) Validate() error {
 			return err
 		}
 	}
+	if o.FieldRef != nil {
+		if err := o.FieldRef.Validate(); err != nil {
+			return err
+		}
+	}
+	if o.ResourceFieldRef != nil {
+		if err := o.ResourceFieldRef.Validate(); err != nil {
+			return err
+		}
+	}
 	if o.SecretKeyRef != nil {
 		if err := o.SecretKeyRef.Validate(); err != nil {
 			return err
@@ -115,6 +127,74 @@ func (o *ValueFrom) HasConfigMapKeyRef() bool {
 // ConfigMapKeyRef:
 func (o *ValueFrom) SetConfigMapKeyRef(v ConfigMapKeyRef) *ValueFrom {
 	o.ConfigMapKeyRef = &v
+	return o
+}
+
+// GetFieldRef returns the FieldRef field value if set, zero value otherwise.
+func (o *ValueFrom) GetFieldRef() FieldRef {
+	if o == nil || utils.IsNil(o.FieldRef) {
+		var ret FieldRef
+		return ret
+	}
+	return *o.FieldRef
+}
+
+// GetFieldRefOk returns a tuple with the FieldRef field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValueFrom) GetFieldRefOk() (*FieldRef, bool) {
+	if o == nil || utils.IsNil(o.FieldRef) {
+		return nil, false
+	}
+	return o.FieldRef, true
+}
+
+// HasFieldRef returns a boolean if a field has been set.
+func (o *ValueFrom) HasFieldRef() bool {
+	if o != nil && !utils.IsNil(o.FieldRef) {
+		return true
+	}
+
+	return false
+}
+
+// SetFieldRef gets a reference to the given FieldRef and assigns it to the fieldRef field.
+// FieldRef:
+func (o *ValueFrom) SetFieldRef(v FieldRef) *ValueFrom {
+	o.FieldRef = &v
+	return o
+}
+
+// GetResourceFieldRef returns the ResourceFieldRef field value if set, zero value otherwise.
+func (o *ValueFrom) GetResourceFieldRef() ResourceFieldRef {
+	if o == nil || utils.IsNil(o.ResourceFieldRef) {
+		var ret ResourceFieldRef
+		return ret
+	}
+	return *o.ResourceFieldRef
+}
+
+// GetResourceFieldRefOk returns a tuple with the ResourceFieldRef field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ValueFrom) GetResourceFieldRefOk() (*ResourceFieldRef, bool) {
+	if o == nil || utils.IsNil(o.ResourceFieldRef) {
+		return nil, false
+	}
+	return o.ResourceFieldRef, true
+}
+
+// HasResourceFieldRef returns a boolean if a field has been set.
+func (o *ValueFrom) HasResourceFieldRef() bool {
+	if o != nil && !utils.IsNil(o.ResourceFieldRef) {
+		return true
+	}
+
+	return false
+}
+
+// SetResourceFieldRef gets a reference to the given ResourceFieldRef and assigns it to the resourceFieldRef field.
+// ResourceFieldRef:
+func (o *ValueFrom) SetResourceFieldRef(v ResourceFieldRef) *ValueFrom {
+	o.ResourceFieldRef = &v
 	return o
 }
 
@@ -164,6 +244,12 @@ func (o ValueFrom) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !utils.IsNil(o.ConfigMapKeyRef) {
 		toSerialize["configMapKeyRef"] = o.ConfigMapKeyRef
+	}
+	if !utils.IsNil(o.FieldRef) {
+		toSerialize["fieldRef"] = o.FieldRef
+	}
+	if !utils.IsNil(o.ResourceFieldRef) {
+		toSerialize["resourceFieldRef"] = o.ResourceFieldRef
 	}
 	if !utils.IsNil(o.SecretKeyRef) {
 		toSerialize["secretKeyRef"] = o.SecretKeyRef
