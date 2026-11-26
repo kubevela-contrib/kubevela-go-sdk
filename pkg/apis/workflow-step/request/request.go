@@ -29,7 +29,7 @@ var _ utils.MappedNullable = &RequestSpec{}
 type RequestSpec struct {
 	Body   map[string]interface{} `json:"body,omitempty"`
 	Header map[string]string      `json:"header,omitempty"`
-	// Headers whose values are sourced from Kubernetes Secrets
+	// Headers whose values are sourced from Kubernetes Secrets in the Application's namespace
 	HeadersFromSecret []HeadersFromSecret `json:"headersFromSecret,omitempty"`
 	Method            *string             `json:"method"`
 	Ratelimiter       *Ratelimiter        `json:"ratelimiter,omitempty"`
@@ -198,7 +198,7 @@ func (o *RequestWorkflowStep) HasHeadersFromSecret() bool {
 }
 
 // SetHeadersFromSecret gets a reference to the given []HeadersFromSecret and assigns it to the headersFromSecret field.
-// HeadersFromSecret:  Headers whose values are sourced from Kubernetes Secrets
+// HeadersFromSecret:  Headers whose values are sourced from Kubernetes Secrets in the Application's namespace
 func (o *RequestWorkflowStep) SetHeadersFromSecret(v []HeadersFromSecret) *RequestWorkflowStep {
 	o.Properties.HeadersFromSecret = v
 	return o

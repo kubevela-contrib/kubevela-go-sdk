@@ -30,7 +30,7 @@ type NotificationSpec struct {
 	Email    *Email    `json:"email,omitempty"`
 	Lark     *Lark     `json:"lark,omitempty"`
 	Slack    *Slack    `json:"slack,omitempty"`
-	// The timeout of HTTP notifications (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted; must be greater than 0 and at most the controller's maximum, 60s by default. Invalid values fail when the step runs.
+	// The timeout of the DingTalk, Lark and Slack notifications (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted; must be greater than 0 and at most the controller's maximum, 60s by default. Invalid values fail when the step runs. Email notifications do not use it.
 	Timeout *string `json:"timeout,omitempty"`
 }
 
@@ -267,7 +267,7 @@ func (o *NotificationWorkflowStep) HasTimeout() bool {
 }
 
 // SetTimeout gets a reference to the given string and assigns it to the timeout field.
-// Timeout:  The timeout of HTTP notifications (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted; must be greater than 0 and at most the controller's maximum, 60s by default. Invalid values fail when the step runs.
+// Timeout:  The timeout of the DingTalk, Lark and Slack notifications (Go duration string, e.g. \"30s\", \"2m\", \"500ms\"). Defaults to 3s when omitted; must be greater than 0 and at most the controller's maximum, 60s by default. Invalid values fail when the step runs. Email notifications do not use it.
 func (o *NotificationWorkflowStep) SetTimeout(v string) *NotificationWorkflowStep {
 	o.Properties.Timeout = &v
 	return o
